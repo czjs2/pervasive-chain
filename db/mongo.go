@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"fmt"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -29,7 +28,6 @@ func InitMongo(config *config.WebConfig)error{
 	if err != nil {
 		return err
 	}
-	fmt.Println()
 	return nil
 }
 
