@@ -6,6 +6,7 @@ import (
 	"pervasive-chain/db"
 	"pervasive-chain/httpsvr"
 	lg "pervasive-chain/log"
+	"pervasive-chain/ws"
 )
 
 func main() {
@@ -21,6 +22,9 @@ func main() {
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
+
+	go ws.Manager.Start()
+
 	err = httpsvr.ListenAndServe(prjConfig)
 	if err != nil {
 		log.Fatalln(err.Error())

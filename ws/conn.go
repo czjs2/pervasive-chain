@@ -14,9 +14,8 @@ func WsConnHandler(c *gin.Context) {
 		http.NotFound(c.Writer, c.Request)
 		return
 	}
-	client := &Client{ID: utils.GetUUID(), Socket: conn, Send: make(chan []byte)}
+	client := &Client{ID: utils.GetUUID(), Socket: conn, Send: make(chan []byte),ClientIp:c.ClientIP()}
 	Manager.Register <- client
 	go client.Read()
 	go client.Write()
-
 }

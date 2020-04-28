@@ -1,6 +1,7 @@
 {
   "MongodbUrl": "mongodb://poolwebdev:xjrw2020@139.186.84.15:27987,139.186.84.15:27988,139.186.84.15:27989/poolwebdev",
   "Debug": true,
+  "HTTPListen": "0.0.0.0:8080",
   "WebRoot": "./webroot",
   "HtmlTemplate": "./webroot/template",
   "DevMongodbUrl": "mongodb://poolwebdev:xjrw2020@139.186.84.15:27987,139.186.84.15:27988,139.186.84.15:27989/poolwebdev",

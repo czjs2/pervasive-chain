@@ -2,6 +2,7 @@ package config
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 )
 
@@ -31,6 +32,7 @@ func ReadCfg(path string) (*WebConfig, error) {
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println(string(d))
 	err = json.Unmarshal(d, &PrjConfig)
 	if err != nil {
 		return PrjConfig, err

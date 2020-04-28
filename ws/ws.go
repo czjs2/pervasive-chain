@@ -5,11 +5,11 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-
 type Client struct {
-	ID     string
-	Socket *websocket.Conn
-	Send   chan []byte
+	ID       string
+	Socket   *websocket.Conn
+	Send     chan []byte
+	ClientIp string
 }
 
 type ClientManager struct {
@@ -18,6 +18,7 @@ type ClientManager struct {
 	Register   chan *Client
 	Unregister chan *Client
 }
+
 var Manager = ClientManager{
 	Broadcast:  make(chan []byte),
 	Register:   make(chan *Client),
@@ -25,25 +26,19 @@ var Manager = ClientManager{
 	Clients:    make(map[*Client]bool),
 }
 
-type Message struct {
-	Sender    string `json:"sender,omitempty"`
-	Recipient string `json:"recipient,omitempty"`
-	Content   string `json:"content,omitempty"`
-}
+
+
+//todo 安全配置相关
 
 func (manager *ClientManager) Start() {
 	for {
 		select {
 		case conn := <-manager.Register:
 			manager.Clients[conn] = true
-			jsonMessage, _ := json.Marshal(&Message{Content: "A new socket has connected."})
-			manager.Send(jsonMessage, conn)
 		case conn := <-manager.Unregister:
 			if _, ok := manager.Clients[conn]; ok {
 				close(conn.Send)
 				delete(manager.Clients, conn)
-				jsonMessage, _ := json.Marshal(&Message{Content: "A socket has disconnected."})
-				manager.Send(jsonMessage, conn)
 			}
 		case message := <-manager.Broadcast:
 			for conn := range manager.Clients {
@@ -58,13 +53,26 @@ func (manager *ClientManager) Start() {
 	}
 }
 
+// 广播消息
+func BroadCast(msg []byte) {
+	Manager.Broadcast <- msg
+}
 
-func (manager *ClientManager) Send(message []byte, ignore *Client) {
+
+func (manager *ClientManager) HeartBeat() {
 	for conn := range manager.Clients {
-		if conn != ignore {
-			conn.Send <- message
+		err := conn.Ping()
+		if err != nil {
+			manager.Unregister <- conn
 		}
 	}
+}
+
+func (c *Client) Ping() error {
+	if _, _, err := c.Socket.NextReader(); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (c *Client) Read() {
@@ -87,9 +95,9 @@ func (c *Client) Read() {
 
 func (c *Client) Write() {
 	defer func() {
+		Manager.Unregister <- c
 		c.Socket.Close()
 	}()
-
 	for {
 		select {
 		case message, ok := <-c.Send:

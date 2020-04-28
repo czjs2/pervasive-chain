@@ -8,6 +8,6 @@ import (
 
 func UserApi(engine *gin.Engine) *gin.RouterGroup {
 	group := engine.Group("/api/v1/")
-	group.POST("conn", ws.WsConnHandler)
+	group.GET("conn", ws.WsConnHandler)
 	return group
 }
