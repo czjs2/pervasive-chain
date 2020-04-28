@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	prjConfig, err := config.ReadCfg("./web-config.json")
+	prjConfig, err := config.ReadWebCfg("./web-config.json")
 	if err != nil {
 		log.Fatalln(err.Error())
 	}

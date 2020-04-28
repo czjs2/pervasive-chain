@@ -10,11 +10,11 @@ import (
 	"time"
 )
 
-
 var client *mongo.Client
 var err error
 var databaseName string
-func InitMongo(config *config.WebConfig)error{
+
+func InitMongo(config *config.WebConfig) error {
 	var mongodbUrl string
 	if config.Debug {
 		mongodbUrl = config.DevMongodbUrl
@@ -34,4 +34,12 @@ func InitMongo(config *config.WebConfig)error{
 func getDataBase(url string) string {
 	index := strings.LastIndex(url, "/")
 	return url[index+1:]
+}
+
+func Collection(collName string) *mongo.Collection {
+	return client.Database(databaseName).Collection(collName)
+}
+
+func MongoClient() *mongo.Client {
+	return client
 }

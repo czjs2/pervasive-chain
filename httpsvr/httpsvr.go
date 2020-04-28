@@ -33,7 +33,7 @@ func ListenAndServe(cfg *config.WebConfig) error {
 	httpRouter.Use(cors())
 	httpRouter.Use(log.MyGinLogger(cfg.LogPath))
 	httpRouter.Use(gin.Recovery())
-	UserApi(httpRouter)
+	UseApi(httpRouter)
 	exists, err := utils.FileExists(cfg.WebRoot)
 	if err != nil {
 		return err

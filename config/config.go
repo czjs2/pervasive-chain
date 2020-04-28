@@ -26,7 +26,7 @@ type ChinConfig struct {
 
 var PrjConfig *WebConfig
 
-func ReadCfg(path string) (*WebConfig, error) {
+func ReadWebCfg(path string) (*WebConfig, error) {
 	PrjConfig := &WebConfig{}
 	d, err := ioutil.ReadFile(path)
 	if err != nil {

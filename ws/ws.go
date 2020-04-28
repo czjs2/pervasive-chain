@@ -26,8 +26,6 @@ var Manager = ClientManager{
 	Clients:    make(map[*Client]bool),
 }
 
-
-
 //todo 安全配置相关
 
 func (manager *ClientManager) Start() {
@@ -58,7 +56,6 @@ func BroadCast(msg []byte) {
 	Manager.Broadcast <- msg
 }
 
-
 func (manager *ClientManager) HeartBeat() {
 	for conn := range manager.Clients {
 		err := conn.Ping()
@@ -75,17 +72,16 @@ func (c *Client) Ping() error {
 	return nil
 }
 
+// 发送直接断掉重连
 func (c *Client) Read() {
 	defer func() {
 		Manager.Unregister <- c
-		c.Socket.Close()
+		_ = c.Socket.Close()
 	}()
 
 	for {
 		_, message, err := c.Socket.ReadMessage()
 		if err != nil {
-			Manager.Unregister <- c
-			c.Socket.Close()
 			break
 		}
 		jsonMessage, _ := json.Marshal(&Message{Sender: c.ID, Content: string(message)})
@@ -96,16 +92,16 @@ func (c *Client) Read() {
 func (c *Client) Write() {
 	defer func() {
 		Manager.Unregister <- c
-		c.Socket.Close()
+		_ = c.Socket.Close()
 	}()
 	for {
 		select {
 		case message, ok := <-c.Send:
 			if !ok {
-				c.Socket.WriteMessage(websocket.CloseMessage, []byte{})
+				_ = c.Socket.WriteMessage(websocket.CloseMessage, []byte{})
 				return
 			}
-			c.Socket.WriteMessage(websocket.TextMessage, message)
+			_ = c.Socket.WriteMessage(websocket.TextMessage, message)
 		}
 	}
 }
