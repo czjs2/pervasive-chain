@@ -13,6 +13,22 @@ import (
 var client *mongo.Client
 var err error
 var databaseName string
+var debug bool = true
+
+func init() {
+	if debug {
+		// todo just test
+		mongodbUrl := "mongodb://poolwebdev:xjrw2020@139.186.84.15:27987,139.186.84.15:27988,139.186.84.15:27989/pervasivedev"
+		databaseName = getDataBase(mongodbUrl)
+		ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+		client, err = mongo.Connect(ctx, options.Client().ApplyURI(mongodbUrl))
+		err = client.Ping(ctx, readpref.Primary())
+		if err != nil {
+
+		}
+
+	}
+}
 
 func InitMongo(config *config.WebConfig) error {
 	var mongodbUrl string
@@ -42,4 +58,10 @@ func Collection(collName string) *mongo.Collection {
 
 func MongoClient() *mongo.Client {
 	return client
+}
+
+func CloseCursor(cursor *mongo.Cursor) {
+	if cursor != nil {
+		cursor.Close(context.TODO())
+	}
 }

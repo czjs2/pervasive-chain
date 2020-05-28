@@ -22,9 +22,7 @@ func main() {
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
-
 	go ws.Manager.Start()
-
 	err = httpsvr.ListenAndServe(prjConfig)
 	if err != nil {
 		log.Fatalln(err.Error())

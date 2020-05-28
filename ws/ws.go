@@ -72,7 +72,7 @@ func (c *Client) Ping() error {
 	return nil
 }
 
-// 发送直接断掉重连
+// 发送失败直接断掉重连
 func (c *Client) Read() {
 	defer func() {
 		Manager.Unregister <- c
