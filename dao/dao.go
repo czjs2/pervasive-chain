@@ -12,9 +12,8 @@ type Dao struct {
 	tableName string
 }
 
-func (n *Dao) List(query []bson.M) ([]*interface{}, error) {
-	// todo
-	panic(n)
+func NewDao(table string) IDao {
+	return &Dao{tableName: table}
 }
 
 func (n *Dao) Collection() *mongo.Collection {
@@ -36,7 +35,26 @@ func (n *Dao) Update(query bson.M, param bson.M) (interface{}, error) {
 func (n *Dao) UpdateWithOption(query bson.M, param bson.M, option *options.UpdateOptions) (interface{}, error) {
 	return n.Collection().UpdateOne(context.TODO(), query, param, option)
 }
-
-func NewDao(table string) IDao {
-	return &Dao{tableName: table}
+func (n *Dao) List(query []bson.M, obj interface{}) ([]interface{}, int, error) {
+	// todo
+	collection := n.Collection()
+	cursor, err := collection.Aggregate(context.TODO(), query)
+	defer db.CloseCursor(cursor)
+	if err != nil {
+		return nil, 0, err
+	}
+	total, err := db.TotalByAll(collection, query)
+	if err != nil {
+		return nil, 0, err
+	}
+	var res []interface{}
+	for cursor.Next(context.TODO()) {
+		err := cursor.Decode(&obj)
+		if err != nil {
+			return nil, 0, err
+		}
+		res = append(res, obj)
+	}
+	return res, total, nil
 }
+

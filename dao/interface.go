@@ -10,5 +10,5 @@ type IDao interface {
 	Delete(param bson.M) (interface{}, error)
 	Update(query, param bson.M) (interface{}, error)
 	UpdateWithOption(query, param bson.M, update *options.UpdateOptions) (interface{}, error)
-	List(query []bson.M) ([]*interface{}, error)
+	List(query []bson.M,obj interface{}) ([]interface{},int, error)
 }

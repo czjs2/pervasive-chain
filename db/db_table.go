@@ -15,3 +15,5 @@ const HistoryChainInfoTable = "historyChain" //历史链信息
 const NodeBandTable = "nodeBandWidth" // 节点带宽信息
 
 const BandWithTable = "bandWidth" // 整体带宽信息
+
+const FlowTable = "flow" // 流量信息

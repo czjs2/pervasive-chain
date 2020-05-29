@@ -2,10 +2,12 @@ package db
 
 import (
 	"context"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"pervasive-chain/config"
+	"pervasive-chain/model"
 	"strings"
 	"time"
 )
@@ -64,4 +66,25 @@ func CloseCursor(cursor *mongo.Cursor) {
 	if cursor != nil {
 		cursor.Close(context.TODO())
 	}
+}
+
+func TotalByAll(collection *mongo.Collection, query []bson.M) (int, error) {
+	query = append(query, bson.M{"$count": "total"})
+	cursor, err := collection.Aggregate(context.TODO(), query)
+	defer func() {
+		if cursor != nil {
+			cursor.Close(context.TODO())
+		}
+	}()
+	if err != nil {
+		return 0, err
+	}
+	total := model.Total{}
+	for cursor.Next(context.TODO()) {
+		err := cursor.Decode(&total)
+		if err != nil {
+			return 0, err
+		}
+	}
+	return total.Total, nil
 }
