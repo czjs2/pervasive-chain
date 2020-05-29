@@ -9,7 +9,7 @@ import (
 type WebConfig struct {
 	LogPath       string
 	HTTPListen    string
-	Debug         bool // 是否是debug
+	Debug         bool   // 是否是debug
 	MongodbUrl    string
 	DevMongodbUrl string
 	WebRoot       string // 静态资源路径

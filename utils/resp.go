@@ -17,6 +17,6 @@ func SuccessResponse(data interface{}) *model.Response {
 	return &model.Response{
 		Code:    http.StatusOK,
 		Data:    data,
-		Message: "success",
+		Message: "OK",
 	}
 }

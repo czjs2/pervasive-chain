@@ -2,6 +2,7 @@ package ws
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/gorilla/websocket"
 )
 
@@ -10,6 +11,7 @@ type Client struct {
 	Socket   *websocket.Conn
 	Send     chan []byte
 	ClientIp string
+	Dispatch *Dispatch
 }
 
 type ClientManager struct {
@@ -19,7 +21,7 @@ type ClientManager struct {
 	Unregister chan *Client
 }
 
-var Manager = ClientManager{
+var Manager = &ClientManager{
 	Broadcast:  make(chan []byte),
 	Register:   make(chan *Client),
 	Unregister: make(chan *Client),
@@ -39,12 +41,12 @@ func (manager *ClientManager) Start() {
 				delete(manager.Clients, conn)
 			}
 		case message := <-manager.Broadcast:
+
 			for conn := range manager.Clients {
 				select {
 				case conn.Send <- message:
 				default:
-					close(conn.Send)
-					delete(manager.Clients, conn)
+
 				}
 			}
 		}
@@ -78,14 +80,28 @@ func (c *Client) Read() {
 		Manager.Unregister <- c
 		_ = c.Socket.Close()
 	}()
-
 	for {
 		_, message, err := c.Socket.ReadMessage()
 		if err != nil {
-			break
+			return
 		}
-		jsonMessage, _ := json.Marshal(&Message{Sender: c.ID, Content: string(message)})
-		Manager.Broadcast <- jsonMessage
+		cmd := BaseCmd{}
+		err = json.Unmarshal(message, &cmd)
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+		resp, err := c.Dispatch.Execute(cmd)
+		if err != nil {
+			bytes, err := NewRespErr(cmd)
+			if err != nil {
+				fmt.Println(err.Error())
+				return
+			}
+			c.Send <- bytes
+		} else {
+			c.Send <- resp
+		}
 	}
 }
 

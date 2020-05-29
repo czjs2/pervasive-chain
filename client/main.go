@@ -1,19 +1,16 @@
-
-
 package main
 
 import (
-"flag"
-"log"
-"net/url"
-"os"
-"os/signal"
-"time"
-
-"github.com/gorilla/websocket"
+	"flag"
+	"github.com/gorilla/websocket"
+	"log"
+	"net/url"
+	"os"
+	"os/signal"
+	"time"
 )
 
-var addr = flag.String("addr", "localhost:8080", "http service address")
+var addr = flag.String("addr", "127.0.0.1:9999", "http service address")
 
 func main() {
 	flag.Parse()
@@ -47,21 +44,19 @@ func main() {
 
 	ticker := time.NewTicker(time.Second)
 	defer ticker.Stop()
-
 	for {
 		select {
 		case <-done:
 			return
-		case t := <-ticker.C:
-			err := c.WriteMessage(websocket.TextMessage, []byte(t.String()))
+		case <-ticker.C:
+			res := `{"uri":"api/v1","body":{},"msgId":"11111"}`
+			err := c.WriteMessage(websocket.TextMessage, []byte(res))
 			if err != nil {
 				log.Println("write:", err)
 				return
 			}
 		case <-interrupt:
 			log.Println("interrupt")
-			// Cleanly close the connection by sending a close message and then
-			// waiting (with timeout) for the server to close the connection.
 			err := c.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
 			if err != nil {
 				log.Println("write close:", err)

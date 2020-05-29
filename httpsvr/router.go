@@ -7,9 +7,9 @@ import (
 )
 
 func UseApi(engine *gin.Engine) *gin.RouterGroup {
-	group := engine.Group("/v1.0/")
+	group := engine.Group("/api/v1/")
 	// socket 连接
-	group.GET("conn", ws.WsConnHandler)
+	group.GET("conn", ws.WebSocketConnHandler)
 	// 心跳上报
 	group.POST("headbeat", api.ReportHeadBeatHandler)
 	// 区块上报
