@@ -14,6 +14,10 @@ type IDao interface {
 
 	UpdateWithOption(query, param bson.M, update *options.UpdateOptions) (interface{}, error)
 
-	List(query []bson.M,obj interface{}) ([]interface{},int, error)
+	// todo obj 为指针
+	List(query []bson.M, obj interface{}) ([]interface{}, int, error)
+
+	// todo obj 为指针
+	Aggregate(query []bson.M,obj interface{}) (interface{}, error)
 
 }

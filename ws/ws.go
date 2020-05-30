@@ -36,6 +36,7 @@ func (manager *ClientManager) Start() {
 		case conn := <-manager.Register:
 			manager.Clients[conn] = true
 		case conn := <-manager.Unregister:
+			fmt.Println("exit ....",conn)
 			if _, ok := manager.Clients[conn]; ok {
 				close(conn.Send)
 				delete(manager.Clients, conn)
@@ -85,7 +86,7 @@ func (c *Client) Read() {
 		if err != nil {
 			return
 		}
-		cmd := BaseCmd{}
+		cmd := Cmd{}
 		err = json.Unmarshal(message, &cmd)
 		if err != nil {
 			fmt.Println(err.Error())
@@ -93,12 +94,8 @@ func (c *Client) Read() {
 		}
 		resp, err := c.Dispatch.Execute(cmd)
 		if err != nil {
-			bytes, err := NewRespErr(cmd)
-			if err != nil {
-				fmt.Println(err.Error())
-				return
-			}
-			c.Send <- bytes
+			// todo ?
+			c.Send <- resp
 		} else {
 			c.Send <- resp
 		}

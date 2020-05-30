@@ -7,10 +7,17 @@ import (
 	"pervasive-chain/dao"
 	"pervasive-chain/db"
 	"pervasive-chain/form"
+	"pervasive-chain/model"
 )
 
 type NodeService struct {
 	dao dao.IDao
+}
+
+func (n *NodeService) ChainList() (interface{}, int, error) {
+	var query []bson.M
+	node := model.Node{}
+	return n.dao.List(query, &node)
 }
 
 func (n *NodeService) UpdateNodeInfo(nodeForm form.HeartBeatFrom) (interface{}, error) {

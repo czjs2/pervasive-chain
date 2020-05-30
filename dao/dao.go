@@ -12,6 +12,21 @@ type Dao struct {
 	tableName string
 }
 
+func (n *Dao) Aggregate(query []bson.M, obj interface{}) (interface{}, error) {
+	cursor, err := n.Collection().Aggregate(context.TODO(), query)
+	if err != nil {
+		return nil, err
+	}
+	defer db.CloseCursor(cursor)
+	for cursor.Next(context.TODO()) {
+		err := cursor.Decode(obj)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return nil, err
+}
+
 func NewDao(table string) IDao {
 	return &Dao{tableName: table}
 }
@@ -49,7 +64,7 @@ func (n *Dao) List(query []bson.M, obj interface{}) ([]interface{}, int, error) 
 	}
 	var res []interface{}
 	for cursor.Next(context.TODO()) {
-		err := cursor.Decode(&obj)
+		err := cursor.Decode(obj)
 		if err != nil {
 			return nil, 0, err
 		}
@@ -57,4 +72,3 @@ func (n *Dao) List(query []bson.M, obj interface{}) ([]interface{}, int, error) 
 	}
 	return res, total, nil
 }
-

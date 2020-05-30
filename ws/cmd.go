@@ -2,41 +2,49 @@ package ws
 
 import "encoding/json"
 
-type BaseCmd struct {
+type Cmd struct {
 	Uri   string  `json:"uri"`
 	Body  CmdBody `json:"body"`
 	MsgId string  `json:"msgId"`
 }
 
 type CmdBody struct {
-
 }
 
 //
 type Message struct {
-	Uri   string  `json:"uri"`
-	Body  MsgBody `json:"body"`
-	Error Error   `json:"error"`
-	MsgId string  `json:"msgId"`
+	Uri   string      `json:"uri"`
+	Body  interface{} `json:"body"`
+	Error *Error      `json:"error"`
+	MsgId string      `json:"msgId"`
 }
 
 // error
 type Error struct {
-	Code    int    `json:"code"`
-	Message string `json:"message"`
+	Code    interface{} `json:"code"`
+	Message interface{} `json:"message"`
 }
 type MsgBody struct {
 }
 
-func NewRespErr(cmd BaseCmd) ([]byte, error) {
+func NewRespErr(cmd Cmd, errInfo string) ([]byte, error) {
 	msg := Message{
 		Uri:   cmd.Uri,
 		MsgId: cmd.MsgId,
-		Error: Error{
+		Error: &Error{
 			Code:    -1,
-			Message: "",
+			Message: errInfo,
 		},
 	}
 	return json.Marshal(msg)
+}
 
+func NewSuccessResp(cmd Cmd, obj interface{}) ([]byte, error) {
+	msg := Message{
+		Uri:   cmd.Uri,
+		MsgId: cmd.MsgId,
+		Body:  obj,
+		Error: nil,
+	}
+	return json.Marshal(msg)
 }

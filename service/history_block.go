@@ -12,6 +12,10 @@ type HistoryBlockService struct {
 	dao dao.IDao
 }
 
+func (h *HistoryBlockService) LatestBlock() (interface{}, error) {
+	panic("implement me")
+}
+
 func (h *HistoryBlockService) UpdateBlockInfo(blockForm form.ReportBlockForm) (interface{}, error) {
 	param := bson.M{
 		"type":blockForm.Type,
