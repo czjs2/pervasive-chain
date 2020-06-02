@@ -12,16 +12,17 @@ type IDao interface {
 
 	Update(query, param bson.M) (interface{}, error)
 
-	FindOne(query bson.M,obj interface{})(interface{},error)
+	FindOne(query bson.M, obj interface{}) (interface{}, error)
 
-	FindAndUpdate(query bson.M,param bson.M,update *options.FindOneAndUpdateOptions,obj interface{})(interface{},error)
+	FindAndUpdate(query bson.M, param bson.M, update *options.FindOneAndUpdateOptions, obj interface{}) (interface{}, error)
 
 	UpdateWithOption(query, param bson.M, update *options.UpdateOptions) (interface{}, error)
+
+	UpdateMany(query, params bson.M) (interface{}, error)
 
 	// todo obj 为指针
 	List(query []bson.M, obj interface{}) ([]interface{}, int, error)
 
 	// todo obj 为指针
-	Aggregate(query []bson.M,obj interface{}) (interface{}, error)
-
+	Aggregate(query []bson.M, obj interface{}) (interface{}, error)
 }

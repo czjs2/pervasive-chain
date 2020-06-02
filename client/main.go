@@ -27,6 +27,7 @@ func main() {
 	signal.Notify(interrupt, os.Interrupt)
 	signal.Notify(interrupt1, os.Interrupt)
 	go apiClient(interrupt1)
+	time.Sleep(3 * time.Second)
 	go socketClient(interrupt)
 	select {}
 }
@@ -117,14 +118,15 @@ func socketClient(interrupt chan os.Signal) {
 	if err != nil {
 		log.Fatal("dial:", err)
 	}
-	defer c.Close()
-	done := make(chan struct{})
-	go func() {
-		defer close(done)
-		for {
 
+	done := make(chan struct{})
+
+	defer c.Close()
+	go func() {
+		for {
 			select {
 			case <-interrupt:
+				close(done)
 				fmt.Println(" websocket interrupt")
 				err := c.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
 				if err != nil {
@@ -142,16 +144,32 @@ func socketClient(interrupt chan os.Signal) {
 			}
 		}
 	}()
-	ticker := time.NewTicker(2 * time.Second)
 
+	chainInfoCmd := fmt.Sprintf(`{"uri":"chainInfo","body":{},"msgId":"msgId%d"}`, time.Now().Nanosecond())
+	err = c.WriteMessage(websocket.TextMessage, []byte(chainInfoCmd))
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	blockInfoCmd := fmt.Sprintf(`{"uri":"blockInfo","body":{},"msgId":"msgId%d"}`, time.Now().Nanosecond())
+	err = c.WriteMessage(websocket.TextMessage, []byte(blockInfoCmd))
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+
+
+	ticker := time.NewTicker(5 * time.Second)
 	defer ticker.Stop()
 	for {
 		select {
 		case <-done:
 			return
 		case <-ticker.C:
-			res := `{"uri":"chainInfo","body":{},"msgId":"msgid111111111"}`
-			err := c.WriteMessage(websocket.TextMessage, []byte(res))
+			cmdInfo := fmt.Sprintf(`{"uri":"cmd","body":{"key":{"trans":1000}},"msgId":"msgId%d"}`, time.Now().Nanosecond())
+			err := c.WriteMessage(websocket.TextMessage, []byte(cmdInfo))
 			if err != nil {
 				log.Println("write:", err)
 				return

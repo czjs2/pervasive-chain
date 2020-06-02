@@ -8,10 +8,32 @@ import (
 	"pervasive-chain/db"
 	"pervasive-chain/form"
 	"pervasive-chain/model"
+	"pervasive-chain/utils"
+	"time"
 )
 
 type NodeService struct {
 	dao dao.IDao
+}
+
+func (n *NodeService) UpdateOnLineNodeCmd(cmd model.PyCmd) (interface{}, error) {
+	query := bson.M{
+
+	}
+	param := bson.M{
+		"cmd":     utils.MapToStr(cmd.Key),
+		"cmdTime": time.Now(),
+	}
+	return n.dao.UpdateMany(query, param)
+}
+
+func (n *NodeService) OnLineList() (interface{}, int, error) {
+	// todo 在
+	query := []bson.M{
+		bson.M{"$match": bson.M{}},
+	}
+	node := model.Node{}
+	return n.dao.List(query, &node)
 }
 
 func (n *NodeService) ChainList() (interface{}, int, error) {

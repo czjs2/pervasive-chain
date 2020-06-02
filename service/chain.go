@@ -34,7 +34,7 @@ func (s *ChainService) ChainList() (interface{}, int, error) {
 		bson.M{"$limit": config.PageSize},
 	}
 	totalShared := model.TotalChain{}
-	return s.dao.List(qury, totalShared)
+	return s.dao.List(qury, &totalShared)
 }
 
 func (s *ChainService) UpdateSharedInfo(shardForm form.ShardInfoForm) (interface{}, error) {

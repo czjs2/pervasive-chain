@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/websocket"
+	"pervasive-chain/model"
 )
 
 type Client struct {
@@ -86,7 +87,7 @@ func (c *Client) Read() {
 		if err != nil {
 			return
 		}
-		cmd := Cmd{}
+		cmd :=  model.Cmd{}
 		err = json.Unmarshal(message, &cmd)
 		if err != nil {
 			fmt.Println(err.Error())
@@ -99,6 +100,7 @@ func (c *Client) Read() {
 		} else {
 			c.Send <- resp
 		}
+		fmt.Println(string(resp))
 	}
 }
 

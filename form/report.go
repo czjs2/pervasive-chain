@@ -8,6 +8,10 @@ type HeartBeatFrom struct {
 
 }
 
+func (h *HeartBeatFrom) Valid() (bool, error) {
+	panic(h)
+}
+
 type ReportBlockForm struct {
 	Type     string      `form:"type" binding:"required" json:"type"`         //[b|r|s], 链类型
 	Number   string      `form:"number" binding:"required" json:"number"`     // 链编号
@@ -23,6 +27,11 @@ type ReportBlockForm struct {
 	Detail   interface{} `form:"detail" json:"detail"`                        //详情 (需详细定义)
 }
 
+func (h *ReportBlockForm) Valid() (bool, error) {
+	panic(h)
+}
+
+
 type ReportFlowForm struct {
 	Type   string `form:"type" binding:"required" json:"type"`     //[b|r|s], 链类型
 	Number string `form:"number" binding:"required" json:"number"` // 链编号
@@ -32,6 +41,11 @@ type ReportFlowForm struct {
 	Out    int    `form:"out" binding:"required" json:"out"`       //上行带宽
 }
 
+func (h *ReportFlowForm) Valid() (bool, error) {
+	panic(h)
+}
+
+
 //整体分片信息
 type ShardInfoForm struct {
 	RelayNum  int `form:"relayNum" binding:"required"`
@@ -39,10 +53,17 @@ type ShardInfoForm struct {
 	NodeNum   int `form:"nodeNum" binding:"required"`
 	TotalNum  int `form:"totalNum" binding:"required"`
 }
+func (h *ShardInfoForm) Valid() (bool, error) {
+	panic(h)
+}
 
 // 整体流量
 type TotalFlowForm struct {
 	Time string `form:"time" binding:"required"`
 	In   int    `form:"in" binding:"required"`
 	Out  int    `form:"out" binding:"required"`
+}
+
+func (h *TotalFlowForm) Valid() (bool, error) {
+	panic(h)
 }

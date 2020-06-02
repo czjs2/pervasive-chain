@@ -32,7 +32,7 @@ func (s *StatisticService) CountFlow() (interface{}, error) {
 			return nil, err
 		}
 	}
-	_, err = totalFlowCollection.InsertOne(context.TODO(), bson.M{"out": flow.Out, "in": flow.In, "time": time.Now()})
+	_, err = totalFlowCollection.InsertOne(context.TODO(), bson.M{"out": flow.Out, "in": flow.In, "createTime": time.Now()})
 	if err != nil {
 		return nil, err
 	}
@@ -92,8 +92,9 @@ func (s *StatisticService) CountChain() (interface{}, error) {
 	update := options.FindOneAndUpdate()
 	update.SetUpsert(true)
 	result:= totalChainCollection.FindOneAndUpdate(context.TODO(),bson.M{"relayNum":bson.M{"$exists":true}},
-		bson.M{"$set":bson.M{"relayNum": totalChainInfo.RelayNum,
-			"sharedNum": totalChainInfo.SharedNum, "nodeNum": totalChainInfo.NodeNum, "totalNum": totalChainInfo.TotalNum}},update)
+		bson.M{"$set":bson.M{"relayNum": totalChainInfo.RelayNum, "sharedNum": totalChainInfo.SharedNum,
+			"nodeNum": totalChainInfo.NodeNum, "totalNum": totalChainInfo.TotalNum,
+		"createTime":time.Now()}},update)
 	if result.Err() != nil {
 		return nil, err
 	}

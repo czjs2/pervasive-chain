@@ -13,8 +13,12 @@ type Dao struct {
 	tableName string
 }
 
+func (n *Dao) UpdateMany(query, params bson.M) (interface{}, error) {
+	return n.Collection().UpdateMany(context.TODO(), query, bson.M{"$set": params})
+}
+
 func (n *Dao) FindAndUpdate(query, param bson.M, update *options.FindOneAndUpdateOptions, obj interface{}) (interface{}, error) {
-	err := n.Collection().FindOneAndUpdate(context.TODO(), query, bson.M{"$set":param}, update).Decode(obj)
+	err := n.Collection().FindOneAndUpdate(context.TODO(), query, bson.M{"$set": param}, update).Decode(obj)
 	if err != nil {
 		return nil, err
 	}
@@ -64,12 +68,12 @@ func (n *Dao) Delete(param bson.M) (interface{}, error) {
 
 func (n *Dao) Update(query bson.M, param bson.M) (interface{}, error) {
 	param["updateTime"] = time.Now()
-	return n.Collection().UpdateOne(context.TODO(),query, bson.M{"$set":param})
+	return n.Collection().UpdateOne(context.TODO(), query, bson.M{"$set": param})
 }
 
 func (n *Dao) UpdateWithOption(query bson.M, param bson.M, option *options.UpdateOptions) (interface{}, error) {
 	param["updateTime"] = time.Now()
-	return n.Collection().UpdateOne(context.TODO(), query, bson.M{"$set":param}, option)
+	return n.Collection().UpdateOne(context.TODO(), query, bson.M{"$set": param}, option)
 }
 func (n *Dao) List(query []bson.M, obj interface{}) ([]interface{}, int, error) {
 	// todo

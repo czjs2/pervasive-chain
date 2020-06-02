@@ -17,6 +17,10 @@ type INodeService interface {
 	FindAndUpdate(nodeForm form.HeartBeatFrom) (*model.Node, error)
 	// 链列表
 	ChainList() (interface{}, int, error)
+	// 在线节点列表
+	OnLineList() (interface{}, int, error)
+	// 批量更新
+	UpdateOnLineNodeCmd(cmd model.PyCmd)(interface{},error)
 }
 
 //--------------
