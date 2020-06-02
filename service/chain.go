@@ -2,6 +2,7 @@ package service
 
 import (
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"pervasive-chain/config"
 	"pervasive-chain/dao"
 	"pervasive-chain/db"
@@ -61,6 +62,23 @@ func NewChainService() IChainService {
 
 type TotalChainService struct {
 	dao dao.IDao
+}
+
+
+func (t *TotalChainService) UpdateTotalChainInfo(relayNum, sharedNum, nodeNum, tps int) (interface{}, error) {
+	query := bson.M{
+		"tps": bson.M{"$exists": true},
+	}
+	params := bson.M{
+		"relayNum":  relayNum,
+		"sharedNum": sharedNum,
+		"nodeNum":   nodeNum,
+		"tps":       tps,
+	}
+	update := options.Update()
+	update.SetUpsert(true)
+	return t.dao.UpdateWithOption(query,  params, update)
+
 }
 
 func (t *TotalChainService) TotalFlowList() (interface{}, int, error) {

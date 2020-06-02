@@ -13,3 +13,8 @@ type Chain struct {
 	Id     string `json:"id" bson:"id"`         // 节点id
 	Time   string `json:"time" bson:"time"`     // 时间
 }
+
+type ChainType struct {
+	Id string `json:"id" bson:"_id"`
+	Total int `json:"total" bson:"total"`
+}

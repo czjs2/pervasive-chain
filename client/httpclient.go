@@ -28,7 +28,6 @@ func NewRequest(host, data, token string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	fmt.Println(data)
 	request.Header.Add("Content-Type", "application/json")
 	request.Header.Add("Authorization", "Bearer "+token)
 	res, err := NewHttpClient().Do(request)
@@ -45,7 +44,10 @@ func NewRequest(host, data, token string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	fmt.Println(fmt.Sprintf("------------------- %s ---------------------",request.URL))
+	fmt.Println(data)
 	fmt.Println(string(bytes))
+	fmt.Println("----------------------end-----------------------")
 	return string(bytes), nil
 }
 

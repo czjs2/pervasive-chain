@@ -20,16 +20,25 @@ func (n *NodeService) ChainList() (interface{}, int, error) {
 	return n.dao.List(query, &node)
 }
 
-func (n *NodeService) UpdateNodeInfo(nodeForm form.HeartBeatFrom) (interface{}, error) {
+func (n *NodeService) FindAndUpdate(nodeForm form.HeartBeatFrom) (*model.Node, error) {
 	keyId := fmt.Sprintf("%s-%s", nodeForm.Type, nodeForm.Id)
+	query := bson.M{"keyId": keyId}
 	param := bson.M{
+		"type":     nodeForm.Type,
 		"keyId":    keyId,
 		"number":   nodeForm.Number,
 		"lastTime": nodeForm.Time,
+		"cmd":      nil,
+		"cmdTime":  "",
 	}
-	update := options.Update()
+	update := options.FindOneAndUpdate()
 	update.SetUpsert(true)
-	return n.dao.UpdateWithOption(bson.M{"keyId": keyId}, param, update)
+	node := model.Node{}
+	_, err := n.dao.FindAndUpdate(query, param, update, &node)
+	if err != nil {
+		return nil, err
+	}
+	return &node, nil
 }
 
 func NewNodeService() INodeService {

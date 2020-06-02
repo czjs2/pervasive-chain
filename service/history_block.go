@@ -18,18 +18,18 @@ func (h *HistoryBlockService) LatestBlock() (interface{}, error) {
 
 func (h *HistoryBlockService) UpdateBlockInfo(blockForm form.ReportBlockForm) (interface{}, error) {
 	param := bson.M{
-		"type":blockForm.Type,
-		"number":blockForm.Number,
-		"id":blockForm.Id,
-		"height":blockForm.Height,
-		"father":blockForm.Father,
-		"hash":blockForm.Hash,
-		"vrf":blockForm.Vrf,
-		"time":blockForm.Time,
-		"interval":blockForm.Interval,
-		"trans":blockForm.Trans,
-		"size":blockForm.Size,
-		"detail":blockForm.Detail,
+		"type":     blockForm.Type,
+		"number":   blockForm.Number,
+		"id":       blockForm.Id,
+		"height":   blockForm.Height,
+		"father":   blockForm.Father,
+		"hash":     blockForm.Hash,
+		"vrf":      blockForm.Vrf,
+		"time":     blockForm.Time,
+		"interval": blockForm.Interval,
+		"trans":    blockForm.Trans,
+		"size":     blockForm.Size,
+		"detail":   blockForm.Detail,
 	}
 	update := options.Update()
 	update.SetUpsert(true)

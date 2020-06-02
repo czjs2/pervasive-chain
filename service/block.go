@@ -42,7 +42,7 @@ func (b *BlockService) UpdateBlockInfo(blockForm form.ReportBlockForm) (interfac
 	}
 	update := options.Update()
 	update.SetUpsert(true)
-	return b.dao.UpdateWithOption(bson.M{"height": blockForm.Height}, param, update)
+	return b.dao.UpdateWithOption(bson.M{"height": blockForm.Height},param, update)
 }
 
 func NewBlockService() IBlockService {

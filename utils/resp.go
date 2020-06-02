@@ -13,6 +13,14 @@ func FailResponse(msg string) *model.Response {
 	}
 }
 
+func ResponseWithCode(code int, msg string, data interface{}) *model.Response {
+	return &model.Response{
+		Code:    code,
+		Data:    data,
+		Message: msg,
+	}
+}
+
 func SuccessResponse(data interface{}) *model.Response {
 	return &model.Response{
 		Code:    http.StatusOK,

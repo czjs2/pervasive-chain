@@ -14,3 +14,7 @@ type Block struct {
 	Size     int         `form:"size" binding:"required"`     //区块大小
 	Detail   interface{} `form:"detail" binding:"required"`   //详情 (需详细定义)
 }
+
+type ChainTps struct {
+	Tps int `json:"tps" bson:"tps"`
+}

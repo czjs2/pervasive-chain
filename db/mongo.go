@@ -20,7 +20,7 @@ var debug bool = true
 func init() {
 	if debug {
 		// todo just test
-		mongodbUrl := "mongodb://poolwebdev:xjrw2020@139.186.84.15:27987,139.186.84.15:27988,139.186.84.15:27989/pervasivedev"
+		mongodbUrl := "mongodb://pervasivedev:xjrw2020@139.186.84.15:27987,139.186.84.15:27988,139.186.84.15:27989/pervasivedev"
 		databaseName = getDataBase(mongodbUrl)
 		ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 		client, err = mongo.Connect(ctx, options.Client().ApplyURI(mongodbUrl))

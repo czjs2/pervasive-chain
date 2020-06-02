@@ -3,6 +3,7 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"pervasive-chain/code"
 	"pervasive-chain/form"
 	"pervasive-chain/log"
 	"pervasive-chain/service"
@@ -19,13 +20,26 @@ func ReportHeadBeatHandler(c *gin.Context) {
 		return
 	}
 	nodeService := service.NewNodeService()
-	_, err = nodeService.UpdateNodeInfo(heartForm)
+	node, err := nodeService.FindAndUpdate(heartForm)
 	if err != nil {
-		log.Logger.Errorln(c.Request.URL, "heart report insert error", err.Error())
+		if err.Error() != code.NoDocumentError {
+			log.Logger.Errorln(c.Request.URL, "heart report insert error", err.Error())
+			c.JSONP(http.StatusOK, utils.FailResponse(err.Error()))
+			return
+		}
+	}
+	// 每次有心跳上报时更新链信息
+	statisticService := service.NewStatisticService()
+	_, err = statisticService.CountChain()
+	if err != nil {
 		c.JSONP(http.StatusOK, utils.FailResponse(err.Error()))
 		return
 	}
-	c.JSONP(http.StatusOK, utils.SuccessResponse(nil))
+	if node != nil && node.Cmd != nil {
+		c.JSONP(http.StatusOK, utils.SuccessResponse(node.Cmd))
+	} else {
+		c.JSONP(http.StatusOK, utils.ResponseWithCode(code.NoCmd, "没有命令下发", nil))
+	}
 }
 
 // 块信息
@@ -52,6 +66,14 @@ func ReportBlockHandler(c *gin.Context) {
 		c.JSONP(http.StatusOK, utils.FailResponse(err.Error()))
 		return
 	}
+	// 更新tps信息
+	statisticService := service.NewStatisticService()
+	_, err = statisticService.CountChain()
+	if err != nil {
+		c.JSONP(http.StatusOK, utils.FailResponse(err.Error()))
+		return
+	}
+
 	c.JSONP(http.StatusOK, utils.SuccessResponse(nil))
 }
 
@@ -71,5 +93,13 @@ func ReportFlowHandler(c *gin.Context) {
 		c.JSONP(http.StatusOK, utils.FailResponse(err.Error()))
 		return
 	}
+	// 更新整体流量信息
+	statisticService := service.NewStatisticService()
+	_, err = statisticService.CountFlow()
+	if err != nil {
+		c.JSONP(http.StatusOK, utils.FailResponse(err.Error()))
+		return
+	}
+
 	c.JSONP(http.StatusOK, utils.SuccessResponse(nil))
 }

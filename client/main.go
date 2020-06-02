@@ -1,14 +1,19 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"github.com/gorilla/websocket"
+	"go.mongodb.org/mongo-driver/bson"
 	"log"
 	"net/url"
 	"os"
 	"os/signal"
+	"pervasive-chain/config"
+	"pervasive-chain/db"
 	"pervasive-chain/form"
+	"pervasive-chain/utils"
 	"time"
 )
 
@@ -21,74 +26,92 @@ func main() {
 	interrupt1 := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt)
 	signal.Notify(interrupt1, os.Interrupt)
-	//go socketClient(interrupt)
 	go apiClient(interrupt1)
-	msg := make(chan string, 1)
-	<-msg
+	go socketClient(interrupt)
+	select {}
 }
 
 func apiClient(interrupt chan os.Signal) {
 
+	cleanDbData()
 
-
-
-
-	heartForm := form.HeartBeatFrom{
+	bHeartform := form.HeartBeatFrom{
 		Type:   "b",
-		Number: "100",
-		Id:     "101",
-		Time:   "2020-11-11 11:11:11",
+		Number: "10000",
+		Id:     "10000",
+		Time:   utils.GetNowTime(),
+	}
+
+	rHeartform := form.HeartBeatFrom{
+		Type:   "r",
+		Number: "20000",
+		Id:     "20000",
+		Time:   utils.GetNowTime(),
+	}
+
+	sHeartform := form.HeartBeatFrom{
+		Type:   "s",
+		Number: "30000",
+		Id:     "30000",
+		Time:   utils.GetNowTime(),
+	}
+
+	_, err := HeartBeat(host, "/v1.0/headbeat", "", bHeartform)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	_, err = HeartBeat(host, "/v1.0/headbeat", "", rHeartform)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	_, err = HeartBeat(host, "/v1.0/headbeat", "", sHeartform)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
 	}
 
 	reportBlockForm := form.ReportBlockForm{
-		Type:     "b",
-		Number:   "1000",
-		Id:       "1000",
+		Type:     "s",
+		Number:   "30000",
+		Id:       "30000",
 		Height:   100,
-		Father:   "100",
+		Father:   "99",
 		Hash:     "100",
 		Vrf:      "100",
-		Time:     "2020-11-11 11:11:11",
+		Time:     utils.GetNowTime(),
 		Interval: 100,
 		Trans:    100,
 		Size:     100,
 		Detail:   nil,
 	}
 
+	_, err = ReportBlock(host, "/v1.0/block", "", reportBlockForm)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
 	reportFlowForm := form.ReportFlowForm{
-		Type:   "b",
-		Number: "100",
-		Id:     "100",
-		Time:   "100",
+		Type:   "s",
+		Number: "30000",
+		Id:     "30000",
+		Time:   utils.GetNowTime(),
 		In:     100,
 		Out:    100,
 	}
-
-	ticker := time.NewTicker(5* time.Second)
-	defer ticker.Stop()
-	for {
-		select {
-
-		case <-ticker.C:
-
-			resp1, err := HeartBeat(host, "/v1.0/headbeat", "", heartForm)
-			fmt.Println("heartbeat:  response",resp1, err)
-			resp2, err := ReportBlock(host, "/v1.0/block", "", reportBlockForm)
-			fmt.Println("reportBlock:  response",resp2, err)
-			resp3, err := ReportFlow(host, "/v1.0/flow", "", reportFlowForm)
-			fmt.Println("reportFlow:   ",resp3, err)
-
-		case <-interrupt:
-			fmt.Println("httpClient interrupt ")
-			return
-		}
+	_, err = ReportFlow(host, "/v1.0/flow", "", reportFlowForm)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
 	}
 
 }
 
 func socketClient(interrupt chan os.Signal) {
 	log.SetFlags(0)
-	u := url.URL{Scheme: "ws", Host: *addr, Path: "/api/v1/conn"}
+	u := url.URL{Scheme: "ws", Host: *addr, Path: "/v1.0/conn"}
 	log.Printf("connecting to %s", u.String())
 	c, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
 	if err != nil {
@@ -102,7 +125,6 @@ func socketClient(interrupt chan os.Signal) {
 
 			select {
 			case <-interrupt:
-				c.Close()
 				fmt.Println(" websocket interrupt")
 				err := c.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
 				if err != nil {
@@ -136,4 +158,32 @@ func socketClient(interrupt chan os.Signal) {
 			}
 		}
 	}
+}
+
+// just test
+func cleanDbData() {
+
+	prjConfig, err := config.ReadWebCfg("./web-config.json")
+	if err != nil {
+		log.Fatalln(err.Error())
+	}
+	err = db.InitMongo(prjConfig)
+
+	collection := db.Collection(db.Node)
+	collection1 := db.Collection(db.ChainInfoTable)
+	collection2 := db.Collection(db.TotalChainTable)
+	collection3 := db.Collection(db.HistoryChainInfoTable)
+	collection4 := db.Collection(db.NodeBandTable)
+	collection5 := db.Collection(db.TotalBandWithTable)
+	collection6 := db.Collection(db.FlowTable)
+	collection7 := db.Collection(db.TotalFlowTable)
+	_, _ = collection.DeleteMany(context.TODO(), bson.M{})
+	_, _ = collection1.DeleteMany(context.TODO(), bson.M{})
+	_, _ = collection2.DeleteMany(context.TODO(), bson.M{})
+	_, _ = collection3.DeleteMany(context.TODO(), bson.M{})
+	_, _ = collection4.DeleteMany(context.TODO(), bson.M{})
+	_, _ = collection5.DeleteMany(context.TODO(), bson.M{})
+	_, _ = collection6.DeleteMany(context.TODO(), bson.M{})
+	_, _ = collection7.DeleteMany(context.TODO(), bson.M{})
+
 }

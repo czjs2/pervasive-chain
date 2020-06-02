@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"pervasive-chain/config"
@@ -15,16 +16,17 @@ type FlowService struct {
 }
 
 func (f *FlowService) UpdateFlowInfo(flowForm form.ReportFlowForm) (interface{}, error) {
+	nodeId := fmt.Sprintf("%s-%s", flowForm.Type, flowForm.Id)
 	param := bson.M{
-		"type":   flowForm.Time,
-		"number": flowForm.Number,
+		"nodeId": nodeId,
 		"time":   flowForm.Time,
 		"in":     flowForm.In,
 		"out":    flowForm.Out,
 	}
+
 	update := options.Update()
 	update.SetUpsert(true)
-	return f.dao.UpdateWithOption(bson.M{"id": flowForm.Id}, param, update)
+	return f.dao.UpdateWithOption(bson.M{"nodeId": nodeId},  param, update)
 }
 
 func NewFlowService() IFlowService {
