@@ -2,6 +2,7 @@ package ws
 
 import (
 	"fmt"
+	"pervasive-chain/model"
 	"pervasive-chain/service"
 )
 
@@ -25,19 +26,39 @@ func (d *Dispatch) Execute(cmd Cmd) ([]byte, error) {
 
 func (d *Dispatch) doBlockInfo(cmd Cmd) ([]byte, error) {
 	blockService := service.NewBlockService()
-	block, err := blockService.LatestBlock()
+	latestBlock, err := blockService.LatestBlock()
 	if err != nil {
 		return NewRespErr(cmd, err.Error())
 	}
-	return NewSuccessResp(cmd, block)
+	return NewSuccessResp(cmd, latestBlock)
+
 }
 
 func (d *Dispatch) doChainInfo(cmd Cmd) ([]byte, error) {
-	nodeService := service.NewNodeService()
-	list, _, err := nodeService.ChainList()
-	fmt.Println(list)
+	// 总带宽
+	totalFlowService := service.NewTotalFlowService()
+	totalFlowList, _, err := totalFlowService.FlowList()
 	if err != nil {
 		return NewRespErr(cmd, err.Error())
 	}
-	return NewSuccessResp(cmd, list)
+	// 各种链的信息
+	chainService := service.NewChainService()
+	chainList, _, err := chainService.ChainList()
+	if err != nil {
+		return NewRespErr(cmd, err.Error())
+	}
+	// 链的详细信息
+	chain, err := chainService.Chain("")
+	if err!=nil{
+		return NewRespErr(cmd,err.Error())
+	}
+	// 链总体信息
+	totalChainService := service.NewTotalChainService()
+	totalChainList, _, err := totalChainService.TotalFlowList()
+	return NewSuccessResp(cmd, model.P{
+		"totalFlowList":  totalFlowList,
+		"chainList":      chainList,
+		"totalChainList": totalChainList,
+		"chain":chain,
+	})
 }

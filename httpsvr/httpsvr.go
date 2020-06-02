@@ -31,7 +31,7 @@ func ListenAndServe(cfg *config.WebConfig) error {
 	gin.SetMode(gin.ReleaseMode)
 	httpRouter := gin.New()
 	httpRouter.Use(cors())
-	httpRouter.Use(log.MyGinLogger(cfg.LogPath))
+	httpRouter.Use(log.MyGinLogger(cfg))
 	httpRouter.Use(gin.Recovery())
 	UseApi(httpRouter)
 	exists, err := utils.FileExists(cfg.WebRoot)

@@ -1,14 +1,12 @@
 package api
 
 import (
-	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"pervasive-chain/form"
 	"pervasive-chain/log"
 	"pervasive-chain/service"
 	"pervasive-chain/utils"
-	"pervasive-chain/ws"
 )
 
 // 心跳
@@ -20,10 +18,6 @@ func ReportHeadBeatHandler(c *gin.Context) {
 		c.JSONP(http.StatusOK, utils.FailResponse(err.Error()))
 		return
 	}
-	// todo
-	bytes, _ := json.Marshal(heartForm)
-
-	ws.BroadCast(bytes);
 	nodeService := service.NewNodeService()
 	_, err = nodeService.UpdateNodeInfo(heartForm)
 	if err != nil {
@@ -37,15 +31,12 @@ func ReportHeadBeatHandler(c *gin.Context) {
 // 块信息
 func ReportBlockHandler(c *gin.Context) {
 	var blockForm form.ReportBlockForm
-	err := c.ShouldBind(blockForm)
+	err := c.ShouldBind(&blockForm)
 	if err != nil {
 		log.Logger.Errorln("block report parameter is error", err.Error())
 		c.JSONP(http.StatusOK, utils.FailResponse(err.Error()))
 		return
 	}
-	bytes, _ := json.Marshal(blockForm)
-
-	ws.BroadCast(bytes);
 	blockService := service.NewBlockService()
 	_, err = blockService.UpdateBlockInfo(blockForm)
 	if err != nil {
@@ -73,9 +64,6 @@ func ReportFlowHandler(c *gin.Context) {
 		c.JSONP(http.StatusOK, utils.FailResponse(err.Error()))
 		return
 	}
-	bytes, _ := json.Marshal(flowForm)
-
-	ws.BroadCast(bytes);
 	flowService := service.NewFlowService()
 	_, err = flowService.UpdateFlowInfo(flowForm)
 	if err != nil {

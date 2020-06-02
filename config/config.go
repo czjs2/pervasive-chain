@@ -33,7 +33,7 @@ func ReadWebCfg(path string) (*WebConfig, error) {
 		return nil, err
 	}
 	fmt.Println(string(d))
-	err = json.Unmarshal(d, &PrjConfig)
+	err = json.Unmarshal(d, PrjConfig)
 	if err != nil {
 		return PrjConfig, err
 	}

@@ -12,6 +12,8 @@ type IDao interface {
 
 	Update(query, param bson.M) (interface{}, error)
 
+	FindOne(query bson.M,obj interface{})(interface{},error)
+
 	UpdateWithOption(query, param bson.M, update *options.UpdateOptions) (interface{}, error)
 
 	// todo obj 为指针

@@ -33,7 +33,7 @@ func (h *HistoryBlockService) UpdateBlockInfo(blockForm form.ReportBlockForm) (i
 	}
 	update := options.Update()
 	update.SetUpsert(true)
-	return h.dao.UpdateWithOption(bson.M{"height": blockForm.Height}, bson.M{"$set": param}, update)
+	return h.dao.UpdateWithOption(bson.M{"height": blockForm.Height}, param, update)
 }
 
 func NewHistoryBlockService() IBlockService {

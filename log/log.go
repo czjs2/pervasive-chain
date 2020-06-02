@@ -2,8 +2,10 @@ package log
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"path"
+	"pervasive-chain/config"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -13,16 +15,21 @@ import (
 )
 
 //MyGinLogger gin自定义logrus日志
-func MyGinLogger(logPath string) gin.HandlerFunc {
-	logFilePath := logPath
+func MyGinLogger(config *config.WebConfig) gin.HandlerFunc {
+	logFilePath := config.LogPath
 	logFileName := "web.log"
 	fileName := path.Join(logFilePath, logFileName)
+	var writers []io.Writer
+
 	src, err := os.OpenFile(os.DevNull, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
 	if err != nil {
 		fmt.Println("err", err)
 	}
+	writers = append(writers, src)
+
+	fileAndStdoutWriter := io.MultiWriter(writers...)
 	logger := logrus.New()
-	logger.Out = src
+	logger.Out = fileAndStdoutWriter
 	logger.SetLevel(logrus.DebugLevel)
 	// 设置 rotatelogs
 	logWriter, err := rotatelogs.New(
@@ -31,6 +38,9 @@ func MyGinLogger(logPath string) gin.HandlerFunc {
 		rotatelogs.WithMaxAge(7*24*time.Hour),
 		rotatelogs.WithRotationTime(24*time.Hour),
 	)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 	writeMap := lfshook.WriterMap{
 		logrus.InfoLevel:  logWriter,
 		logrus.FatalLevel: logWriter,
@@ -62,19 +72,25 @@ func MyGinLogger(logPath string) gin.HandlerFunc {
 	}
 }
 
-
 var Logger *logrus.Logger
 
-func MyLogicLogger(logPath string) (*logrus.Logger, error) {
-	logFilePath := logPath
+func MyLogicLogger(config *config.WebConfig) (*logrus.Logger, error) {
+	logFilePath := config.LogPath
 	logFileName := "logic.log"
 	fileName := path.Join(logFilePath, logFileName)
-	src, err := os.OpenFile(os.DevNull, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
-	if err != nil {
-		return nil, err
+	var writers []io.Writer
+	if config.Debug {
+		writers = append(writers, os.Stdout)
+	} else {
+		src, err := os.OpenFile(os.DevNull, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
+		if err != nil {
+			return nil, err
+		}
+		writers = append(writers, src)
 	}
+	fileAndStdoutWriter := io.MultiWriter(writers...)
 	logger := logrus.New()
-	logger.Out = src
+	logger.Out = fileAndStdoutWriter
 	logger.SetLevel(logrus.DebugLevel)
 	logWriter, err := rotatelogs.New(
 		fileName+".%Y%m%d.log",
@@ -82,6 +98,9 @@ func MyLogicLogger(logPath string) (*logrus.Logger, error) {
 		rotatelogs.WithMaxAge(7*24*time.Hour),
 		rotatelogs.WithRotationTime(24*time.Hour),
 	)
+	if err != nil {
+		return nil, err
+	}
 	writeMap := lfshook.WriterMap{
 		logrus.InfoLevel:  logWriter,
 		logrus.FatalLevel: logWriter,
@@ -97,4 +116,3 @@ func MyLogicLogger(logPath string) (*logrus.Logger, error) {
 	Logger = logger
 	return logger, nil
 }
-

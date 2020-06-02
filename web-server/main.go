@@ -14,7 +14,7 @@ func main() {
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
-	_, err = lg.MyLogicLogger(prjConfig.LogPath)
+	_, err = lg.MyLogicLogger(prjConfig)
 	if err != nil {
 		log.Fatalln(err.Error())
 	}

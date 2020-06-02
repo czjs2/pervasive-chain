@@ -1,10 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"pervasive-chain/form"
 	"strings"
 )
 
@@ -26,6 +28,7 @@ func NewRequest(host, data, token string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	fmt.Println(data)
 	request.Header.Add("Content-Type", "application/json")
 	request.Header.Add("Authorization", "Bearer "+token)
 	res, err := NewHttpClient().Do(request)
@@ -42,6 +45,7 @@ func NewRequest(host, data, token string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	fmt.Println(string(bytes))
 	return string(bytes), nil
 }
 
@@ -49,14 +53,21 @@ func NewRequest(host, data, token string) (string, error) {
 HeartBeat
 */
 
-func HeartBeat(host, path, token, data string) (string, error) {
-	return NewRequest(fmt.Sprintf("%s/%s",host,path), data, token)
+func HeartBeat(host, path, token string, heartForm form.HeartBeatFrom) (string, error) {
+	bytes, _ := json.Marshal(heartForm)
+	return NewRequest(fmt.Sprintf("%s%s", host, path), string(bytes), token)
 }
 
 /**
 ReportBlock
 */
 
-func ReportBlock(host, path, token, data string) (string, error) {
-	return NewRequest(fmt.Sprintf("%s/%s",host,path), data, token)
+func ReportBlock(host, path, token string, blockForm form.ReportBlockForm) (string, error) {
+	bytes, _ := json.Marshal(blockForm)
+	return NewRequest(fmt.Sprintf("%s%s", host, path), string(bytes), token)
+}
+
+func ReportFlow(host, path, token string, flowForm form.ReportFlowForm) (string, error) {
+	bytes, _ := json.Marshal(flowForm)
+	return NewRequest(fmt.Sprintf("%s%s", host, path), string(bytes), token)
 }

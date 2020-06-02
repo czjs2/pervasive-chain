@@ -6,10 +6,19 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"pervasive-chain/db"
+	"time"
 )
 
 type Dao struct {
 	tableName string
+}
+
+func (n *Dao) FindOne(query bson.M, obj interface{}) (interface{}, error) {
+	err := n.Collection().FindOne(context.TODO(), query).Decode(obj)
+	if err != nil {
+		return nil, err
+	}
+	return obj, err
 }
 
 func (n *Dao) Aggregate(query []bson.M, obj interface{}) (interface{}, error) {
@@ -24,7 +33,7 @@ func (n *Dao) Aggregate(query []bson.M, obj interface{}) (interface{}, error) {
 			return nil, err
 		}
 	}
-	return nil, err
+	return obj, err
 }
 
 func NewDao(table string) IDao {
@@ -36,6 +45,8 @@ func (n *Dao) Collection() *mongo.Collection {
 }
 
 func (n *Dao) Add(param bson.M) (interface{}, error) {
+	param["createTime"] = time.Now()
+	param["updateTime"] = time.Now()
 	return n.Collection().InsertOne(context.TODO(), param)
 }
 
@@ -44,11 +55,13 @@ func (n *Dao) Delete(param bson.M) (interface{}, error) {
 }
 
 func (n *Dao) Update(query bson.M, param bson.M) (interface{}, error) {
+	param["updateTime"] = time.Now()
 	return n.Collection().UpdateOne(context.TODO(), query, param)
 }
 
 func (n *Dao) UpdateWithOption(query bson.M, param bson.M, option *options.UpdateOptions) (interface{}, error) {
-	return n.Collection().UpdateOne(context.TODO(), query, param, option)
+	param["updateTime"] = time.Now()
+	return n.Collection().UpdateOne(context.TODO(), query, bson.M{"$set":param}, option)
 }
 func (n *Dao) List(query []bson.M, obj interface{}) ([]interface{}, int, error) {
 	// todo

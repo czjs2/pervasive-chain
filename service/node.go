@@ -29,7 +29,7 @@ func (n *NodeService) UpdateNodeInfo(nodeForm form.HeartBeatFrom) (interface{}, 
 	}
 	update := options.Update()
 	update.SetUpsert(true)
-	return n.dao.UpdateWithOption(bson.M{"keyId": keyId}, bson.M{"$set": param}, update)
+	return n.dao.UpdateWithOption(bson.M{"keyId": keyId}, param, update)
 }
 
 func NewNodeService() INodeService {
