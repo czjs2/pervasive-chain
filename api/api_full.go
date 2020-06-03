@@ -8,6 +8,7 @@ import (
 	"pervasive-chain/log"
 	"pervasive-chain/service"
 	"pervasive-chain/utils"
+	"pervasive-chain/ws"
 )
 
 // 心跳
@@ -35,7 +36,7 @@ func ReportHeadBeatHandler(c *gin.Context) {
 		c.JSONP(http.StatusOK, utils.FailResponse(err.Error()))
 		return
 	}
-	if node != nil  {
+	if node != nil {
 		c.JSONP(http.StatusOK, utils.SuccessResponse(node.Cmd))
 	} else {
 		c.JSONP(http.StatusOK, utils.ResponseWithCode(code.NoCmd, "没有命令下发", nil))
@@ -59,6 +60,7 @@ func ReportBlockHandler(c *gin.Context) {
 		return
 	}
 	// todo 需要事务处理两张表 ?
+	ws.BroadCast(nil);
 	historyBlockService := service.NewHistoryBlockService()
 	_, err = historyBlockService.UpdateBlockInfo(blockForm)
 	if err != nil {

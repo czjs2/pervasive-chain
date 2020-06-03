@@ -23,9 +23,9 @@ type ClientManager struct {
 }
 
 var Manager = &ClientManager{
-	Broadcast:  make(chan []byte),
-	Register:   make(chan *Client),
-	Unregister: make(chan *Client),
+	Broadcast:  make(chan []byte,100), // todo 足够大？
+	Register:   make(chan *Client,100),
+	Unregister: make(chan *Client,100),
 	Clients:    make(map[*Client]bool),
 }
 
