@@ -3,6 +3,8 @@ package utils
 import (
 	"bytes"
 	"fmt"
+	"math/rand"
+	"time"
 )
 
 func MapToStr(m map[string]interface{}) string {
@@ -15,4 +17,9 @@ func MapToStr(m map[string]interface{}) string {
 		buf.WriteString("]")
 	}
 	return buf.String()
+}
+
+func Rand(src int64) int64 {
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	return r.Int63n(src)
 }

@@ -42,5 +42,5 @@ func GetCurrentDay() string {
 	if len(day) == 1 {
 		day = "0" + day
 	}
-	return fmt.Sprintf("%d-%d-%d 00:00:00", now.Year(), month, day)
+	return fmt.Sprintf("%d-%s-%s 00:00:00", now.Year(), month, day)
 }

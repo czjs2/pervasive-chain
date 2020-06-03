@@ -18,3 +18,4 @@ type ChainType struct {
 	Id string `json:"id" bson:"_id"`
 	Total int `json:"total" bson:"total"`
 }
+

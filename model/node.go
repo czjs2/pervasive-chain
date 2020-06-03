@@ -6,7 +6,7 @@ type Node struct {
 	KeyId    string `json:"keyId" bson:"keyId"`       // 链编号
 	LastTime string `json:"lastTime" bson:"lastTime"` //最新的更新时间
 	Id       string `json:"id" bson:"id"`             // 节点id
-	Cmd      *Cmd   `json:"cmd" bson:"cmd"`
+	Cmd      string   `json:"cmd" bson:"cmd"`
 	CmdTime  string `json:"cmdTime" bson:"cmdTime"`
 }
 

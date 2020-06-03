@@ -35,7 +35,7 @@ func ReportHeadBeatHandler(c *gin.Context) {
 		c.JSONP(http.StatusOK, utils.FailResponse(err.Error()))
 		return
 	}
-	if node != nil && node.Cmd != nil {
+	if node != nil  {
 		c.JSONP(http.StatusOK, utils.SuccessResponse(node.Cmd))
 	} else {
 		c.JSONP(http.StatusOK, utils.ResponseWithCode(code.NoCmd, "没有命令下发", nil))

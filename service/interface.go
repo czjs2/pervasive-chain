@@ -20,7 +20,7 @@ type INodeService interface {
 	// 在线节点列表
 	OnLineList() (interface{}, int, error)
 	// 批量更新
-	UpdateOnLineNodeCmd(cmd model.PyCmd)(interface{},error)
+	UpdateOnLineNodeCmd(cmd model.PyCmd) (interface{}, error)
 }
 
 //--------------
@@ -28,6 +28,8 @@ type IBlockService interface {
 	UpdateBlockInfo(blockForm form.ReportBlockForm) (interface{}, error)
 	// 最新的块信息
 	LatestBlock() (interface{}, error)
+	// 获取系统链的信息
+	ChainList() (interface{},int, error)
 }
 
 //------------

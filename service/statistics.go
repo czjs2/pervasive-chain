@@ -8,7 +8,7 @@ import (
 	"pervasive-chain/db"
 	_ "pervasive-chain/db"
 	"pervasive-chain/model"
-	"time"
+	"pervasive-chain/utils"
 )
 
 type StatisticService struct {
@@ -32,7 +32,7 @@ func (s *StatisticService) CountFlow() (interface{}, error) {
 			return nil, err
 		}
 	}
-	_, err = totalFlowCollection.InsertOne(context.TODO(), bson.M{"out": flow.Out, "in": flow.In, "createTime": time.Now()})
+	_, err = totalFlowCollection.InsertOne(context.TODO(), bson.M{"out": flow.Out, "in": flow.In, "createTime": utils.GetNowTime()})
 	if err != nil {
 		return nil, err
 	}
@@ -91,11 +91,10 @@ func (s *StatisticService) CountChain() (interface{}, error) {
 	totalChainCollection := db.Collection(db.TotalChainTable)
 	update := options.FindOneAndUpdate()
 	update.SetUpsert(true)
-	result:= totalChainCollection.FindOneAndUpdate(context.TODO(),bson.M{"relayNum":bson.M{"$exists":true}},
-		bson.M{"$set":bson.M{"relayNum": totalChainInfo.RelayNum, "sharedNum": totalChainInfo.SharedNum,
-			"nodeNum": totalChainInfo.NodeNum, "totalNum": totalChainInfo.TotalNum,
-		"createTime":time.Now()}},update)
-	if result.Err() != nil {
+	_, err = totalChainCollection.InsertOne(context.TODO(), bson.M{"relayNum": totalChainInfo.RelayNum, "sharedNum": totalChainInfo.SharedNum,
+		"nodeNum": totalChainInfo.NodeNum, "totalNum": totalChainInfo.TotalNum,
+		"createTime": utils.GetNowTime()})
+	if err != nil {
 		return nil, err
 	}
 	return nil, nil

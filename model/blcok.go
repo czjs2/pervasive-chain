@@ -18,3 +18,8 @@ type Block struct {
 type ChainTps struct {
 	Tps int `json:"tps" bson:"tps"`
 }
+
+type NodeBlock struct {
+	Block *Block       `json:"block"`
+	Child []*NodeBlock `json:"child"` // 该链的子链
+}

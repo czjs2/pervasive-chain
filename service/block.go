@@ -3,6 +3,7 @@ package service
 import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"pervasive-chain/config"
 	"pervasive-chain/dao"
 	"pervasive-chain/db"
 	"pervasive-chain/form"
@@ -11,6 +12,22 @@ import (
 
 type BlockService struct {
 	dao dao.IDao
+}
+
+func (b *BlockService) ChainList() (interface{}, int, error) {
+	query := []bson.M{
+		bson.M{"$match": bson.M{}},
+	}
+	obj := model.Block{}
+	return b.dao.List(query, &obj)
+}
+
+func (b *BlockService) ChainNodes(res []*model.Block, node *model.NodeBlock) {
+	for i := 0; i < len(res); i++ {
+		if res[i].Type == config.BChain {
+			node.Block = res[i]
+		}
+	}
 }
 
 func (b *BlockService) LatestBlock() (interface{}, error) {
@@ -42,7 +59,7 @@ func (b *BlockService) UpdateBlockInfo(blockForm form.ReportBlockForm) (interfac
 	}
 	update := options.Update()
 	update.SetUpsert(true)
-	return b.dao.UpdateWithOption(bson.M{"height": blockForm.Height},param, update)
+	return b.dao.UpdateWithOption(bson.M{"height": blockForm.Height}, param, update)
 }
 
 func NewBlockService() IBlockService {

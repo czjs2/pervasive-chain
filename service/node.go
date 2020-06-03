@@ -9,7 +9,6 @@ import (
 	"pervasive-chain/form"
 	"pervasive-chain/model"
 	"pervasive-chain/utils"
-	"time"
 )
 
 type NodeService struct {
@@ -22,7 +21,7 @@ func (n *NodeService) UpdateOnLineNodeCmd(cmd model.PyCmd) (interface{}, error) 
 	}
 	param := bson.M{
 		"cmd":     utils.MapToStr(cmd.Key),
-		"cmdTime": time.Now(),
+		"cmdTime": utils.GetNowTime(),
 	}
 	return n.dao.UpdateMany(query, param)
 }
