@@ -17,8 +17,8 @@ import (
 	"time"
 )
 
-var addr = flag.String("addr", "127.0.0.1:9999", "http service address")
-var host = "http://127.0.0.1:9999"
+var addr = flag.String("addr", "192.168.0.164:9999", "http service address")
+var host = "http://192.168.0.164:9999"
 
 func main() {
 	flag.Parse()

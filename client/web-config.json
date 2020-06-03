@@ -1,0 +1,9 @@
+{
+  "MongodbUrl": "mongodb://pervasive:xjrw2020@139.186.84.15:27987,139.186.84.15:27988,139.186.84.15:27989/pervasive",
+  "Debug": true,
+  "HTTPListen": "0.0.0.0:9999",
+  "WebRoot": "./webroot",
+  "HtmlTemplate": "./webroot/template",
+  "DevMongodbUrl": "mongodb://pervasivedev:xjrw2020@139.186.84.15:27987,139.186.84.15:27988,139.186.84.15:27989/pervasivedev",
+  "LogPath": "./log"
+}

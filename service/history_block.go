@@ -12,6 +12,10 @@ type HistoryBlockService struct {
 	dao dao.IDao
 }
 
+func (h *HistoryBlockService) ChainList() (interface{}, int, error) {
+	panic("implement me")
+}
+
 func (h *HistoryBlockService) LatestBlock() (interface{}, error) {
 	panic("implement me")
 }
