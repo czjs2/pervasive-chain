@@ -6,7 +6,6 @@ import (
 )
 
 
-
 func NewRespErr(cmd model.Cmd, errInfo string) ([]byte, error) {
 	msg := model.Message{
 		Uri:   cmd.Uri,

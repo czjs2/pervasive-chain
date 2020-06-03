@@ -41,5 +41,5 @@ func (h *HistoryBlockService) UpdateBlockInfo(blockForm form.ReportBlockForm) (i
 }
 
 func NewHistoryBlockService() IBlockService {
-	return &HistoryBlockService{dao.NewDao(db.HistoryChainInfoTable)}
+	return &HistoryBlockService{dao.NewDao(db.HistoryBlockInfoTable)}
 }

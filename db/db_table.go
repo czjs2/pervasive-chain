@@ -8,11 +8,12 @@ package db
 const Node = "node" // 节点信息
 
 //  链信息
-const ChainInfoTable = "chain" //链信息
-
 const TotalChainTable = "totalChain" //  总体链信息
 
-const HistoryChainInfoTable = "historyChain" //历史链信息
+
+const BlockInfoTable = "block" //链信息
+
+const HistoryBlockInfoTable = "historyBlock" //历史链信息
 
 // 带宽
 const NodeBandTable = "nodeBandWidth" // 节点带宽信息

@@ -63,5 +63,5 @@ func (b *BlockService) UpdateBlockInfo(blockForm form.ReportBlockForm) (interfac
 }
 
 func NewBlockService() IBlockService {
-	return &BlockService{dao: dao.NewDao(db.ChainInfoTable)}
+	return &BlockService{dao: dao.NewDao(db.BlockInfoTable)}
 }

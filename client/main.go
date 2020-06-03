@@ -197,9 +197,9 @@ func cleanDbData() {
 	err = db.InitMongo(prjConfig)
 
 	collection := db.Collection(db.Node)
-	collection1 := db.Collection(db.ChainInfoTable)
+	collection1 := db.Collection(db.BlockInfoTable)
 	collection2 := db.Collection(db.TotalChainTable)
-	collection3 := db.Collection(db.HistoryChainInfoTable)
+	collection3 := db.Collection(db.HistoryBlockInfoTable)
 	collection4 := db.Collection(db.NodeBandTable)
 	collection5 := db.Collection(db.TotalBandWithTable)
 	collection6 := db.Collection(db.FlowTable)

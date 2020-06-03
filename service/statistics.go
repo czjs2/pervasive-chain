@@ -70,7 +70,7 @@ func (s *StatisticService) CountChain() (interface{}, error) {
 	}
 	totalChainInfo.NodeNum = sum
 	// 总能力
-	blockCollection := db.Collection(db.ChainInfoTable)
+	blockCollection := db.Collection(db.BlockInfoTable)
 	cursor1, err := blockCollection.Aggregate(context.TODO(), []bson.M{
 		// todo 统计时间维度
 		bson.M{"$match": bson.M{"time": bson.M{"$gte": "", "$lte": ""}}},
