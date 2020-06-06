@@ -14,9 +14,11 @@ type BlockService struct {
 	dao dao.IDao
 }
 
-func (b *BlockService) ChainList() (interface{}, int, error) {
+func (b *BlockService) BlockList(chainType, chainId string) (interface{}, int, error) {
 	query := []bson.M{
-		bson.M{"$match": bson.M{}},
+		bson.M{"$match": bson.M{"$and": []bson.M{bson.M{"type": chainType}, bson.M{"number": chainId}}}},
+		bson.M{"$sort": bson.M{"height": -1}},
+		bson.M{"$limit": 100},
 	}
 	obj := model.Block{}
 	return b.dao.List(query, &obj)
@@ -59,7 +61,7 @@ func (b *BlockService) UpdateBlockInfo(blockForm form.ReportBlockForm) (interfac
 	}
 	update := options.Update()
 	update.SetUpsert(true)
-	return b.dao.UpdateWithOption(bson.M{"height": blockForm.Height}, param, update)
+	return b.dao.UpdateWithOption(bson.M{"height": blockForm.Height, "type": blockForm.Type, "id": blockForm.Id}, param, update)
 }
 
 func NewBlockService() IBlockService {

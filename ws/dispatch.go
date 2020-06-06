@@ -2,6 +2,7 @@ package ws
 
 import (
 	"fmt"
+	"pervasive-chain/config"
 	"pervasive-chain/model"
 	"pervasive-chain/service"
 )
@@ -16,9 +17,9 @@ func NewDisPatch() *Dispatch {
 func (d *Dispatch) Execute(cmd model.Cmd) ([]byte, error) {
 	switch cmd.Uri {
 	case BlockInfoCmd:
-		return d.doBlockInfo(cmd)
+		return d.DoBlockInfo(cmd)
 	case ChainInfoCmd:
-		return d.doChainInfo(cmd)
+		return d.DoChainInfo(cmd)
 	case ExecuteCmd:
 		return d.GenCmd(cmd)
 	default:
@@ -26,7 +27,7 @@ func (d *Dispatch) Execute(cmd model.Cmd) ([]byte, error) {
 	}
 }
 
-func (d *Dispatch) doBlockInfo(cmd model.Cmd) ([]byte, error) {
+func (d *Dispatch) DoBlockInfo(cmd model.Cmd) ([]byte, error) {
 	blockService := service.NewBlockService()
 	latestBlock, err := blockService.LatestBlock()
 	if err != nil {
@@ -47,32 +48,36 @@ func (d *Dispatch) GenCmd(cmd model.Cmd) ([]byte, error) {
 
 }
 
-func (d *Dispatch) doChainInfo(cmd model.Cmd) ([]byte, error) {
-	// 总带宽
+func (d *Dispatch) DoChainInfo(cmd model.Cmd) ([]byte, error) {
+
+	blockService := service.NewBlockService()
+	// 信标链 最新区块列表
+	blockList, _, err := blockService.BlockList(config.BChain, "")
+	if err != nil {
+		return NewRespErr(cmd, err.Error())
+	}
 	totalFlowService := service.NewTotalFlowService()
+	// 总带宽
 	totalFlowList, _, err := totalFlowService.FlowList()
 	if err != nil {
 		return NewRespErr(cmd, err.Error())
 	}
-	// 各种链的信息
-	chainService := service.NewChainService()
-	chainList, _, err := chainService.ChainList()
+	statisticService := service.NewStatisticService()
+	// 节点总数
+	countNode, err := statisticService.CountNode()
 	if err != nil {
 		return NewRespErr(cmd, err.Error())
 	}
-	// 链的详细信息
-	chain, err := chainService.Chain("")
+	// 各种链信息
+	allChain, err := statisticService.AllChain()
 	if err != nil {
 		return NewRespErr(cmd, err.Error())
 	}
-	// 链总体信息
-	totalChainService := service.NewTotalChainService()
-	totalChainList, _, err := totalChainService.TotalFlowList()
 	p := model.P{
-		"totalFlowList":  totalFlowList,
-		"chainList":      chainList,
-		"totalChainList": totalChainList,
-		"chain":          chain,
+		"beaconBlockList": blockList,
+		"totalFlow":       totalFlowList,
+		"countNode":       countNode,
+		"chainList":       allChain,
 	}
 	return NewSuccessResp(cmd, p)
 }

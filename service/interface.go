@@ -6,10 +6,16 @@ import (
 )
 
 type IStatisticsService interface {
-	// 统计流量
-	CountFlow() (interface{}, error)
-	// 统计交易数为tps
-	CountChain() (interface{}, error)
+	// 统计整个流量
+	CountFlow(flowForm form.ReportFlowForm) (interface{}, error)
+	// 统计某个交易的数为tps
+	CountChain(chainId, chainType string) (interface{}, error)
+	// 统计节点总数
+	CountNode() (interface{}, error)
+	// 系统整个tps
+	CountTps() (interface{}, error)
+	// 所有链关系
+	AllChain() (interface{}, error)
 }
 
 //------------
@@ -29,7 +35,7 @@ type IBlockService interface {
 	// 最新的块信息
 	LatestBlock() (interface{}, error)
 	// 获取系统链的信息
-	ChainList() (interface{},int, error)
+	BlockList(chainType, chainId string) (interface{}, int, error)
 }
 
 //------------

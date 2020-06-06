@@ -8,7 +8,6 @@ import (
 	"pervasive-chain/log"
 	"pervasive-chain/service"
 	"pervasive-chain/utils"
-	"pervasive-chain/ws"
 )
 
 // 心跳
@@ -28,13 +27,6 @@ func ReportHeadBeatHandler(c *gin.Context) {
 			c.JSONP(http.StatusOK, utils.FailResponse(err.Error()))
 			return
 		}
-	}
-	// 每次有心跳上报时更新链信息
-	statisticService := service.NewStatisticService()
-	_, err = statisticService.CountChain()
-	if err != nil {
-		c.JSONP(http.StatusOK, utils.FailResponse(err.Error()))
-		return
 	}
 	if node != nil {
 		c.JSONP(http.StatusOK, utils.SuccessResponse(node.Cmd))
@@ -59,8 +51,6 @@ func ReportBlockHandler(c *gin.Context) {
 		c.JSONP(http.StatusOK, utils.FailResponse(err.Error()))
 		return
 	}
-	// todo 需要事务处理两张表 ?
-	ws.BroadCast(nil);
 	historyBlockService := service.NewHistoryBlockService()
 	_, err = historyBlockService.UpdateBlockInfo(blockForm)
 	if err != nil {
@@ -68,14 +58,6 @@ func ReportBlockHandler(c *gin.Context) {
 		c.JSONP(http.StatusOK, utils.FailResponse(err.Error()))
 		return
 	}
-	// 更新tps信息
-	statisticService := service.NewStatisticService()
-	_, err = statisticService.CountChain()
-	if err != nil {
-		c.JSONP(http.StatusOK, utils.FailResponse(err.Error()))
-		return
-	}
-
 	c.JSONP(http.StatusOK, utils.SuccessResponse(nil))
 }
 
@@ -97,10 +79,13 @@ func ReportFlowHandler(c *gin.Context) {
 	}
 	// 更新整体流量信息
 	statisticService := service.NewStatisticService()
-	_, err = statisticService.CountFlow()
+	_, err = statisticService.CountFlow(flowForm)
 	if err != nil {
-		c.JSONP(http.StatusOK, utils.FailResponse(err.Error()))
-		return
+		if err.Error() != code.NoDocumentError {
+			c.JSONP(http.StatusOK, utils.FailResponse(err.Error()))
+			return
+
+		}
 	}
 
 	c.JSONP(http.StatusOK, utils.SuccessResponse(nil))

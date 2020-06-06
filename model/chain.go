@@ -11,11 +11,20 @@ type Chain struct {
 	Type   string `json:"type" bson:"type"`     //[b|r|s], 链类型
 	Number string `json:"number" bson:"number"` // 链编号
 	Id     string `json:"id" bson:"id"`         // 节点id
-	Time   string `json:"time" bson:"time"`     // 时间
+	Time   int64  `json:"time" bson:"time"`     // 时间
 }
 
+// 链类型总数
 type ChainType struct {
-	Id string `json:"id" bson:"_id"`
-	Total int `json:"total" bson:"total"`
+	Id    string `json:"id" bson:"_id"`
+	Total int    `json:"total" bson:"total"`
 }
 
+type Tps struct {
+	Id  string `json:"id" bson:"_id"`
+	Tps int64  `json:"tps" bson:"tps"`
+}
+type TotalTps struct {
+	Id  int64 `json:"id" bson:"_id"`
+	Tps int64 `json:"tps" bson:"tps"`
+}

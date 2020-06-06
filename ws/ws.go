@@ -23,9 +23,9 @@ type ClientManager struct {
 }
 
 var Manager = &ClientManager{
-	Broadcast:  make(chan []byte,100), // todo 足够大？
-	Register:   make(chan *Client,100),
-	Unregister: make(chan *Client,100),
+	Broadcast:  make(chan []byte, 100), // todo 足够大？
+	Register:   make(chan *Client, 100),
+	Unregister: make(chan *Client, 100),
 	Clients:    make(map[*Client]bool),
 }
 
@@ -37,7 +37,7 @@ func (manager *ClientManager) Start() {
 		case conn := <-manager.Register:
 			manager.Clients[conn] = true
 		case conn := <-manager.Unregister:
-			fmt.Println("exit ....",conn)
+			fmt.Println("exit ....", conn)
 			if _, ok := manager.Clients[conn]; ok {
 				close(conn.Send)
 				delete(manager.Clients, conn)
@@ -87,7 +87,7 @@ func (c *Client) Read() {
 		if err != nil {
 			return
 		}
-		cmd :=  model.Cmd{}
+		cmd := model.Cmd{}
 		err = json.Unmarshal(message, &cmd)
 		if err != nil {
 			fmt.Println(err.Error())

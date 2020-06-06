@@ -26,7 +26,7 @@ func (f *FlowService) UpdateFlowInfo(flowForm form.ReportFlowForm) (interface{},
 
 	update := options.Update()
 	update.SetUpsert(true)
-	return f.dao.UpdateWithOption(bson.M{"nodeId": nodeId},  param, update)
+	return f.dao.UpdateWithOption(bson.M{"nodeId": nodeId}, param, update)
 }
 
 func NewFlowService() IFlowService {
@@ -48,7 +48,7 @@ func (t *TotalFlowService) AddTotalFlow(flowForm form.TotalFlowForm) (interface{
 
 func (t *TotalFlowService) FlowList() (interface{}, int, error) {
 	query := []bson.M{
-		bson.M{"$sort": bson.M{"createTime": -1}},
+		bson.M{"$sort": bson.M{"time": -1}},
 		bson.M{"$limit": config.PageSize},
 	}
 	flow := model.TotalFlow{}

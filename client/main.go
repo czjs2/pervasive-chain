@@ -48,26 +48,28 @@ func apiClient(interrupt chan os.Signal) {
 
 }
 
-var height int64 = 1
+var height1 int64 = 1
+var height2 int64 = 1
+var height3 int64 = 1
 
 func reportData() {
 	bHeartform := form.HeartBeatFrom{
 		Type:   "b",
 		Number: fmt.Sprintf("10000%d", utils.Rand(5)),
 		Id:     fmt.Sprintf("10000%d", utils.Rand(5)),
-		Time:   utils.GetNowTime(),
+		Time:   utils.GetTime().Unix(),
 	}
 	rHeartform := form.HeartBeatFrom{
 		Type:   "r",
 		Number: fmt.Sprintf("10000%d", utils.Rand(5)),
 		Id:     fmt.Sprintf("10000%d", utils.Rand(5)),
-		Time:   utils.GetNowTime(),
+		Time:   utils.GetTime().Unix(),
 	}
 	sHeartform := form.HeartBeatFrom{
 		Type:   "s",
 		Number: fmt.Sprintf("10000%d", utils.Rand(5)),
 		Id:     fmt.Sprintf("10000%d", utils.Rand(5)),
-		Time:   utils.GetNowTime(),
+		Time:   utils.GetTime().Unix(),
 	}
 	_, err := HeartBeat(host, "/v1.0/headbeat", "", bHeartform)
 	if err != nil {
@@ -88,31 +90,98 @@ func reportData() {
 		Type:     "s",
 		Number:   fmt.Sprintf("10000%d", utils.Rand(5)),
 		Id:       fmt.Sprintf("10000%d", utils.Rand(5)),
-		Height:   height,
+		Height:   height1,
 		Father:   "fatherHash",
 		Hash:     "hash",
 		Vrf:      "vrf",
-		Time:     utils.GetNowTime(),
+		Time:     utils.GetTime().Unix(),
 		Interval: utils.Rand(100),
 		Trans:    utils.Rand(10000),
 		Size:     utils.Rand(10000),
 		Detail:   nil,
 	}
-	height = height+1
+	height1 = height1+1
 	_, err = ReportBlock(host, "/v1.0/block", "", reportBlockForm)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
+	reportBlockForm2 := form.ReportBlockForm{
+		Type:     "r",
+		Number:   fmt.Sprintf("10000%d", utils.Rand(5)),
+		Id:       fmt.Sprintf("10000%d", utils.Rand(5)),
+		Height:   height2,
+		Father:   "fatherHash",
+		Hash:     "hash",
+		Vrf:      "vrf",
+		Time:     utils.GetTime().Unix(),
+		Interval: utils.Rand(100),
+		Trans:    utils.Rand(10000),
+		Size:     utils.Rand(10000),
+		Detail:   nil,
+	}
+	height2 = height2+1
+	_, err = ReportBlock(host, "/v1.0/block", "", reportBlockForm2)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	reportBlockForm3 := form.ReportBlockForm{
+		Type:     "b",
+		Number:   fmt.Sprintf("10000%d", utils.Rand(5)),
+		Id:       fmt.Sprintf("10000%d", utils.Rand(5)),
+		Height:   height3,
+		Father:   "fatherHash",
+		Hash:     "hash",
+		Vrf:      "vrf",
+		Time:     utils.GetTime().Unix(),
+		Interval: utils.Rand(100),
+		Trans:    utils.Rand(10000),
+		Size:     utils.Rand(10000),
+		Detail:   nil,
+	}
+	height3 = height3+1
+	_, err = ReportBlock(host, "/v1.0/block", "", reportBlockForm3)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
 	reportFlowForm := form.ReportFlowForm{
 		Type:   "s",
 		Number: fmt.Sprintf("10000%d", utils.Rand(5)),
 		Id:     fmt.Sprintf("10000%d", utils.Rand(5)),
-		Time:   utils.GetNowTime(),
+		Time:   utils.GetTime().Unix(),
 		In:     utils.Rand(1000),
 		Out:    utils.Rand(1000),
 	}
 	_, err = ReportFlow(host, "/v1.0/flow", "", reportFlowForm)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	reportFlowForm2 := form.ReportFlowForm{
+		Type:   "r",
+		Number: fmt.Sprintf("10000%d", utils.Rand(5)),
+		Id:     fmt.Sprintf("10000%d", utils.Rand(5)),
+		Time:   utils.GetTime().Unix(),
+		In:     utils.Rand(1000),
+		Out:    utils.Rand(1000),
+	}
+	_, err = ReportFlow(host, "/v1.0/flow", "", reportFlowForm2)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	reportFlowForm3 := form.ReportFlowForm{
+		Type:   "b",
+		Number: fmt.Sprintf("10000%d", utils.Rand(5)),
+		Id:     fmt.Sprintf("10000%d", utils.Rand(5)),
+		Time:   utils.GetTime().Unix(),
+		In:     utils.Rand(1000),
+		Out:    utils.Rand(1000),
+	}
+	_, err = ReportFlow(host, "/v1.0/flow", "", reportFlowForm3)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
@@ -162,21 +231,18 @@ func socketClient(interrupt chan os.Signal) {
 		case <-done:
 			return
 		case <-ticker.C:
-
 			chainInfoCmd := fmt.Sprintf(`{"uri":"chainInfo","body":{},"msgId":"msgId%d"}`, time.Now().Nanosecond())
 			err = c.WriteMessage(websocket.TextMessage, []byte(chainInfoCmd))
 			if err != nil {
 				fmt.Println(err.Error())
 				return
 			}
-
 			blockInfoCmd := fmt.Sprintf(`{"uri":"blockInfo","body":{},"msgId":"msgId%d"}`, time.Now().Nanosecond())
 			err = c.WriteMessage(websocket.TextMessage, []byte(blockInfoCmd))
 			if err != nil {
 				fmt.Println(err.Error())
 				return
 			}
-
 			cmdInfo := fmt.Sprintf(`{"uri":"cmd","body":{"key":{"trans":1000}},"msgId":"msgId%d"}`, time.Now().Nanosecond())
 			err := c.WriteMessage(websocket.TextMessage, []byte(cmdInfo))
 			if err != nil {

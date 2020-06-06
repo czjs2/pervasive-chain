@@ -6,6 +6,13 @@ import (
 	"time"
 )
 
+// 时间格式化参数
+const SysTimefrom = "2006-01-02 15:04:05"
+
+func GetTime() time.Time {
+	return time.Now()
+}
+
 func GetNowTime() string {
 	now := time.Now()
 	month := strconv.Itoa(int(now.Month()))
@@ -29,6 +36,18 @@ func GetNowTime() string {
 		second = "0" + second
 	}
 	return fmt.Sprintf("%d-%s-%s %s:%s:%s", now.Year(), month, day, hour, minute, second)
+}
+
+func GetCurZeroTime() (time.Time, error) {
+	today := GetCurrentDay()
+	return ParseLocalTime(today)
+}
+
+func ParseLocalTime(t string) (time.Time, error) {
+	//中国时区
+	location, err := time.LoadLocation("Asia/Shanghai")
+	ntime, err := time.ParseInLocation(SysTimefrom, t, location)
+	return ntime, err
 }
 
 // 获取当天字符串

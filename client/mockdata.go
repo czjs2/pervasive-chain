@@ -18,7 +18,7 @@ func (m *MockData) GenRandHeart() form.HeartBeatFrom {
 		Type:   chainTypeList[utils.Rand(3)],
 		Number: fmt.Sprintf("%d", utils.Rand(100000)),
 		Id:     fmt.Sprintf("%d", utils.Rand(100)),
-		Time:   utils.GetNowTime(),
+		Time:   utils.GetTime().Unix(),
 	}
 	return f
 }

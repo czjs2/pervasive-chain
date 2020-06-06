@@ -8,7 +8,7 @@ type Block struct {
 	Father   string      `form:"father" binding:"required"`   //父区块hash
 	Hash     string      `form:"hash" binding:"required"`     //区块hash
 	Vrf      string      `form:"vrf" binding:"required"`      //VRF
-	Time     string      `form:"time" binding:"required"`     //当前产生时间
+	Time     int64       `form:"time" binding:"required"`     //当前产生时间
 	Interval int         `form:"interval" binding:"required"` //出块间隔
 	Trans    int         `form:"trans" binding:"required"`    //交易数量
 	Size     int         `form:"size" binding:"required"`     //区块大小
@@ -22,4 +22,14 @@ type ChainTps struct {
 type NodeBlock struct {
 	Block *Block       `json:"block"`
 	Child []*NodeBlock `json:"child"` // 该链的子链
+}
+
+type Block1 struct {
+	Id BlockType `json:"id" json:"_id"`
+
+}
+
+type BlockType struct {
+	Id   string `json:"id" bson:"id"`
+	Type string `json:"type" bson:"type"`
 }
