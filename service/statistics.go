@@ -57,7 +57,7 @@ func (s *StatisticService) AllChain() (interface{}, error) {
 		cursor, err := collection.Aggregate(context.TODO(), []bson.M{
 			bson.M{"$match": bson.M{"id": res[i].Id.Id}},
 			bson.M{"$sort": bson.M{"height": -1}},
-			bson.M{"$limit": 100},
+			bson.M{"$limit": 2},
 		})
 		defer db.CloseCursor(cursor)
 		if err != nil {
@@ -72,9 +72,9 @@ func (s *StatisticService) AllChain() (interface{}, error) {
 			}
 			blockList = append(blockList, &block)
 		}
-		param:=make(map[string]interface{})
-		param["chain"]= res[i]
-		param["chain"]= blockList
+		param := make(map[string]interface{})
+		param["blockList"] = blockList
+		param["chainId"] = res[i].Id
 		rootChain = append(rootChain, param)
 	}
 	return rootChain, nil
@@ -128,12 +128,13 @@ func (s *StatisticService) CountFlow(flowForm form.ReportFlowForm) (interface{},
 	totalFlowCollection := db.Collection(db.TotalFlowTable)
 	update := options.FindOneAndUpdate()
 	update.SetUpsert(true)
-	result := totalFlowCollection.FindOneAndUpdate(context.TODO(), bson.M{"time": flowForm.Time},
-		bson.M{"$inc": bson.M{"out": flowForm.Out, "in": flowForm.In, "time": flowForm.Time}}, update)
-	if result.Err() != nil {
-		return nil, result.Err()
+	flow := model.TotalFlow{}
+	err := totalFlowCollection.FindOneAndUpdate(context.TODO(), bson.M{"time": flowForm.Time},
+		bson.M{"$inc": bson.M{"out": flowForm.Out, "in": flowForm.In, "time": flowForm.Time}}, update).Decode(&flow)
+	if err != nil {
+		return nil, err
 	}
-	return nil, nil
+	return flow, nil
 }
 
 func (s *StatisticService) CountChain(chainId, chainType string) (interface{}, error) {

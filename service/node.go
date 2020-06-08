@@ -20,7 +20,7 @@ func (n *NodeService) UpdateOnLineNodeCmd(cmd model.PyCmd) (interface{}, error) 
 
 	}
 	param := bson.M{
-		"cmd":     utils.MapToStr(cmd.Key),
+		"cmd":     cmd,
 		"cmdTime": utils.GetNowTime(),
 	}
 	return n.dao.UpdateMany(query, param)

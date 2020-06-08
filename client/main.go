@@ -100,7 +100,7 @@ func reportData() {
 		Size:     utils.Rand(10000),
 		Detail:   nil,
 	}
-	height1 = height1+1
+	height1 = height1 + 1
 	_, err = ReportBlock(host, "/v1.0/block", "", reportBlockForm)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -120,7 +120,7 @@ func reportData() {
 		Size:     utils.Rand(10000),
 		Detail:   nil,
 	}
-	height2 = height2+1
+	height2 = height2 + 1
 	_, err = ReportBlock(host, "/v1.0/block", "", reportBlockForm2)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -140,7 +140,7 @@ func reportData() {
 		Size:     utils.Rand(10000),
 		Detail:   nil,
 	}
-	height3 = height3+1
+	height3 = height3 + 1
 	_, err = ReportBlock(host, "/v1.0/block", "", reportBlockForm3)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -223,7 +223,6 @@ func socketClient(interrupt chan os.Signal) {
 		}
 	}()
 
-
 	ticker := time.NewTicker(15 * time.Second)
 	defer ticker.Stop()
 	for {
@@ -231,19 +230,19 @@ func socketClient(interrupt chan os.Signal) {
 		case <-done:
 			return
 		case <-ticker.C:
-			chainInfoCmd := fmt.Sprintf(`{"uri":"chainInfo","body":{},"msgId":"msgId%d"}`, time.Now().Nanosecond())
+			chainInfoCmd := fmt.Sprintf(`{"uri":"chainInfo","body":{},"msgId":"msgId%d"}`, time.Now().Unix())
 			err = c.WriteMessage(websocket.TextMessage, []byte(chainInfoCmd))
 			if err != nil {
 				fmt.Println(err.Error())
 				return
 			}
-			blockInfoCmd := fmt.Sprintf(`{"uri":"blockInfo","body":{},"msgId":"msgId%d"}`, time.Now().Nanosecond())
+			blockInfoCmd := fmt.Sprintf(`{"uri":"blockInfo","body":{},"msgId":"msgId%d"}`, time.Now().Unix())
 			err = c.WriteMessage(websocket.TextMessage, []byte(blockInfoCmd))
 			if err != nil {
 				fmt.Println(err.Error())
 				return
 			}
-			cmdInfo := fmt.Sprintf(`{"uri":"cmd","body":{"key":{"trans":1000}},"msgId":"msgId%d"}`, time.Now().Nanosecond())
+			cmdInfo := fmt.Sprintf(`{"uri":"cmd","body":{"key":"transfer","params":[100]},"msgId":"msgId%d"}`, time.Now().Unix())
 			err := c.WriteMessage(websocket.TextMessage, []byte(cmdInfo))
 			if err != nil {
 				log.Println("write:", err)

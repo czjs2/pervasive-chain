@@ -16,7 +16,7 @@ type BlockService struct {
 
 func (b *BlockService) BlockList(chainType, chainId string) (interface{}, int, error) {
 	query := []bson.M{
-		bson.M{"$match": bson.M{"$and": []bson.M{bson.M{"type": chainType}, bson.M{"number": chainId}}}},
+		bson.M{"$match": bson.M{"$or": []bson.M{bson.M{"type": chainType}, bson.M{"number": chainId}}}},
 		bson.M{"$sort": bson.M{"height": -1}},
 		bson.M{"$limit": 100},
 	}

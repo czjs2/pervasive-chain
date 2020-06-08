@@ -9,7 +9,7 @@ import (
 
 func Test_node(t *testing.T) {
 	cmdInfo := fmt.Sprintf(`{"uri":"cmd","body":{"key":{"trans":1000}},"msgId":"msgId%d"}`, time.Now().Nanosecond())
-	cmd:=Cmd{}
+	cmd:= Cmd{}
 	err := json.Unmarshal([]byte(cmdInfo), &cmd)
 	fmt.Println(cmd,err)
 }

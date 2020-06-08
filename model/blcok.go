@@ -25,8 +25,7 @@ type NodeBlock struct {
 }
 
 type Block1 struct {
-	Id BlockType `json:"id" json:"_id"`
-
+	Id BlockType `json:"id" bson:"_id"`
 }
 
 type BlockType struct {

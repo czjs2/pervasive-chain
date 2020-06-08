@@ -21,5 +21,5 @@ func MapToStr(m map[string]interface{}) string {
 
 func Rand(src int64) int64 {
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	return r.Int63n(src)
+	return r.Int63n(src)+1
 }

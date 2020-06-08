@@ -65,6 +65,7 @@ ReportBlock
 
 func ReportBlock(host, path, token string, blockForm form.ReportBlockForm) (string, error) {
 	bytes, _ := json.Marshal(blockForm)
+	fmt.Println("send block:  ",string(bytes))
 	return NewRequest(fmt.Sprintf("%s%s", host, path), string(bytes), token)
 }
 

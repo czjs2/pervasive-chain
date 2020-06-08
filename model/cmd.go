@@ -2,7 +2,8 @@ package model
 
 // 下发执行命令
 type PyCmd struct {
-	Key Params `json:"key"`
+	Key    string        `json:"key"`
+	Params []interface{} `json:"params"`
 }
 
 type Params map[string]interface{}
@@ -11,6 +12,12 @@ type Cmd struct {
 	Uri   string `json:"uri"`
 	Body  PyCmd  `json:"body"`
 	MsgId string `json:"msgId"`
+}
+
+type Subscribe struct {
+	Event string      `json:"event"`
+	Body  interface{} `json:"body"`
+	MsgId int64       `json:"msgId"`
 }
 
 //

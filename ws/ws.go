@@ -56,8 +56,13 @@ func (manager *ClientManager) Start() {
 }
 
 // 广播消息
-func BroadCast(msg []byte) {
-	Manager.Broadcast <- msg
+func BroadCast(msg interface{}) {
+	bytes, err := NewSubscribeResp(msg)
+	if err != nil {
+		fmt.Println("NewSubscribeResp is error ", err.Error())
+		return
+	}
+	Manager.Broadcast <- bytes
 }
 
 func (manager *ClientManager) HeartBeat() {
@@ -87,6 +92,7 @@ func (c *Client) Read() {
 		if err != nil {
 			return
 		}
+		fmt.Println("rec: ", string(message))
 		cmd := model.Cmd{}
 		err = json.Unmarshal(message, &cmd)
 		if err != nil {
@@ -100,7 +106,6 @@ func (c *Client) Read() {
 		} else {
 			c.Send <- resp
 		}
-		fmt.Println(string(resp))
 	}
 }
 

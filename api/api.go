@@ -8,6 +8,7 @@ import (
 	"pervasive-chain/log"
 	"pervasive-chain/service"
 	"pervasive-chain/utils"
+	"pervasive-chain/ws"
 )
 
 // 心跳
@@ -58,6 +59,10 @@ func ReportBlockHandler(c *gin.Context) {
 		c.JSONP(http.StatusOK, utils.FailResponse(err.Error()))
 		return
 	}
+
+	// 广播消息 todo 写到中间件里更好 ？
+	ws.BroadCast(blockForm)
+
 	c.JSONP(http.StatusOK, utils.SuccessResponse(nil))
 }
 
