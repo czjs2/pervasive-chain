@@ -36,6 +36,24 @@ func TestDispatch_DoBlockInfo(t *testing.T) {
 
 }
 
+func TestDispatch_chainInfoById(t *testing.T){
+	cmd := model.Cmd{
+		Uri:   "cmd",
+		MsgId: time.Now().String(),
+		Body:model.PyCmd{
+			Key:    "ChainInfoById",
+			Params: []interface{}{"s","100004"},
+		},
+	}
+	res, e := NewDisPatch().ChainInfoById(cmd)
+	if e != nil {
+		fmt.Println(e)
+		return
+	}
+	fmt.Println(utils.JsonBeautFormat(res),e)
+}
+
+
 func TestDispatch_GenCmd(t *testing.T) {
 	cmd := model.Cmd{
 		Uri: "cmd",

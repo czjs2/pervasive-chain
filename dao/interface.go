@@ -21,7 +21,7 @@ type IDao interface {
 	UpdateMany(query, params bson.M) (interface{}, error)
 
 	// todo obj 为指针
-	List(query []bson.M, obj interface{}) ([]interface{}, int, error)
+	List(query []bson.M) ([]interface{}, int, error)
 
 	// todo obj 为指针
 	Aggregate(query []bson.M, obj interface{}) (interface{}, error)

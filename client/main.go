@@ -53,100 +53,18 @@ var height2 int64 = 1
 var height3 int64 = 1
 
 func reportData() {
-	bHeartform := form.HeartBeatFrom{
-		Type:   "b",
-		Number: fmt.Sprintf("10000%d", utils.Rand(5)),
-		Id:     fmt.Sprintf("10000%d", utils.Rand(5)),
-		Time:   utils.GetTime().Unix(),
-	}
-	rHeartform := form.HeartBeatFrom{
-		Type:   "r",
-		Number: fmt.Sprintf("10000%d", utils.Rand(5)),
-		Id:     fmt.Sprintf("10000%d", utils.Rand(5)),
-		Time:   utils.GetTime().Unix(),
-	}
-	sHeartform := form.HeartBeatFrom{
-		Type:   "s",
-		Number: fmt.Sprintf("10000%d", utils.Rand(5)),
-		Id:     fmt.Sprintf("10000%d", utils.Rand(5)),
-		Time:   utils.GetTime().Unix(),
-	}
-	_, err := HeartBeat(host, "/v1.0/headbeat", "", bHeartform)
+	err := reportHeartBeat()
 	if err != nil {
 		fmt.Println(err.Error())
-		return
 	}
-	_, err = HeartBeat(host, "/v1.0/headbeat", "", rHeartform)
+	err = reportBlock()
 	if err != nil {
 		fmt.Println(err.Error())
-		return
 	}
-	_, err = HeartBeat(host, "/v1.0/headbeat", "", sHeartform)
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-	reportBlockForm := form.ReportBlockForm{
-		Type:     "s",
-		Number:   fmt.Sprintf("10000%d", utils.Rand(5)),
-		Id:       fmt.Sprintf("10000%d", utils.Rand(5)),
-		Height:   height1,
-		Father:   "fatherHash",
-		Hash:     "hash",
-		Vrf:      "vrf",
-		Time:     utils.GetTime().Unix(),
-		Interval: utils.Rand(100),
-		Trans:    utils.Rand(10000),
-		Size:     utils.Rand(10000),
-		Detail:   nil,
-	}
-	height1 = height1 + 1
-	_, err = ReportBlock(host, "/v1.0/block", "", reportBlockForm)
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-	reportBlockForm2 := form.ReportBlockForm{
-		Type:     "r",
-		Number:   fmt.Sprintf("10000%d", utils.Rand(5)),
-		Id:       fmt.Sprintf("10000%d", utils.Rand(5)),
-		Height:   height2,
-		Father:   "fatherHash",
-		Hash:     "hash",
-		Vrf:      "vrf",
-		Time:     utils.GetTime().Unix(),
-		Interval: utils.Rand(100),
-		Trans:    utils.Rand(10000),
-		Size:     utils.Rand(10000),
-		Detail:   nil,
-	}
-	height2 = height2 + 1
-	_, err = ReportBlock(host, "/v1.0/block", "", reportBlockForm2)
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-	reportBlockForm3 := form.ReportBlockForm{
-		Type:     "b",
-		Number:   fmt.Sprintf("10000%d", utils.Rand(5)),
-		Id:       fmt.Sprintf("10000%d", utils.Rand(5)),
-		Height:   height3,
-		Father:   "fatherHash",
-		Hash:     "hash",
-		Vrf:      "vrf",
-		Time:     utils.GetTime().Unix(),
-		Interval: utils.Rand(100),
-		Trans:    utils.Rand(10000),
-		Size:     utils.Rand(10000),
-		Detail:   nil,
-	}
-	height3 = height3 + 1
-	_, err = ReportBlock(host, "/v1.0/block", "", reportBlockForm3)
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
+	reportFlow()
+}
 
+func reportFlow() {
 	reportFlowForm := form.ReportFlowForm{
 		Type:   "s",
 		Number: fmt.Sprintf("10000%d", utils.Rand(5)),
@@ -155,7 +73,7 @@ func reportData() {
 		In:     utils.Rand(1000),
 		Out:    utils.Rand(1000),
 	}
-	_, err = ReportFlow(host, "/v1.0/flow", "", reportFlowForm)
+	_, err := ReportFlow(host, "/v1.0/flow", "", reportFlowForm)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
@@ -186,6 +104,108 @@ func reportData() {
 		fmt.Println(err.Error())
 		return
 	}
+}
+
+func reportBlock() error {
+	fmt.Println(height1,height2,height3)
+	reportBlockForm := form.ReportBlockForm{
+		Type:     "s",
+		Number:   fmt.Sprintf("10000%d", utils.Rand(5)),
+		Id:       fmt.Sprintf("10000%d", utils.Rand(5)),
+		Height:   height1,
+		Father:   "fatherHash",
+		Hash:     "hash",
+		Vrf:      "vrf",
+		Time:     utils.GetTime().Unix(),
+		Interval: utils.Rand(100),
+		Trans:    utils.Rand(10000),
+		Size:     utils.Rand(10000),
+		Detail:   nil,
+	}
+	height1 = height1 + 1
+	_, err := ReportBlock(host, "/v1.0/block", "", reportBlockForm)
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil
+	}
+	reportBlockForm2 := form.ReportBlockForm{
+		Type:     "r",
+		Number:   fmt.Sprintf("10000%d", utils.Rand(5)),
+		Id:       fmt.Sprintf("10000%d", utils.Rand(5)),
+		Height:   height2,
+		Father:   "fatherHash",
+		Hash:     "hash",
+		Vrf:      "vrf",
+		Time:     utils.GetTime().Unix(),
+		Interval: utils.Rand(100),
+		Trans:    utils.Rand(10000),
+		Size:     utils.Rand(10000),
+		Detail:   nil,
+	}
+	height2 = height2 + 1
+	_, err = ReportBlock(host, "/v1.0/block", "", reportBlockForm2)
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil
+	}
+	reportBlockForm3 := form.ReportBlockForm{
+		Type:     "b",
+		Number:   fmt.Sprintf("10000%d", utils.Rand(5)),
+		Id:       fmt.Sprintf("10000%d", utils.Rand(5)),
+		Height:   height3,
+		Father:   "fatherHash",
+		Hash:     "hash",
+		Vrf:      "vrf",
+		Time:     utils.GetTime().Unix(),
+		Interval: utils.Rand(100),
+		Trans:    utils.Rand(10000),
+		Size:     utils.Rand(10000),
+		Detail:   nil,
+	}
+	height3 = height3 + 1
+	_, err = ReportBlock(host, "/v1.0/block", "", reportBlockForm3)
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil
+	}
+	return err
+}
+
+func reportHeartBeat() error {
+	bHeartform := form.HeartBeatFrom{
+		Type:   "b",
+		Number: fmt.Sprintf("10000%d", utils.Rand(5)),
+		Id:     fmt.Sprintf("10000%d", utils.Rand(5)),
+		Time:   utils.GetTime().Unix(),
+	}
+	rHeartform := form.HeartBeatFrom{
+		Type:   "r",
+		Number: fmt.Sprintf("10000%d", utils.Rand(5)),
+		Id:     fmt.Sprintf("10000%d", utils.Rand(5)),
+		Time:   utils.GetTime().Unix(),
+	}
+	sHeartform := form.HeartBeatFrom{
+		Type:   "s",
+		Number: fmt.Sprintf("10000%d", utils.Rand(5)),
+		Id:     fmt.Sprintf("10000%d", utils.Rand(5)),
+		Time:   utils.GetTime().Unix(),
+	}
+	_, err := HeartBeat(host, "/v1.0/headbeat", "", bHeartform)
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil
+	}
+	_, err = HeartBeat(host, "/v1.0/headbeat", "", rHeartform)
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil
+	}
+	_, err = HeartBeat(host, "/v1.0/headbeat", "", sHeartform)
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil
+	}
+	return err
 }
 
 func socketClient(interrupt chan os.Signal) {

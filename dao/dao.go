@@ -6,6 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"pervasive-chain/db"
+	"reflect"
 	"time"
 )
 
@@ -75,8 +76,7 @@ func (n *Dao) UpdateWithOption(query bson.M, param bson.M, option *options.Updat
 	param["updateTime"] = time.Now()
 	return n.Collection().UpdateOne(context.TODO(), query, bson.M{"$set": param}, option)
 }
-func (n *Dao) List(query []bson.M, obj interface{}) ([]interface{}, int, error) {
-	// todo
+func (n *Dao) List(query []bson.M) ([]interface{}, int, error) {
 	collection := n.Collection()
 	cursor, err := collection.Aggregate(context.TODO(), query)
 	defer db.CloseCursor(cursor)
@@ -89,11 +89,27 @@ func (n *Dao) List(query []bson.M, obj interface{}) ([]interface{}, int, error) 
 	}
 	var res []interface{}
 	for cursor.Next(context.TODO()) {
-		err := cursor.Decode(obj)
+		param:=make(map[string]interface{})
+		err := cursor.Decode(param)
 		if err != nil {
 			return nil, 0, err
 		}
-		res = append(res, obj)
+		res = append(res, param)
 	}
 	return res, total, nil
+}
+
+
+
+func NewObj(obj interface{}) interface{}{
+	getType := reflect.TypeOf(obj)
+	getValue := reflect.ValueOf(obj)
+
+	param := make(map[string]interface{})
+	for i := 0; i < getType.NumField(); i++ {
+		field := getType.Field(i)
+		value := getValue.Field(i).Interface()
+		param[field.Name] = value
+	}
+	return param
 }

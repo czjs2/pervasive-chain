@@ -33,8 +33,8 @@ func (s *ChainService) ChainList() (interface{}, int, error) {
 		bson.M{"$sort": bson.M{"updateTime": -1}},
 		bson.M{"$limit": config.PageSize},
 	}
-	totalShared := model.TotalChain{}
-	return s.dao.List(qury, &totalShared)
+
+	return s.dao.List(qury)
 }
 
 func (s *ChainService) UpdateSharedInfo(shardForm form.ShardInfoForm) (interface{}, error) {
@@ -86,8 +86,7 @@ func (t *TotalChainService) TotalFlowList() (interface{}, int, error) {
 		bson.M{"$sort": bson.M{"updateTime": -1}},
 		bson.M{"$limit": 1},
 	}
-	chainTotalInfo := model.TotalChain{}
-	return t.dao.List(query, &chainTotalInfo)
+	return t.dao.List(query)
 }
 
 func NewTotalChainService() ITotalChainService {

@@ -8,7 +8,6 @@ import (
 	"pervasive-chain/dao"
 	"pervasive-chain/db"
 	"pervasive-chain/form"
-	"pervasive-chain/model"
 )
 
 type FlowService struct {
@@ -51,8 +50,7 @@ func (t *TotalFlowService) FlowList() (interface{}, int, error) {
 		bson.M{"$sort": bson.M{"time": -1}},
 		bson.M{"$limit": config.PageSize},
 	}
-	flow := model.TotalFlow{}
-	return t.dao.List(query, &flow)
+	return t.dao.List(query)
 }
 
 func NewTotalFlowService() ITotalFlowService {

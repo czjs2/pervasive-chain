@@ -23,7 +23,7 @@ func (d *Dispatch) Execute(cmd model.Cmd) ([]byte, error) {
 	case ExecuteCmd:
 		return d.GenCmd(cmd)
 	case ChainInfoById:
-		return d.chanInfoById(cmd)
+		return d.ChainInfoById(cmd)
 	default:
 		return nil, fmt.Errorf("%s unsupport error  ", cmd.Uri)
 	}
@@ -86,9 +86,9 @@ func (d *Dispatch) DoChainInfo(cmd model.Cmd) ([]byte, error) {
 }
 
 // 指定链前 100个区块
-func (d *Dispatch) chanInfoById(cmd model.Cmd) ([]byte, error) {
+func (d *Dispatch) ChainInfoById(cmd model.Cmd) ([]byte, error) {
 	blockService := service.NewBlockService()
-	list, _, err := blockService.BlockList(cmd.Body.Key, cmd.Body.Params[0].(string))
+	list, _, err := blockService.BlockList(cmd.Body.Params[0].(string), cmd.Body.Params[1].(string))
 	if err != nil {
 		return NewRespErr(cmd, err.Error())
 	}

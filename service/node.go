@@ -31,14 +31,12 @@ func (n *NodeService) OnLineList() (interface{}, int, error) {
 	query := []bson.M{
 		bson.M{"$match": bson.M{}},
 	}
-	node := model.Node{}
-	return n.dao.List(query, &node)
+	return n.dao.List(query)
 }
 
 func (n *NodeService) ChainList() (interface{}, int, error) {
 	var query []bson.M
-	node := model.Node{}
-	return n.dao.List(query, &node)
+	return n.dao.List(query)
 }
 
 func (n *NodeService) FindAndUpdate(nodeForm form.HeartBeatFrom) (*model.Node, error) {
