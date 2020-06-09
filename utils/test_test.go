@@ -11,15 +11,17 @@ type User struct {
 	Name string
 }
 
+func TestChain(t *testing.T) {
+
+}
+
 func TestReflet(t *testing.T) {
 	cmd := model.Block{}
 	DoFiledAndMethod(cmd)
 
 }
 
-// 通过接口来获取任意参数，然后一一揭晓
 func DoFiledAndMethod(input interface{}) {
-
 	getType := reflect.TypeOf(input)
 	fmt.Println("get Type is :", getType.Name())
 

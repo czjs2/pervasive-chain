@@ -61,7 +61,7 @@ func ReportBlockHandler(c *gin.Context) {
 	}
 
 	// 广播消息 todo 写到中间件里更好 ？
-	ws.BroadCast(blockForm)
+	ws.BroadcastBlock(blockForm)
 
 	c.JSONP(http.StatusOK, utils.SuccessResponse(nil))
 }

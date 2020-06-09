@@ -107,7 +107,6 @@ func reportFlow() {
 }
 
 func reportBlock() error {
-	fmt.Println(height1,height2,height3)
 	reportBlockForm := form.ReportBlockForm{
 		Type:     "s",
 		Number:   fmt.Sprintf("10000%d", utils.Rand(5)),

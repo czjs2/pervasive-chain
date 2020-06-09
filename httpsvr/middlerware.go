@@ -12,6 +12,6 @@ func BroadcastMiddleWare(logPath string) gin.HandlerFunc {
 		//todo
 		values := c.Request.PostForm
 		bytes, _ := json.Marshal(values)
-		ws.BroadCast(bytes)
+		ws.BroadcastBlock(bytes)
 	}
 }

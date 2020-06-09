@@ -57,7 +57,7 @@ func (s *StatisticService) AllChain() (interface{}, error) {
 		cursor, err := collection.Aggregate(context.TODO(), []bson.M{
 			bson.M{"$match": bson.M{"id": res[i].Id.Id}},
 			bson.M{"$sort": bson.M{"height": -1}},
-			bson.M{"$limit": 2},
+			bson.M{"$limit": 1},
 		})
 		defer db.CloseCursor(cursor)
 		if err != nil {

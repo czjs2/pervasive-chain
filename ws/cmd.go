@@ -7,9 +7,9 @@ import (
 )
 
 // 订阅消息返回
-func NewSubscribeResp(obj interface{}) ([]byte, error) {
+func NewSubscribeResp(event string,obj []interface{}) ([]byte, error) {
 	msg := model.Subscribe{
-		Event: "all",
+		Event: event,
 		Body:  obj,
 		MsgId: time.Now().Unix(),
 	}
