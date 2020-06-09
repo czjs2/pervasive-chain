@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/websocket"
+	"pervasive-chain/log"
 	"pervasive-chain/model"
 )
 
@@ -35,14 +36,14 @@ func (manager *ClientManager) Start() {
 	for {
 		select {
 		case conn := <-manager.Register:
-			fmt.Println("ws client conn ...", conn.ID, conn.ClientIp,len(manager.Clients))
 			manager.Clients[conn] = true
+			log.Logger.Infoln("ws client conn ...", conn.ID, conn.ClientIp,len(manager.Clients))
 		case conn := <-manager.Unregister:
 			if _, ok := manager.Clients[conn]; ok {
 				close(conn.Send)
 				delete(manager.Clients, conn)
 			}
-			fmt.Println("ws  client exit ....", conn.ID, conn.ClientIp,len(manager.Clients))
+			log.Logger.Infoln("ws  client exit ....", conn.ID, conn.ClientIp,len(manager.Clients))
 		case message := <-manager.Broadcast:
 			for conn := range manager.Clients {
 				select {
@@ -57,7 +58,7 @@ func (manager *ClientManager) Start() {
 
 // 广播消息
 func BroadcastBlock(msg interface{}) {
-	bytes, err := NewSubscribeResp("event", []interface{}{msg})
+	bytes, err := NewSubscribeResp("block", []interface{}{msg})
 	if err != nil {
 		fmt.Println("NewSubscribeResp is error ", err.Error())
 		return

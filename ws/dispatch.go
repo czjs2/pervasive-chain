@@ -43,7 +43,7 @@ func (d *Dispatch) DoBlockInfo(cmd model.Cmd) ([]byte, error) {
 func (d *Dispatch) GenCmd(cmd model.Cmd) ([]byte, error) {
 	nodeService := service.NewNodeService()
 	// todo 计算每个节点交易数量
-	_, err := nodeService.UpdateOnLineNodeCmd(cmd.Body)
+	_, err := nodeService.UpdateOnLineNodeCmd(cmd.Body.Cmd)
 	if err != nil {
 		return NewRespErr(cmd, err.Error())
 	}
@@ -88,7 +88,7 @@ func (d *Dispatch) DoChainInfo(cmd model.Cmd) ([]byte, error) {
 // 指定链前 100个区块
 func (d *Dispatch) ChainInfoById(cmd model.Cmd) ([]byte, error) {
 	blockService := service.NewBlockService()
-	list, _, err := blockService.BlockList(cmd.Body.Params[0].(string), cmd.Body.Params[1].(string))
+	list, _, err := blockService.BlockList(cmd.Body.Type, string(cmd.Body.Number))
 	if err != nil {
 		return NewRespErr(cmd, err.Error())
 	}
