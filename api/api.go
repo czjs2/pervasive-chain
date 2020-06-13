@@ -92,6 +92,5 @@ func ReportFlowHandler(c *gin.Context) {
 
 		}
 	}
-
 	c.JSONP(http.StatusOK, utils.SuccessResponse(nil))
 }

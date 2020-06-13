@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/websocket"
+	"os"
 	"pervasive-chain/log"
 	"pervasive-chain/model"
 )
@@ -32,18 +33,20 @@ var Manager = &ClientManager{
 
 //todo 安全配置相关
 
-func (manager *ClientManager) Start() {
+func (manager *ClientManager) Start(c chan os.Signal) {
 	for {
 		select {
+		case <-c:
+			manager.ClosetAllClient()
 		case conn := <-manager.Register:
 			manager.Clients[conn] = true
-			log.Logger.Infoln("ws client conn ...", conn.ID, conn.ClientIp,len(manager.Clients))
+			log.Logger.Infoln("ws client conn ...", conn.ID, conn.ClientIp, len(manager.Clients))
 		case conn := <-manager.Unregister:
 			if _, ok := manager.Clients[conn]; ok {
 				close(conn.Send)
 				delete(manager.Clients, conn)
 			}
-			log.Logger.Infoln("ws  client exit ....", conn.ID, conn.ClientIp,len(manager.Clients))
+			log.Logger.Infoln("ws  client exit ....", conn.ID, conn.ClientIp, len(manager.Clients))
 		case message := <-manager.Broadcast:
 			for conn := range manager.Clients {
 				select {
@@ -64,6 +67,12 @@ func BroadcastBlock(msg interface{}) {
 		return
 	}
 	Manager.Broadcast <- bytes
+}
+
+func (manager *ClientManager) ClosetAllClient() {
+	for client := range manager.Clients {
+		manager.Unregister <- client
+	}
 }
 
 func (manager *ClientManager) HeartBeat() {
