@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 type Node struct {
 	Type     string `json:"type" bson:"type"`         //[b|r|s], 链类型
@@ -11,6 +14,11 @@ type Node struct {
 	Cmd      PyCmd  `json:"cmd" bson:"cmd"`
 	CmdTime  time.Time `json:"cmdTime" bson:"cmdTime"`
 }
+
+func (c Node) MarshalJSON() ([]byte, error) {
+	return json.Marshal(ObjToMap(c))
+}
+
 
 type NodeNum struct {
 	Id    string `json:"id" bson:"_id"`

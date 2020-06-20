@@ -255,7 +255,7 @@ func socketClient(interrupt chan os.Signal) {
 				fmt.Println(err.Error())
 				return
 			}
-			blockInfoCmd := fmt.Sprintf(`{"uri":"blockInfo","body":{"type":"b","number":100},"msgId":"msgId%d"}`, time.Now().Unix())
+			blockInfoCmd := fmt.Sprintf(`{"uri":"blockInfo","body":{"type":"b","number":"100001"},"msgId":"msgId%d"}`, time.Now().Unix())
 			err = c.WriteMessage(websocket.TextMessage, []byte(blockInfoCmd))
 			if err != nil {
 				fmt.Println(err.Error())

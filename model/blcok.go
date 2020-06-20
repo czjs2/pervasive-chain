@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 type Block struct {
 	Type     string      `form:"type" binding:"required"`     //[b|r|s], 链类型
@@ -16,6 +19,12 @@ type Block struct {
 	Size     int         `form:"size" binding:"required"`     //区块大小
 	Detail   interface{} `form:"detail" binding:"required"`   //详情 (需详细定义)
 }
+
+func (b Block) MarshalJSON() ([]byte, error) {
+	return json.Marshal(ObjToMap(b))
+}
+
+
 
 type ChainTps struct {
 	Tps int `json:"tps" bson:"tps"`

@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 type TotalChain struct {
 	RelayNum  int `json:"relayNum" bson:"relayNum"`
@@ -14,6 +17,11 @@ type Chain struct {
 	Number string `json:"number" bson:"number"` // 链编号
 	Id     string `json:"id" bson:"id"`         // 节点id
 	Time   time.Time  `json:"time" bson:"time"`     // 时间
+}
+
+
+func (c Chain) MarshalJSON() ([]byte, error) {
+	return json.Marshal(ObjToMap(c))
 }
 
 // 链类型总数
