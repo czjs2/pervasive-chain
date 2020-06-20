@@ -19,7 +19,7 @@ type ReportBlockForm struct {
 	Height   int64       `form:"height" binding:"required" json:"height"`     //当前区块高度
 	Father   string      `form:"father" binding:"required" json:"father"`     //父区块hash
 	Hash     string      `form:"hash" binding:"required" json:"hash"`         //区块hash
-	Vrf      string      `form:"vrf" binding:"required" json:"vrf"`           //VRF
+	Vrf      string      `form:"vrf" binding:"omitempty" json:"vrf"`           //VRF
 	Time     int64       `form:"time" binding:"required" json:"time"`         //当前产生时间
 	Interval int64       `form:"interval" binding:"required" json:"interval"` //出块间隔
 	Trans    int64       `form:"trans" binding:"required" json:"trans"`       //交易数量

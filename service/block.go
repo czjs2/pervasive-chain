@@ -45,7 +45,7 @@ func (b *BlockService) LatestBlock() (interface{}, error) {
 }
 
 func (b *BlockService) UpdateBlockInfo(blockForm form.ReportBlockForm) (interface{}, error) {
-	if blockForm.Time<0{
+	if blockForm.Time<=0{
 		return nil,errors.New("time is zero")
 	}
 
