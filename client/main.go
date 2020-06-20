@@ -69,7 +69,7 @@ func reportFlow() {
 		Type:   "s",
 		Number: fmt.Sprintf("10000%d", utils.Rand(5)),
 		Id:     fmt.Sprintf("10000%d", utils.Rand(5)),
-		Time:   utils.GetTime().Unix(),
+		Time:   utils.GetTime().UnixNano(),
 		In:     utils.Rand(1000),
 		Out:    utils.Rand(1000),
 	}
@@ -82,7 +82,7 @@ func reportFlow() {
 		Type:   "r",
 		Number: fmt.Sprintf("10000%d", utils.Rand(5)),
 		Id:     fmt.Sprintf("10000%d", utils.Rand(5)),
-		Time:   utils.GetTime().Unix(),
+		Time:   utils.GetTime().UnixNano(),
 		In:     utils.Rand(1000),
 		Out:    utils.Rand(1000),
 	}
@@ -95,7 +95,7 @@ func reportFlow() {
 		Type:   "b",
 		Number: fmt.Sprintf("10000%d", utils.Rand(5)),
 		Id:     fmt.Sprintf("10000%d", utils.Rand(5)),
-		Time:   utils.GetTime().Unix(),
+		Time:   utils.GetTime().UnixNano(),
 		In:     utils.Rand(1000),
 		Out:    utils.Rand(1000),
 	}
@@ -115,7 +115,7 @@ func reportBlock() error {
 		Father:   "fatherHash",
 		Hash:     "hash",
 		Vrf:      "vrf",
-		Time:     utils.GetTime().Unix(),
+		Time:     utils.GetTime().UnixNano(),
 		Interval: utils.Rand(100),
 		Trans:    utils.Rand(10000),
 		Size:     utils.Rand(10000),
@@ -135,7 +135,7 @@ func reportBlock() error {
 		Father:   "fatherHash",
 		Hash:     "hash",
 		Vrf:      "vrf",
-		Time:     utils.GetTime().Unix(),
+		Time:     utils.GetTime().UnixNano(),
 		Interval: utils.Rand(100),
 		Trans:    utils.Rand(10000),
 		Size:     utils.Rand(10000),
@@ -155,7 +155,7 @@ func reportBlock() error {
 		Father:   "fatherHash",
 		Hash:     "hash",
 		Vrf:      "vrf",
-		Time:     utils.GetTime().Unix(),
+		Time:     utils.GetTime().UnixNano(),
 		Interval: utils.Rand(100),
 		Trans:    utils.Rand(10000),
 		Size:     utils.Rand(10000),
@@ -175,19 +175,19 @@ func reportHeartBeat() error {
 		Type:   "b",
 		Number: fmt.Sprintf("10000%d", utils.Rand(5)),
 		Id:     fmt.Sprintf("10000%d", utils.Rand(5)),
-		Time:   utils.GetTime().Unix(),
+		Time:   utils.GetTime().UnixNano(),
 	}
 	rHeartform := form.HeartBeatFrom{
 		Type:   "r",
 		Number: fmt.Sprintf("10000%d", utils.Rand(5)),
 		Id:     fmt.Sprintf("10000%d", utils.Rand(5)),
-		Time:   utils.GetTime().Unix(),
+		Time:   utils.GetTime().UnixNano(),
 	}
 	sHeartform := form.HeartBeatFrom{
 		Type:   "s",
 		Number: fmt.Sprintf("10000%d", utils.Rand(5)),
 		Id:     fmt.Sprintf("10000%d", utils.Rand(5)),
-		Time:   utils.GetTime().Unix(),
+		Time:   utils.GetTime().UnixNano(),
 	}
 	_, err := HeartBeat(host, "/v1.0/headbeat", "", bHeartform)
 	if err != nil {

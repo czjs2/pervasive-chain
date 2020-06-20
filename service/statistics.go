@@ -105,7 +105,7 @@ func (s *StatisticService) CountNode() (interface{}, error) {
 	collection := db.Collection(db.Node)
 	curTime := time.Now().Add(-config.NodeOffLineTime * time.Second)
 	cursor, err := collection.Aggregate(context.TODO(), []bson.M{
-		bson.M{"$match": bson.M{"lastTime": bson.M{"$gte": curTime.Unix()}}}, // 有效节点没有掉线
+		bson.M{"$match": bson.M{"lastTime": bson.M{"$gte": curTime}}}, // 有效节点没有掉线
 		bson.M{"$group": bson.M{"_id": "$type", "total": bson.M{"$sum": 1}}},
 	})
 	defer db.CloseCursor(cursor)
@@ -129,8 +129,8 @@ func (s *StatisticService) CountFlow(flowForm form.ReportFlowForm) (interface{},
 	update := options.FindOneAndUpdate()
 	update.SetUpsert(true)
 	flow := model.TotalFlow{}
-	err := totalFlowCollection.FindOneAndUpdate(context.TODO(), bson.M{"time": flowForm.Time},
-		bson.M{"$inc": bson.M{"out": flowForm.Out, "in": flowForm.In, "time": flowForm.Time}}, update).Decode(&flow)
+	err := totalFlowCollection.FindOneAndUpdate(context.TODO(), bson.M{"time": nansToTime(flowForm.Time)},
+		bson.M{"$inc": bson.M{"out": flowForm.Out, "in": flowForm.In,},"$set":bson.M{"time": nansToTime(flowForm.Time)}}, update).Decode(&flow)
 	if err != nil {
 		return nil, err
 	}
@@ -144,7 +144,7 @@ func (s *StatisticService) CountChain(chainId, chainType string) (interface{}, e
 		return nil, err
 	}
 	cursor, err := collection.Aggregate(context.TODO(), []bson.M{
-		bson.M{"$match": bson.M{"number": chainId, "time": bson.M{"$gte": curStartTime.Unix(), "$lt": curEndTime.Unix()}}},
+		bson.M{"$match": bson.M{"number": chainId, "time": bson.M{"$gte": curStartTime, "$lt": curEndTime}}},
 		bson.M{"$group": bson.M{"_id": "", "tps": bson.M{"$sum": "$tps"}}},
 	})
 	defer db.CloseCursor(cursor)
@@ -161,7 +161,7 @@ func (s *StatisticService) CountChain(chainId, chainType string) (interface{}, e
 	totalChainCollection := db.Collection(db.TotalChainTable)
 	update := options.FindOneAndUpdate()
 	update.SetUpsert(true)
-	result := totalChainCollection.FindOneAndUpdate(context.TODO(), bson.M{"timestamp": curStartTime.Unix(), "chainId": chainId},
+	result := totalChainCollection.FindOneAndUpdate(context.TODO(), bson.M{"timestamp": curStartTime.UnixNano(), "chainId": chainId},
 		bson.M{"$set": bson.M{"chainId": chainId, "tps": tps.Tps, "type": chainType}}, update)
 	if result.Err() != nil {
 		return nil, err

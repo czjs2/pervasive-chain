@@ -2,7 +2,8 @@ package code
 
 const StatusOK = 200 // 成功
 
-const StatusFail = -1 // 失败
+const StatusFail = 400 // 失败
+
 
 
 // 命令相关

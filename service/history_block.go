@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"pervasive-chain/dao"
@@ -25,6 +26,9 @@ func (h *HistoryBlockService) LatestBlock() (interface{}, error) {
 }
 
 func (h *HistoryBlockService) UpdateBlockInfo(blockForm form.ReportBlockForm) (interface{}, error) {
+	if blockForm.Time<=0{
+		return nil,errors.New("time is zero ")
+	}
 	param := bson.M{
 		"type":     blockForm.Type,
 		"number":   blockForm.Number,
@@ -33,7 +37,7 @@ func (h *HistoryBlockService) UpdateBlockInfo(blockForm form.ReportBlockForm) (i
 		"father":   blockForm.Father,
 		"hash":     blockForm.Hash,
 		"vrf":      blockForm.Vrf,
-		"time":     blockForm.Time,
+		"time":     nansToTime(blockForm.Time),
 		"interval": blockForm.Interval,
 		"trans":    blockForm.Trans,
 		"size":     blockForm.Size,

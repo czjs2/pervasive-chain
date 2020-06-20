@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -8,7 +9,7 @@ import (
 	"pervasive-chain/db"
 	"pervasive-chain/form"
 	"pervasive-chain/model"
-	"pervasive-chain/utils"
+	"time"
 )
 
 type NodeService struct {
@@ -21,7 +22,7 @@ func (n *NodeService) UpdateOnLineNodeCmd(cmd model.PyCmd) (interface{}, error) 
 	}
 	param := bson.M{
 		"cmd":     cmd,
-		"cmdTime": utils.GetNowTime(),
+		"cmdTime": time.Now(),
 	}
 	return n.dao.UpdateMany(query, param)
 }
@@ -39,16 +40,23 @@ func (n *NodeService) ChainList() (interface{}, int, error) {
 	return n.dao.List(query)
 }
 
+func nansToTime(t int64) time.Time {
+	return time.Unix(t/(1000*1000*1000), t%(1000*1000*1000))
+}
+
 func (n *NodeService) FindAndUpdate(nodeForm form.HeartBeatFrom) (*model.Node, error) {
 	keyId := fmt.Sprintf("%s-%s", nodeForm.Type, nodeForm.Id)
+	if nodeForm.Time == 0 {
+		return nil, errors.New("time is zero ")
+	}
 	query := bson.M{"keyId": keyId}
 	param := bson.M{
 		"type":     nodeForm.Type,
 		"keyId":    keyId,
 		"number":   nodeForm.Number,
-		"lastTime": nodeForm.Time,
-		"cmd":      nil,
-		"cmdTime":  "",
+		"lastTime": nansToTime(nodeForm.Time).Local(),
+		//"cmd":      nil,
+		//"cmdTime":  nil,
 	}
 	update := options.FindOneAndUpdate()
 	update.SetUpsert(true)

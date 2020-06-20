@@ -2,12 +2,13 @@ package utils
 
 import (
 	"net/http"
+	"pervasive-chain/code"
 	"pervasive-chain/model"
 )
 
 func FailResponse(msg string) *model.Response {
 	return &model.Response{
-		Code:    http.StatusOK,
+		Code:    code.StatusFail,
 		Message: msg,
 		Data:    nil,
 	}

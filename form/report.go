@@ -58,7 +58,7 @@ func (h *ShardInfoForm) Valid() (bool, error) {
 
 // 整体流量
 type TotalFlowForm struct {
-	Time string `form:"time" binding:"required"`
+	Time int64 `form:"time" binding:"required"`
 	In   int64  `form:"in" binding:"required"`
 	Out  int64  `form:"out" binding:"required"`
 }

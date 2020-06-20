@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -16,9 +17,12 @@ type FlowService struct {
 
 func (f *FlowService) UpdateFlowInfo(flowForm form.ReportFlowForm) (interface{}, error) {
 	nodeId := fmt.Sprintf("%s-%s", flowForm.Type, flowForm.Id)
+	if flowForm.Time<=0{
+		return nil,errors.New("time is zero")
+	}
 	param := bson.M{
 		"nodeId": nodeId,
-		"time":   flowForm.Time,
+		"time":   nansToTime(flowForm.Time),
 		"in":     flowForm.In,
 		"out":    flowForm.Out,
 	}
@@ -37,10 +41,13 @@ type TotalFlowService struct {
 }
 
 func (t *TotalFlowService) AddTotalFlow(flowForm form.TotalFlowForm) (interface{}, error) {
+	if flowForm.Time<=0{
+		return nil,errors.New("time is zero")
+	}
 	param := bson.M{
 		"in":   flowForm.In,
 		"out":  flowForm.Out,
-		"time": flowForm.Time,
+		"time": nansToTime(flowForm.Time),
 	}
 	return t.dao.Add(param)
 }

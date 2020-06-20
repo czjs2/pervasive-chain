@@ -5,6 +5,7 @@ import (
 	"pervasive-chain/form"
 	"pervasive-chain/utils"
 	"testing"
+	"time"
 )
 
 func TestStatisticService_AllChain(t *testing.T) {
@@ -44,4 +45,10 @@ func TestStatisticService_CountTps(t *testing.T) {
 	service := NewStatisticService()
 	tps, e := service.CountTps()
 	fmt.Println(tps, e)
+}
+
+func TestNanTime(t*testing.T){
+	now := time.Now()
+	toTime := nansToTime(now.UnixNano())
+	fmt.Println(toTime)
 }

@@ -1,5 +1,7 @@
 package model
 
+import "time"
+
 type TotalChain struct {
 	RelayNum  int `json:"relayNum" bson:"relayNum"`
 	SharedNum int `json:"sharedNum" bson:"sharedNum"`
@@ -11,7 +13,7 @@ type Chain struct {
 	Type   string `json:"type" bson:"type"`     //[b|r|s], 链类型
 	Number string `json:"number" bson:"number"` // 链编号
 	Id     string `json:"id" bson:"id"`         // 节点id
-	Time   int64  `json:"time" bson:"time"`     // 时间
+	Time   time.Time  `json:"time" bson:"time"`     // 时间
 }
 
 // 链类型总数
