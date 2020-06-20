@@ -22,7 +22,7 @@ func (f *FlowService) UpdateFlowInfo(flowForm form.ReportFlowForm) (interface{},
 	}
 	param := bson.M{
 		"nodeId": nodeId,
-		"time":   nansToTime(flowForm.Time),
+		"time":   millisecondToTime(flowForm.Time),
 		"in":     flowForm.In,
 		"out":    flowForm.Out,
 	}
@@ -47,7 +47,7 @@ func (t *TotalFlowService) AddTotalFlow(flowForm form.TotalFlowForm) (interface{
 	param := bson.M{
 		"in":   flowForm.In,
 		"out":  flowForm.Out,
-		"time": nansToTime(flowForm.Time),
+		"time": millisecondToTime(flowForm.Time),
 	}
 	return t.dao.Add(param)
 }

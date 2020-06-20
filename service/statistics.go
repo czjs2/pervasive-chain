@@ -129,8 +129,8 @@ func (s *StatisticService) CountFlow(flowForm form.ReportFlowForm) (interface{},
 	update := options.FindOneAndUpdate()
 	update.SetUpsert(true)
 	flow := model.TotalFlow{}
-	err := totalFlowCollection.FindOneAndUpdate(context.TODO(), bson.M{"time": nansToTime(flowForm.Time)},
-		bson.M{"$inc": bson.M{"out": flowForm.Out, "in": flowForm.In,},"$set":bson.M{"time": nansToTime(flowForm.Time)}}, update).Decode(&flow)
+	err := totalFlowCollection.FindOneAndUpdate(context.TODO(), bson.M{"time": millisecondToTime(flowForm.Time)},
+		bson.M{"$inc": bson.M{"out": flowForm.Out, "in": flowForm.In,},"$set":bson.M{"time": millisecondToTime(flowForm.Time)}}, update).Decode(&flow)
 	if err != nil {
 		return nil, err
 	}

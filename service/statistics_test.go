@@ -49,6 +49,6 @@ func TestStatisticService_CountTps(t *testing.T) {
 
 func TestNanTime(t*testing.T){
 	now := time.Now()
-	toTime := nansToTime(now.UnixNano())
+	toTime := millisecondToTime(now.UnixNano())
 	fmt.Println(toTime)
 }

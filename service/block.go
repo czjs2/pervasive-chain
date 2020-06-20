@@ -57,7 +57,7 @@ func (b *BlockService) UpdateBlockInfo(blockForm form.ReportBlockForm) (interfac
 		"father":   blockForm.Father,
 		"hash":     blockForm.Hash,
 		"vrf":      blockForm.Vrf,
-		"time":     nansToTime(blockForm.Time),
+		"time":     millisecondToTime(blockForm.Time),
 		"interval": blockForm.Interval,
 		"trans":    blockForm.Trans,
 		"size":     blockForm.Size,

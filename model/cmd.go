@@ -17,7 +17,7 @@ type Cmd struct {
 type ReqCmd struct {
 	Type   string `json:"type"`   // b r s
 	Cmd    PyCmd  `json:"cmd"`    // 具体参数
-	Number int    `json:"number"` //区块高度
+	Number string    `json:"number"` //区块高度
 }
 
 

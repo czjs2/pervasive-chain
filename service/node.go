@@ -40,10 +40,6 @@ func (n *NodeService) ChainList() (interface{}, int, error) {
 	return n.dao.List(query)
 }
 
-func nansToTime(t int64) time.Time {
-	return time.Unix(t/(1000*1000*1000), t%(1000*1000*1000))
-}
-
 func (n *NodeService) FindAndUpdate(nodeForm form.HeartBeatFrom) (*model.Node, error) {
 	keyId := fmt.Sprintf("%s-%s", nodeForm.Type, nodeForm.Id)
 	if nodeForm.Time == 0 {
@@ -54,7 +50,7 @@ func (n *NodeService) FindAndUpdate(nodeForm form.HeartBeatFrom) (*model.Node, e
 		"type":     nodeForm.Type,
 		"keyId":    keyId,
 		"number":   nodeForm.Number,
-		"lastTime": nansToTime(nodeForm.Time).Local(),
+		"lastTime": millisecondToTime(nodeForm.Time).Local(),
 		//"cmd":      nil,
 		//"cmdTime":  nil,
 	}

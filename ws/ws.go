@@ -102,7 +102,7 @@ func (c *Client) Read() {
 		if err != nil {
 			return
 		}
-		fmt.Println("rec: ", string(message))
+		fmt.Println("ws rec: ", string(message))
 		cmd := model.Cmd{}
 		err = json.Unmarshal(message, &cmd)
 		if err != nil {
