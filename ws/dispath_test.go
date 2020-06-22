@@ -8,9 +8,37 @@ import (
 	"time"
 )
 
-func TestDispatch_DoChainInfo(t *testing.T) {
+func TestDispatch_WsBlockInfo(t *testing.T) {
 	cmd := model.Cmd{
 		Uri:   "blockInfo",
+		Body:model.ReqCmd{Type:"b",Number:"0"},
+		MsgId: time.Now().String(),
+	}
+	res, e := NewDisPatch().WsBlockInfo(cmd)
+	if e != nil {
+		fmt.Println(e)
+		return
+	}
+	fmt.Println(utils.JsonBeautFormat(res), e)
+}
+
+func TestDispatch_WsChainInfo(t *testing.T) {
+	cmd := model.Cmd{
+		Uri:   "chainInfo",
+		MsgId: time.Now().String(),
+	}
+	res, e := NewDisPatch().WsChainInfo(cmd)
+	if e != nil {
+		fmt.Println(e)
+		return
+	}
+	fmt.Println(utils.JsonBeautFormat(res), e)
+}
+
+// ws chainInfo
+func TestDispatch_DoChainInfo(t *testing.T) {
+	cmd := model.Cmd{
+		Uri:   "chainInfo",
 		MsgId: time.Now().String(),
 	}
 	res, e := NewDisPatch().DoChainInfo(cmd)
@@ -44,7 +72,7 @@ func TestDispatch_chainInfoById(t *testing.T) {
 
 			Type:   "ChainInfoById",
 			Cmd:    model.PyCmd{},
-			Number: 100000,
+			Number: "100000",
 		},
 	}
 	res, e := NewDisPatch().ChainInfoById(cmd)
@@ -62,7 +90,7 @@ func TestDispatch_GenCmd(t *testing.T) {
 
 			Type:   "ChainInfoById",
 			Cmd:    model.PyCmd{},
-			Number: 100000,
+			Number: "10000",
 		},
 		MsgId: time.Now().String(),
 	}

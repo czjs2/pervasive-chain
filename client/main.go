@@ -26,11 +26,15 @@ func main() {
 	interrupt1 := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt)
 	signal.Notify(interrupt1, os.Interrupt)
-	go apiClient(interrupt1)
-	time.Sleep(7 * time.Second)
+	//go apiClient(interrupt1)
+	//time.Sleep(7 * time.Second)
 	go socketClient(interrupt)
 	select {}
 }
+
+
+
+
 
 func apiClient(interrupt chan os.Signal) {
 
@@ -255,7 +259,7 @@ func socketClient(interrupt chan os.Signal) {
 				fmt.Println(err.Error())
 				return
 			}
-			blockInfoCmd := fmt.Sprintf(`{"uri":"blockInfo","body":{"type":"b","number":"100001"},"msgId":"msgId%d"}`, time.Now().Unix())
+			blockInfoCmd := fmt.Sprintf(`{"uri":"blockInfo","body":{"type":"b","number":"0"},"msgId":"msgId%d"}`, time.Now().Unix())
 			err = c.WriteMessage(websocket.TextMessage, []byte(blockInfoCmd))
 			if err != nil {
 				fmt.Println(err.Error())
@@ -270,6 +274,7 @@ func socketClient(interrupt chan os.Signal) {
 		}
 	}
 }
+
 
 // just test
 func cleanDbData() {

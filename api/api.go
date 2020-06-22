@@ -11,6 +11,11 @@ import (
 	"pervasive-chain/ws"
 )
 
+
+func TestPing(c *gin.Context){
+	c.JSONP(http.StatusOK,gin.H{"info:":"pong"})
+}
+
 // 心跳
 func ReportHeadBeatHandler(c *gin.Context) {
 	var heartForm form.HeartBeatFrom

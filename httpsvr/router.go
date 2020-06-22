@@ -11,11 +11,13 @@ func UseApi(engine *gin.Engine) *gin.RouterGroup {
 	// socket 连接
 	group.GET("conn", ws.WebSocketConnHandler)
 	// 心跳上报
-	group.POST("headbeat", api.ReportHeadBeatHandler)
+	group.POST("heartbeat", api.ReportHeadBeatHandler)
 	// 区块上报
 	group.POST("block", api.ReportBlockHandler)
 	// 流量上报
 	group.POST("flow", api.ReportFlowHandler)
+	// ping
+	group.GET("ping", api.TestPing)
 
 	return group
 }

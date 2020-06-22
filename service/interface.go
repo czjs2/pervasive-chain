@@ -16,6 +16,10 @@ type IStatisticsService interface {
 	CountTps() (interface{}, error)
 	// 所有链关系
 	AllChain() (interface{}, error)
+
+	// ws chainInfo 接口
+	ChainInfo()(interface{},error)
+	BlockInfo(cType,number string)(interface{},error)
 }
 
 //------------

@@ -17,9 +17,9 @@ func NewDisPatch() *Dispatch {
 func (d *Dispatch) Execute(cmd model.Cmd) ([]byte, error) {
 	switch cmd.Uri {
 	case BlockInfoCmd:
-		return d.DoBlockInfo(cmd)
+		return d.WsBlockInfo(cmd)
 	case ChainInfoCmd:
-		return d.DoChainInfo(cmd)
+		return d.WsChainInfo(cmd)
 	case ExecuteCmd:
 		return d.GenCmd(cmd)
 	case ChainInfoById:
@@ -51,7 +51,27 @@ func (d *Dispatch) GenCmd(cmd model.Cmd) ([]byte, error) {
 
 }
 
+func (d *Dispatch) WsBlockInfo(cmd model.Cmd) ([]byte, error) {
+	statisticService := service.NewStatisticService()
+	info, err := statisticService.BlockInfo(cmd.Body.Type, cmd.Body.Number)
+	if err != nil {
+		return NewRespErr(cmd, err.Error())
+	}
+	return NewSuccessResp(cmd, info)
+}
+
+func (d *Dispatch) WsChainInfo(cmd model.Cmd) ([]byte, error) {
+	statisticService := service.NewStatisticService()
+	chainInfo, err := statisticService.ChainInfo()
+	if err != nil {
+		return NewRespErr(cmd, err.Error())
+	}
+	return NewSuccessResp(cmd, chainInfo)
+}
+
 func (d *Dispatch) DoChainInfo(cmd model.Cmd) ([]byte, error) {
+
+	// 获取每条链上最新的一个区块数据
 
 	blockService := service.NewBlockService()
 	// 信标链 最新区块列表

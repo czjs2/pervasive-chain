@@ -20,13 +20,15 @@ func MyGinLogger(config *config.WebConfig) gin.HandlerFunc {
 	logFileName := "web.log"
 	fileName := path.Join(logFilePath, logFileName)
 	var writers []io.Writer
-
-	src, err := os.OpenFile(os.DevNull, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
-	if err != nil {
-		fmt.Println("err", err)
+	if config.Debug {
+		writers = append(writers, os.Stdout)
+	} else {
+		src, err := os.OpenFile(os.DevNull, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
+		if err != nil {
+			panic(err)
+		}
+		writers = append(writers, src)
 	}
-	writers = append(writers, src)
-
 	fileAndStdoutWriter := io.MultiWriter(writers...)
 	logger := logrus.New()
 	logger.Out = fileAndStdoutWriter

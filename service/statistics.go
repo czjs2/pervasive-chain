@@ -16,6 +16,71 @@ import (
 type StatisticService struct {
 }
 
+func (s *StatisticService) BlockInfo(cType, number string) (interface{}, error) {
+	collection := db.Collection(db.BlockInfoTable)
+	aggregate := options.Aggregate()
+	aggregate.SetAllowDiskUse(true)
+	cursor, err := collection.Aggregate(context.TODO(), []bson.M{
+		bson.M{"$match": bson.M{"type": cType, "number": number}},
+		bson.M{"$sort": bson.M{"height": -1}},
+		bson.M{"$limit": 1},
+		bson.M{"$project": bson.M{"_id": 0}},
+	}, aggregate)
+	defer db.CloseCursor(cursor)
+	if err != nil {
+		return nil, err
+	}
+	var res []interface{}
+	for cursor.Next(context.TODO()) {
+		param := model.Param{}
+		err := cursor.Decode(&param)
+		if err != nil {
+			return nil, err
+		}
+		res = append(res, param)
+	}
+	return res, nil
+}
+
+// ws chainInfo 接口
+func (s *StatisticService) ChainInfo() (interface{}, error) {
+	collection := db.Collection(db.BlockInfoTable)
+	aggregate := options.Aggregate()
+	aggregate.SetAllowDiskUse(true)
+	cursor, err := collection.Aggregate(context.TODO(), []bson.M{
+		bson.M{"$sort": bson.M{"height": -1}},
+		bson.M{"$group": bson.M{"_id": bson.M{"type": "$type", "number": "$number"},
+			"height":     bson.M{"$first": "$height"},
+			"id":         bson.M{"$first": "$id"},
+			"type":       bson.M{"$first": "$type"},
+			"detail":     bson.M{"$first": "$detail"},
+			"father":     bson.M{"$first": "$father"},
+			"hash":       bson.M{"$first": "$hash"},
+			"interval":   bson.M{"$first": "$interval"},
+			"size":       bson.M{"$first": "$size"},
+			"time":       bson.M{"$first": "$time"},
+			"trans":      bson.M{"$first": "$trans"},
+			"updateTime": bson.M{"$first": "$updateTime"},
+			"vrf":        bson.M{"$first": "$vrf"},
+		}},
+		bson.M{"$project": bson.M{"_id": 0}},
+	}, aggregate)
+	defer db.CloseCursor(cursor)
+	if err != nil {
+		return nil, err
+	}
+	var res []interface{}
+	for cursor.Next(context.TODO()) {
+		param := model.Param{}
+		err := cursor.Decode(param)
+		if err != nil {
+			return nil, err
+		}
+		res = append(res, param)
+	}
+	return res, nil
+}
+
 /*
 
    "height" : NumberLong(1),
@@ -130,7 +195,7 @@ func (s *StatisticService) CountFlow(flowForm form.ReportFlowForm) (interface{},
 	update.SetUpsert(true)
 	flow := model.TotalFlow{}
 	err := totalFlowCollection.FindOneAndUpdate(context.TODO(), bson.M{"time": millisecondToTime(flowForm.Time)},
-		bson.M{"$inc": bson.M{"out": flowForm.Out, "in": flowForm.In,},"$set":bson.M{"time": millisecondToTime(flowForm.Time)}}, update).Decode(&flow)
+		bson.M{"$inc": bson.M{"out": flowForm.Out, "in": flowForm.In,}, "$set": bson.M{"time": millisecondToTime(flowForm.Time)}}, update).Decode(&flow)
 	if err != nil {
 		return nil, err
 	}
