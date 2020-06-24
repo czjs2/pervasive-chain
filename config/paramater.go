@@ -9,6 +9,7 @@ const (
 	// SIGUSR2 linux SIGUSR2
 	SIGUSR2 = syscall.Signal(0xc)
 )
+
 // 通用分页参数
 const PageSize = 15
 
@@ -22,3 +23,6 @@ const BChain = "b"
 const RChain = "r"
 
 const SChain = "s"
+
+// 心跳时间
+const HeartBeatTime = 15

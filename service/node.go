@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"pervasive-chain/config"
 	"pervasive-chain/dao"
 	"pervasive-chain/db"
 	"pervasive-chain/form"
@@ -16,9 +17,19 @@ type NodeService struct {
 	dao dao.IDao
 }
 
-func (n *NodeService) UpdateOnLineNodeCmd(cmd model.PyCmd) (interface{}, error) {
-	query := bson.M{
+func (n *NodeService) ClearCmd() (interface{}, error) {
+	query := bson.M{}
+	param := bson.M{
+		"cmd":     nil,
+		"cmdTime": nil,
+	}
+	return n.dao.UpdateMany(query, param)
+}
 
+func (n *NodeService) UpdateOnLineNodeCmd(cmd model.PyCmd) (interface{}, error) {
+	now := time.Now().Add(-config.HeartBeatTime * time.Second)
+	query := bson.M{
+		"lastTime": bson.M{"$gte": now},
 	}
 	param := bson.M{
 		"cmd":     cmd,
@@ -26,11 +37,10 @@ func (n *NodeService) UpdateOnLineNodeCmd(cmd model.PyCmd) (interface{}, error) 
 	}
 	return n.dao.UpdateMany(query, param)
 }
-
 func (n *NodeService) OnLineList() (interface{}, int, error) {
-	// todo 在
+	now := time.Now().Add(-config.HeartBeatTime * time.Second)
 	query := []bson.M{
-		bson.M{"$match": bson.M{}},
+		bson.M{"$match": bson.M{"lastTime": bson.M{"$gte": now}}},
 	}
 	return n.dao.List(query)
 }

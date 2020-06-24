@@ -61,6 +61,7 @@ func (s *StatisticService) ChainInfo() (interface{}, error) {
 			"time":       bson.M{"$first": "$time"},
 			"trans":      bson.M{"$first": "$trans"},
 			"updateTime": bson.M{"$first": "$updateTime"},
+			"number": bson.M{"$first": "$number"},
 			"vrf":        bson.M{"$first": "$vrf"},
 		}},
 		bson.M{"$project": bson.M{"_id": 0}},

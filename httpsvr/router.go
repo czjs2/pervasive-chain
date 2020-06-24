@@ -18,6 +18,8 @@ func UseApi(engine *gin.Engine) *gin.RouterGroup {
 	group.POST("flow", api.ReportFlowHandler)
 	// ping
 	group.GET("ping", api.TestPing)
+	// 情况下发命令
+	group.POST("clearCmd", api.ClearCmdHandler)
 
 	return group
 }

@@ -8,6 +8,9 @@ import (
 	"time"
 )
 
+
+
+
 func TestDispatch_WsBlockInfo(t *testing.T) {
 	cmd := model.Cmd{
 		Uri:   "blockInfo",

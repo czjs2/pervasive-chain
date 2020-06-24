@@ -42,8 +42,15 @@ func (d *Dispatch) DoBlockInfo(cmd model.Cmd) ([]byte, error) {
 // 生成命令
 func (d *Dispatch) GenCmd(cmd model.Cmd) ([]byte, error) {
 	nodeService := service.NewNodeService()
-	// todo 计算每个节点交易数量
-	_, err := nodeService.UpdateOnLineNodeCmd(cmd.Body.Cmd)
+	_, total, err := nodeService.OnLineList()
+	if err != nil {
+		return NewRespErr(cmd, err.Error())
+	}
+	//todo 效验 四舍五入？
+	totalTrans := cmd.Body.Cmd.Params[0].(float64)
+	singTrans := totalTrans / float64(total)
+	cmd.Body.Cmd.Params = []interface{}{int(singTrans)}
+	_, err = nodeService.UpdateOnLineNodeCmd(cmd.Body.Cmd)
 	if err != nil {
 		return NewRespErr(cmd, err.Error())
 	}

@@ -4,16 +4,29 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"pervasive-chain/code"
+	"pervasive-chain/config"
 	"pervasive-chain/form"
 	"pervasive-chain/log"
+	"pervasive-chain/model"
 	"pervasive-chain/service"
 	"pervasive-chain/utils"
 	"pervasive-chain/ws"
+	"time"
 )
 
+func TestPing(c *gin.Context) {
+	c.JSONP(http.StatusOK, gin.H{"info:": "pong"})
+}
 
-func TestPing(c *gin.Context){
-	c.JSONP(http.StatusOK,gin.H{"info:":"pong"})
+// 清空下发命令
+func ClearCmdHandler(c *gin.Context) {
+	nodeService := service.NewNodeService()
+	_, err := nodeService.ClearCmd()
+	if err != nil {
+		c.JSONP(http.StatusOK, utils.FailResponse(err.Error()))
+	} else {
+		c.JSONP(http.StatusOK, utils.SuccessResponse("success"))
+	}
 }
 
 // 心跳
@@ -34,11 +47,22 @@ func ReportHeadBeatHandler(c *gin.Context) {
 			return
 		}
 	}
-	if node != nil {
+	if cmdCanSend(node) {
 		c.JSONP(http.StatusOK, utils.SuccessResponse(node.Cmd))
 	} else {
 		c.JSONP(http.StatusOK, utils.FailResponse("没有命令下发"))
 	}
+}
+
+// 判断命令是否能下发
+func cmdCanSend(node *model.Node) bool {
+	if node == nil {
+		return false
+	}
+	if time.Now().Sub(node.LastTime) < config.HeartBeatTime && time.Now().Sub(node.CmdTime) < config.HeartBeatTime {
+		return true
+	}
+	return false
 }
 
 // 块信息

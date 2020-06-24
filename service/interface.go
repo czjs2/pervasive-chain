@@ -31,6 +31,8 @@ type INodeService interface {
 	OnLineList() (interface{}, int, error)
 	// 批量更新
 	UpdateOnLineNodeCmd(cmd model.PyCmd) (interface{}, error)
+
+	ClearCmd()(interface{},error)
 }
 
 //--------------
