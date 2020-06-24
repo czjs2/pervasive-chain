@@ -26,7 +26,7 @@ func main() {
 	interrupt1 := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt)
 	signal.Notify(interrupt1, os.Interrupt)
-	go apiClient(interrupt1)
+//	go apiClient(interrupt1)
 	time.Sleep(7 * time.Second)
 	go socketClient(interrupt)
 	select {}

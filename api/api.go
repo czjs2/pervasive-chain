@@ -33,6 +33,7 @@ func ClearCmdHandler(c *gin.Context) {
 func ReportHeadBeatHandler(c *gin.Context) {
 	var heartForm form.HeartBeatFrom
 	err := c.ShouldBind(&heartForm)
+	log.Logger.Debug(heartForm)
 	if err != nil {
 		log.Logger.Errorln(c.Request.URL, "heart report parameter is error ", err.Error())
 		c.JSONP(http.StatusOK, utils.FailResponse(err.Error()))
@@ -73,6 +74,7 @@ func cmdCanSend(node *model.Node) bool {
 func ReportBlockHandler(c *gin.Context) {
 	var blockForm form.ReportBlockForm
 	err := c.ShouldBind(&blockForm)
+	log.Logger.Debug(blockForm)
 	if err != nil {
 		log.Logger.Errorln("block report parameter is error", err.Error())
 		c.JSONP(http.StatusOK, utils.FailResponse(err.Error()))
@@ -103,6 +105,7 @@ func ReportBlockHandler(c *gin.Context) {
 func ReportFlowHandler(c *gin.Context) {
 	var flowForm form.ReportFlowForm
 	err := c.ShouldBind(&flowForm)
+	log.Logger.Debug(flowForm)
 	if err != nil {
 		log.Logger.Errorln(c.Request.URL, "flow report parameter is error ", err.Error())
 		c.JSONP(http.StatusOK, utils.FailResponse(err.Error()))

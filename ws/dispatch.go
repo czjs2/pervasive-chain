@@ -43,7 +43,6 @@ func (d *Dispatch) DoBlockInfo(cmd model.Cmd) ([]byte, error) {
 // 生成命令
 func (d *Dispatch) GenCmd(cmd model.Cmd) ([]byte, error) {
 	nodeService := service.NewNodeService()
-
 	// todo 内存记录时间更好？
 	nodeCmd, err := nodeService.LatestNodeCmd()
 	if err != nil {
@@ -53,6 +52,9 @@ func (d *Dispatch) GenCmd(cmd model.Cmd) ([]byte, error) {
 		return NewRespErr(cmd, "前一个命令还在下发中...")
 	}
 	_, total, err := nodeService.OnLineList()
+	if total==0{
+		return NewRespErr(cmd,"没有在线的节点...")
+	}
 	if err != nil {
 		return NewRespErr(cmd, err.Error())
 	}
