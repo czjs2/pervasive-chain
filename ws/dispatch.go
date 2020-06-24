@@ -43,6 +43,8 @@ func (d *Dispatch) DoBlockInfo(cmd model.Cmd) ([]byte, error) {
 // 生成命令
 func (d *Dispatch) GenCmd(cmd model.Cmd) ([]byte, error) {
 	nodeService := service.NewNodeService()
+
+	// todo 内存记录时间更好？
 	nodeCmd, err := nodeService.LatestNodeCmd()
 	if err != nil {
 		return NewRespErr(cmd, err.Error())

@@ -73,7 +73,7 @@ func TestDispatch_chainInfoById(t *testing.T) {
 			Type: "s",
 			Cmd: model.PyCmd{
 				Key:    "transfer",
-				Params: []interface{}{1000.0},
+				Params: []float64{1000.0},
 			},
 			Number: "0",
 		},

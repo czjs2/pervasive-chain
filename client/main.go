@@ -26,8 +26,8 @@ func main() {
 	interrupt1 := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt)
 	signal.Notify(interrupt1, os.Interrupt)
-	//go apiClient(interrupt1)
-	//time.Sleep(7 * time.Second)
+	go apiClient(interrupt1)
+	time.Sleep(7 * time.Second)
 	go socketClient(interrupt)
 	select {}
 }
@@ -177,33 +177,33 @@ func reportBlock() error {
 func reportHeartBeat() error {
 	bHeartform := form.HeartBeatFrom{
 		Type:   "b",
-		Number: fmt.Sprintf("10000%d", utils.Rand(5)),
-		Id:     fmt.Sprintf("10000%d", utils.Rand(5)),
+		Number: fmt.Sprintf("%d", utils.Rand(1)),
+		Id:     fmt.Sprintf("%d", utils.Rand(1)),
 		Time:   utils.GetTime().UnixNano(),
 	}
 	rHeartform := form.HeartBeatFrom{
 		Type:   "r",
-		Number: fmt.Sprintf("10000%d", utils.Rand(5)),
-		Id:     fmt.Sprintf("10000%d", utils.Rand(5)),
+		Number: fmt.Sprintf("%d", utils.Rand(1)),
+		Id:     fmt.Sprintf("%d", utils.Rand(1)),
 		Time:   utils.GetTime().UnixNano(),
 	}
 	sHeartform := form.HeartBeatFrom{
 		Type:   "s",
-		Number: fmt.Sprintf("10000%d", utils.Rand(5)),
-		Id:     fmt.Sprintf("10000%d", utils.Rand(5)),
+		Number: fmt.Sprintf("%d", utils.Rand(1)),
+		Id:     fmt.Sprintf("%d", utils.Rand(1)),
 		Time:   utils.GetTime().UnixNano(),
 	}
-	_, err := HeartBeat(host, "/v1.0/headbeat", "", bHeartform)
+	_, err := HeartBeat(host, "/v1.0/heartbeat", "", bHeartform)
 	if err != nil {
 		fmt.Println(err.Error())
 		return nil
 	}
-	_, err = HeartBeat(host, "/v1.0/headbeat", "", rHeartform)
+	_, err = HeartBeat(host, "/v1.0/heartbeat", "", rHeartform)
 	if err != nil {
 		fmt.Println(err.Error())
 		return nil
 	}
-	_, err = HeartBeat(host, "/v1.0/headbeat", "", sHeartform)
+	_, err = HeartBeat(host, "/v1.0/heartbeat", "", sHeartform)
 	if err != nil {
 		fmt.Println(err.Error())
 		return nil
