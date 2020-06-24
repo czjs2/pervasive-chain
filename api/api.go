@@ -59,6 +59,7 @@ func cmdCanSend(node *model.Node) bool {
 	if node == nil {
 		return false
 	}
+	// 心跳时间和命令时间 效验
 	if time.Now().Sub(node.LastTime) < config.HeartBeatTime && time.Now().Sub(node.CmdTime) < config.HeartBeatTime {
 		return true
 	}
