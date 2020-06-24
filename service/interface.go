@@ -18,8 +18,8 @@ type IStatisticsService interface {
 	AllChain() (interface{}, error)
 
 	// ws chainInfo 接口
-	ChainInfo()(interface{},error)
-	BlockInfo(cType,number string)(interface{},error)
+	ChainInfo() (interface{}, error)
+	BlockInfo(cType, number string) (interface{}, error)
 }
 
 //------------
@@ -32,7 +32,9 @@ type INodeService interface {
 	// 批量更新
 	UpdateOnLineNodeCmd(cmd model.PyCmd) (interface{}, error)
 
-	ClearCmd()(interface{},error)
+	ClearCmd() (interface{}, error)
+
+	LatestNodeCmd() (*model.Node, error)
 }
 
 //--------------

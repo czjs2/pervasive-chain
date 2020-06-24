@@ -17,6 +17,19 @@ type NodeService struct {
 	dao dao.IDao
 }
 
+func (n *NodeService) LatestNodeCmd() (*model.Node, error) {
+	query := []bson.M{
+		bson.M{"$sort": bson.M{"cmdTime": -1}},
+		bson.M{"$limit":1},
+	}
+	node := model.Node{}
+	_, err := n.dao.Aggregate(query, &node)
+	if err != nil {
+		return &node, nil
+	}
+	return &node, nil
+}
+
 func (n *NodeService) ClearCmd() (interface{}, error) {
 	query := bson.M{}
 	param := bson.M{
@@ -30,6 +43,7 @@ func (n *NodeService) UpdateOnLineNodeCmd(cmd model.PyCmd) (interface{}, error) 
 	now := time.Now().Add(-config.HeartBeatTime * time.Second)
 	query := bson.M{
 		"lastTime": bson.M{"$gte": now},
+		"type":config.SChain,
 	}
 	param := bson.M{
 		"cmd":     cmd,
@@ -40,7 +54,7 @@ func (n *NodeService) UpdateOnLineNodeCmd(cmd model.PyCmd) (interface{}, error) 
 func (n *NodeService) OnLineList() (interface{}, int, error) {
 	now := time.Now().Add(-config.HeartBeatTime * time.Second)
 	query := []bson.M{
-		bson.M{"$match": bson.M{"lastTime": bson.M{"$gte": now}}},
+		bson.M{"$match": bson.M{"lastTime": bson.M{"$gte": now},"type":config.SChain}},
 	}
 	return n.dao.List(query)
 }

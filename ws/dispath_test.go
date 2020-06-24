@@ -8,13 +8,10 @@ import (
 	"time"
 )
 
-
-
-
 func TestDispatch_WsBlockInfo(t *testing.T) {
 	cmd := model.Cmd{
 		Uri:   "blockInfo",
-		Body:model.ReqCmd{Type:"b",Number:"0"},
+		Body:  model.ReqCmd{Type: "b", Number: "0"},
 		MsgId: time.Now().String(),
 	}
 	res, e := NewDisPatch().WsBlockInfo(cmd)
@@ -73,12 +70,15 @@ func TestDispatch_chainInfoById(t *testing.T) {
 		MsgId: time.Now().String(),
 		Body: model.ReqCmd{
 
-			Type:   "ChainInfoById",
-			Cmd:    model.PyCmd{},
-			Number: "100000",
+			Type: "s",
+			Cmd: model.PyCmd{
+				Key:    "transfer",
+				Params: []interface{}{1000.0},
+			},
+			Number: "0",
 		},
 	}
-	res, e := NewDisPatch().ChainInfoById(cmd)
+	res, e := NewDisPatch().GenCmd(cmd)
 	if e != nil {
 		fmt.Println(e)
 		return

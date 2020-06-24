@@ -5,6 +5,7 @@ import (
 	"pervasive-chain/config"
 	"pervasive-chain/model"
 	"pervasive-chain/service"
+	"time"
 )
 
 type Dispatch struct {
@@ -42,14 +43,23 @@ func (d *Dispatch) DoBlockInfo(cmd model.Cmd) ([]byte, error) {
 // 生成命令
 func (d *Dispatch) GenCmd(cmd model.Cmd) ([]byte, error) {
 	nodeService := service.NewNodeService()
+	nodeCmd, err := nodeService.LatestNodeCmd()
+	if err != nil {
+		return NewRespErr(cmd, err.Error())
+	}
+	if time.Now().Sub(nodeCmd.CmdTime) < config.HeartBeatTime {
+		return NewRespErr(cmd, "前一个命令还在下发中...")
+	}
 	_, total, err := nodeService.OnLineList()
 	if err != nil {
 		return NewRespErr(cmd, err.Error())
 	}
-	//todo 效验 四舍五入？
-	totalTrans := cmd.Body.Cmd.Params[0].(float64)
+	if len(cmd.Body.Cmd.Params) == 0 {
+		return NewRespErr(cmd, "参数为空")
+	}
+	totalTrans := cmd.Body.Cmd.Params[0]
 	singTrans := totalTrans / float64(total)
-	cmd.Body.Cmd.Params = []interface{}{int(singTrans)}
+	cmd.Body.Cmd.Params = []float64{singTrans}
 	_, err = nodeService.UpdateOnLineNodeCmd(cmd.Body.Cmd)
 	if err != nil {
 		return NewRespErr(cmd, err.Error())

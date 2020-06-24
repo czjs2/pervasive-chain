@@ -3,7 +3,7 @@ package model
 // 下发执行命令
 type PyCmd struct {
 	Key    string        `json:"key"`
-	Params []interface{} `json:"params"`
+	Params []float64 `json:"params"`
 }
 
 type Params map[string]interface{}
