@@ -8,9 +8,7 @@ import (
 
 func TestS(t *testing.T){
 	now := time.Now()
-	i := now.UnixNano() / 1e6
-	toTime := millisecondToTime(i)
-	unix := time.Unix(i/1000, (i%1000)*1e9)
+	toTime := millisecondToTime(now.UnixNano()/1e6)
 	fmt.Println(now,toTime)
-	fmt.Println(unix)
+	fmt.Println(now.UnixNano(),toTime.UnixNano())
 }
