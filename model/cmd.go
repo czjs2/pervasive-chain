@@ -2,11 +2,13 @@ package model
 
 // 下发执行命令
 type PyCmd struct {
-	Key    string        `json:"key"`
-	Params []float64 `json:"params"`
+	Key    string `json:"key"`
+	Params Params `json:"params"`
 }
 
-type Params map[string]interface{}
+type Params struct {
+	Amount int `json:"amount"`
+}
 
 type Cmd struct {
 	Uri   string `json:"uri"`
@@ -17,9 +19,8 @@ type Cmd struct {
 type ReqCmd struct {
 	Type   string `json:"type"`   // b r s
 	Cmd    PyCmd  `json:"cmd"`    // 具体参数
-	Number string    `json:"number"` //区块高度
+	Number string `json:"number"` //区块高度
 }
-
 
 type Subscribe struct {
 	Event string      `json:"event"`

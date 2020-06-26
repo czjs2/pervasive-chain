@@ -26,7 +26,7 @@ func main() {
 	interrupt1 := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt)
 	signal.Notify(interrupt1, os.Interrupt)
-//	go apiClient(interrupt1)
+	go apiClient(interrupt1)
 	time.Sleep(7 * time.Second)
 	go socketClient(interrupt)
 	select {}
@@ -265,7 +265,7 @@ func socketClient(interrupt chan os.Signal) {
 				fmt.Println(err.Error())
 				return
 			}
-			cmdInfo := fmt.Sprintf(`{"uri":"cmd","body":{"type":"b","cmd":{"key":"transfer","params":[100]}},"msgId":"msgId%d"}`, time.Now().Unix())
+			cmdInfo := fmt.Sprintf(`{"uri":"cmd","body":{"type":"b","cmd":{"key":"transfer","params":{"amount":100}}},"msgId":"msgId%d"}`, time.Now().Unix())
 			err := c.WriteMessage(websocket.TextMessage, []byte(cmdInfo))
 			if err != nil {
 				log.Println("write:", err)

@@ -51,7 +51,7 @@ func ReportHeadBeatHandler(c *gin.Context) {
 	if cmdCanSend(node) {
 		c.JSONP(http.StatusOK, utils.SuccessResponse(node.Cmd))
 	} else {
-		c.JSONP(http.StatusOK, utils.FailResponse("没有命令下发"))
+		c.JSONP(http.StatusOK, utils.SuccessResponse("没有命令下发"))
 	}
 }
 

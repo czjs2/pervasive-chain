@@ -58,12 +58,12 @@ func (d *Dispatch) GenCmd(cmd model.Cmd) ([]byte, error) {
 	if err != nil {
 		return NewRespErr(cmd, err.Error())
 	}
-	if len(cmd.Body.Cmd.Params) == 0 {
-		return NewRespErr(cmd, "参数为空")
+	if cmd.Body.Cmd.Params.Amount== 0 {
+		return NewRespErr(cmd, "cmd 交易数为 0")
 	}
-	totalTrans := cmd.Body.Cmd.Params[0]
-	singTrans := totalTrans / float64(total)
-	cmd.Body.Cmd.Params = []float64{singTrans}
+	totalTrans := cmd.Body.Cmd.Params.Amount
+	singTrans := totalTrans / total
+	cmd.Body.Cmd.Params = model.Params{Amount:singTrans}
 	_, err = nodeService.UpdateOnLineNodeCmd(cmd.Body.Cmd)
 	if err != nil {
 		return NewRespErr(cmd, err.Error())
