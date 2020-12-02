@@ -1,4 +1,4 @@
-package main
+package app
 
 import (
 	"fmt"
@@ -14,11 +14,11 @@ import (
 	"time"
 )
 
-func main() {
+func Run() {
 
 	c := make(chan os.Signal)
 	//c1 := make(chan os.Signal)
-	signal.Notify(c,syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT, config.SIGUSR1, config.SIGUSR2)
+	signal.Notify(c, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT, config.SIGUSR1, config.SIGUSR2)
 	//signal.Notify(c1,syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT, config.SIGUSR1, config.SIGUSR2)
 
 	prjConfig, err := config.ReadWebCfg("./web-config.json")
@@ -42,7 +42,7 @@ func main() {
 	}
 }
 
-func exitOs(){
+func exitOs() {
 	now := time.Now().Format("2006-01-02 15:04:05")
 	fmt.Printf("%s Default Sig Exit ...\n", now)
 	os.Exit(0)

@@ -1,9 +1,9 @@
 {
-  "MongodbUrl": "mongodb://pervasive:xjrw2020@139.186.84.15:27987,139.186.84.15:27988,139.186.84.15:27989/pervasive",
+  "MongodbUrl": "mongodb://pynxtest:xjrw2020@118.24.168.230:27017,118.24.168.230:27018,118.24.168.230:27019/pynxtest",
   "Debug": true,
   "HTTPListen": "0.0.0.0:9999",
   "WebRoot": "./webroot",
   "HtmlTemplate": "./webroot/template",
-  "DevMongodbUrl": "mongodb://pervasivedev:xjrw2020@139.186.84.15:27987,139.186.84.15:27988,139.186.84.15:27989/pervasivedev",
+  "DevMongodbUrl": "mongodb://pynxtest:xjrw2020@118.24.168.230:27017,118.24.168.230:27018,118.24.168.230:27019/pynxtest",
   "LogPath": "./log"
 }
