@@ -7,6 +7,8 @@ import (
 	"pervasive-chain/model"
 )
 
+type Param map[string]interface{}
+
 func ReadWebCfg(path string) (*model.RuntimeConfig, error) {
 	PrjConfig := &model.RuntimeConfig{}
 	d, err := ioutil.ReadFile(path)

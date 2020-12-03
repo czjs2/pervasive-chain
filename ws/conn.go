@@ -8,8 +8,8 @@ import (
 )
 
 func WebSocketConnHandler(c *gin.Context) {
-	conn, error := (&websocket.Upgrader{CheckOrigin: func(r *http.Request) bool { return true }}).Upgrade(c.Writer, c.Request, nil)
-	if error != nil {
+	conn, err := (&websocket.Upgrader{CheckOrigin: func(r *http.Request) bool { return true }}).Upgrade(c.Writer, c.Request, nil)
+	if err != nil {
 		http.NotFound(c.Writer, c.Request)
 		return
 	}

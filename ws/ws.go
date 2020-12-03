@@ -115,7 +115,6 @@ func (c *Client) Read() {
 		}
 		resp, err := c.Dispatch.Execute(cmd)
 		if err != nil {
-			// todo ?
 			c.Send <- resp
 		} else {
 			c.Send <- resp

@@ -2,10 +2,7 @@ package ws
 
 import (
 	"fmt"
-	"pervasive-chain/config"
 	"pervasive-chain/model"
-	"pervasive-chain/service"
-	"time"
 )
 
 type Dispatch struct {
@@ -31,107 +28,27 @@ func (d *Dispatch) Execute(cmd model.Cmd) ([]byte, error) {
 }
 
 func (d *Dispatch) DoBlockInfo(cmd model.Cmd) ([]byte, error) {
-	blockService := service.NewBlockService()
-	latestBlock, err := blockService.LatestBlock()
-	if err != nil {
-		return NewRespErr(cmd, err.Error())
-	}
-	return NewSuccessResp(cmd, latestBlock)
+	panic(d)
 
 }
 
 // 生成命令
 func (d *Dispatch) GenCmd(cmd model.Cmd) ([]byte, error) {
-	nodeService := service.NewNodeService()
-	// todo 内存记录时间更好？
-	nodeCmd, err := nodeService.LatestNodeCmd()
-	if err != nil {
-		return NewRespErr(cmd, err.Error())
-	}
-	if time.Now().Sub(nodeCmd.CmdTime) < config.HeartBeatTime {
-		return NewRespErr(cmd, "前一个命令还在下发中...")
-	}
-	_, total, err := nodeService.OnLineList()
-	if total==0{
-		return NewRespErr(cmd,"没有在线的节点...")
-	}
-	if err != nil {
-		return NewRespErr(cmd, err.Error())
-	}
-	if cmd.Body.Cmd.Params.Amount== 0 {
-		return NewRespErr(cmd, "cmd 交易数为 0")
-	}
-	totalTrans := cmd.Body.Cmd.Params.Amount
-	singTrans := totalTrans / total
-	cmd.Body.Cmd.Params = model.Params{Amount:singTrans}
-	_, err = nodeService.UpdateOnLineNodeCmd(cmd.Body.Cmd)
-	if err != nil {
-		return NewRespErr(cmd, err.Error())
-	}
-	return NewSuccessResp(cmd, nil)
+	panic(d)
 
 }
-
 func (d *Dispatch) WsBlockInfo(cmd model.Cmd) ([]byte, error) {
-	statisticService := service.NewStatisticService()
-	info, err := statisticService.BlockInfo(cmd.Body.Type, cmd.Body.Number)
-	if err != nil {
-		return NewRespErr(cmd, err.Error())
-	}
-	return NewSuccessResp(cmd, info)
+	panic(d)
 }
 
 func (d *Dispatch) WsChainInfo(cmd model.Cmd) ([]byte, error) {
-	statisticService := service.NewStatisticService()
-	chainInfo, err := statisticService.ChainInfo()
-	if err != nil {
-		return NewRespErr(cmd, err.Error())
-	}
-	return NewSuccessResp(cmd, chainInfo)
+	panic(d)
 }
 
 func (d *Dispatch) DoChainInfo(cmd model.Cmd) ([]byte, error) {
-
-	// 获取每条链上最新的一个区块数据
-
-	blockService := service.NewBlockService()
-	// 信标链 最新区块列表
-	blockList, _, err := blockService.BlockList(config.BChain, "")
-	if err != nil {
-		return NewRespErr(cmd, err.Error())
-	}
-	totalFlowService := service.NewTotalFlowService()
-	// 总带宽
-	totalFlowList, _, err := totalFlowService.FlowList()
-	if err != nil {
-		return NewRespErr(cmd, err.Error())
-	}
-	statisticService := service.NewStatisticService()
-	// 节点总数
-	countNode, err := statisticService.CountNode()
-	if err != nil {
-		return NewRespErr(cmd, err.Error())
-	}
-	// 各种链信息
-	allChain, err := statisticService.AllChain()
-	if err != nil {
-		return NewRespErr(cmd, err.Error())
-	}
-	p := model.P{
-		"beaconBlockList": blockList,
-		"totalFlow":       totalFlowList,
-		"countNode":       countNode,
-		"chainList":       allChain,
-	}
-	return NewSuccessResp(cmd, p)
+	panic(d)
 }
 
-// 指定链前 100个区块
 func (d *Dispatch) ChainInfoById(cmd model.Cmd) ([]byte, error) {
-	blockService := service.NewBlockService()
-	list, _, err := blockService.BlockList(cmd.Body.Type, string(cmd.Body.Number))
-	if err != nil {
-		return NewRespErr(cmd, err.Error())
-	}
-	return NewSuccessResp(cmd, list)
+	panic(d)
 }
