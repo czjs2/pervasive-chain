@@ -1,4 +1,4 @@
-package ws
+package websocket
 
 import "pervasive-chain/model"
 

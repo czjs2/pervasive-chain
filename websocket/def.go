@@ -1,4 +1,4 @@
-package ws
+package websocket
 
 const ChainInfoCmd = "chainInfo" // 链整体情况获取
 

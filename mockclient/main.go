@@ -11,7 +11,7 @@ import (
 	"os"
 	"os/signal"
 	"pervasive-chain/config"
-	"pervasive-chain/db"
+	"pervasive-chain/mongodb"
 	"pervasive-chain/form"
 	"pervasive-chain/utils"
 	"time"
@@ -283,16 +283,16 @@ func cleanDbData() {
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
-	err = db.InitMongo(prjConfig)
+	err = mongodb.InitMongo(prjConfig)
 
-	collection := db.Collection(db.Node)
-	collection1 := db.Collection(db.BlockInfoTable)
-	collection2 := db.Collection(db.TotalChainTable)
-	collection3 := db.Collection(db.HistoryBlockInfoTable)
-	collection4 := db.Collection(db.NodeBandTable)
-	collection5 := db.Collection(db.TotalBandWithTable)
-	collection6 := db.Collection(db.FlowTable)
-	collection7 := db.Collection(db.TotalFlowTable)
+	collection := mongodb.Collection(mongodb.Node)
+	collection1 := mongodb.Collection(mongodb.BlockInfoTable)
+	collection2 := mongodb.Collection(mongodb.TotalChainTable)
+	collection3 := mongodb.Collection(mongodb.HistoryBlockInfoTable)
+	collection4 := mongodb.Collection(mongodb.NodeBandTable)
+	collection5 := mongodb.Collection(mongodb.TotalBandWithTable)
+	collection6 := mongodb.Collection(mongodb.FlowTable)
+	collection7 := mongodb.Collection(mongodb.TotalFlowTable)
 	_, _ = collection.DeleteMany(context.TODO(), bson.M{})
 	_, _ = collection1.DeleteMany(context.TODO(), bson.M{})
 	_, _ = collection2.DeleteMany(context.TODO(), bson.M{})

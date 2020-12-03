@@ -1,4 +1,4 @@
-package ws
+package websocket
 
 import (
 	"encoding/json"
@@ -95,7 +95,6 @@ func (c *Client) Ping() error {
 }
 
 
-// 发送失败直接断掉重连
 func (c *Client) Read() {
 	defer func() {
 		Manager.Unregister <- c
@@ -113,7 +112,9 @@ func (c *Client) Read() {
 			fmt.Println(err.Error())
 			return
 		}
+
 		resp, err := c.Dispatch.Execute(cmd)
+
 		if err != nil {
 			c.Send <- resp
 		} else {

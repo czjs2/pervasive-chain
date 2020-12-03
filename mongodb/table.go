@@ -1,4 +1,4 @@
-package db
+package mongodb
 
 const (
 	BlocksTable    = "blocks"    // 区块表

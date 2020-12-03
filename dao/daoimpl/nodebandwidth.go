@@ -2,12 +2,12 @@ package daoimpl
 
 import (
 	"pervasive-chain/dao"
-	"pervasive-chain/db"
+	"pervasive-chain/mongodb"
 )
 
 type NodeBandDao struct {
-	dao db.IDao
+	dao mongodb.IDao
 }
 func NewNodeBandDao() dao.INodeBandDao{
-	return &NodeBandDao{dao:db.NewDaoWithTable()}
+	return &NodeBandDao{dao: mongodb.NewDaoWithTable()}
 }
