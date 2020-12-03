@@ -1,7 +1,13 @@
 package main
 
-import "pervasive-chain/app"
+import (
+	"log"
+	"pervasive-chain/app"
+)
 
 func main() {
-	app.Run()
+	err := app.Run("./web-config.json")
+	if err != nil {
+		log.Fatal(err)
+	}
 }

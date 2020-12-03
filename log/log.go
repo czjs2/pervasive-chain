@@ -2,36 +2,26 @@ package log
 
 import (
 	"fmt"
-	"io"
-	"os"
-	"path"
-	"pervasive-chain/config"
-	"time"
-
 	"github.com/gin-gonic/gin"
 	"github.com/lestrrat-go/file-rotatelogs"
 	"github.com/rifflock/lfshook"
 	"github.com/sirupsen/logrus"
+	"os"
+	"path"
+	"time"
 )
 
 //MyGinLogger gin自定义logrus日志
-func MyGinLogger(config *config.WebConfig) gin.HandlerFunc {
-	logFilePath := config.LogPath
+func MyGinLogger(logPath string) gin.HandlerFunc {
+	logFilePath := logPath
 	logFileName := "web.log"
 	fileName := path.Join(logFilePath, logFileName)
-	var writers []io.Writer
-	if config.Debug {
-		writers = append(writers, os.Stdout)
-	} else {
-		src, err := os.OpenFile(os.DevNull, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
-		if err != nil {
-			panic(err)
-		}
-		writers = append(writers, src)
+	src, err := os.OpenFile(os.DevNull, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
+	if err != nil {
+		fmt.Println("err", err)
 	}
-	fileAndStdoutWriter := io.MultiWriter(writers...)
 	logger := logrus.New()
-	logger.Out = fileAndStdoutWriter
+	logger.Out = src
 	logger.SetLevel(logrus.DebugLevel)
 	// 设置 rotatelogs
 	logWriter, err := rotatelogs.New(
@@ -40,9 +30,6 @@ func MyGinLogger(config *config.WebConfig) gin.HandlerFunc {
 		rotatelogs.WithMaxAge(7*24*time.Hour),
 		rotatelogs.WithRotationTime(24*time.Hour),
 	)
-	if err != nil {
-		fmt.Println(err.Error())
-	}
 	writeMap := lfshook.WriterMap{
 		logrus.InfoLevel:  logWriter,
 		logrus.FatalLevel: logWriter,
@@ -51,10 +38,12 @@ func MyGinLogger(config *config.WebConfig) gin.HandlerFunc {
 		logrus.ErrorLevel: logWriter,
 		logrus.PanicLevel: logWriter,
 	}
+
 	lfHook := lfshook.NewHook(writeMap, &logrus.JSONFormatter{
 		TimestampFormat: "2006-01-02 15:04:05",
 	})
 	logger.AddHook(lfHook)
+
 	return func(c *gin.Context) {
 		startTime := time.Now()
 		c.Next()
@@ -74,25 +63,21 @@ func MyGinLogger(config *config.WebConfig) gin.HandlerFunc {
 	}
 }
 
+// Logger 逻辑日志
 var Logger *logrus.Logger
 
-func MyLogicLogger(config *config.WebConfig) (*logrus.Logger, error) {
-	logFilePath := config.LogPath
+//MyLogicLogger 自定义logrus日志
+func MyLogicLogger(logPath string) (*logrus.Logger, error) {
+	logFilePath := logPath
 	logFileName := "logic.log"
 	fileName := path.Join(logFilePath, logFileName)
-	var writers []io.Writer
-	if config.Debug {
-		writers = append(writers, os.Stdout)
-	} else {
-		src, err := os.OpenFile(os.DevNull, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
-		if err != nil {
-			return nil, err
-		}
-		writers = append(writers, src)
+	src, err := os.OpenFile(os.DevNull, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
+	if err != nil {
+		return nil, err
 	}
-	fileAndStdoutWriter := io.MultiWriter(writers...)
+
 	logger := logrus.New()
-	logger.Out = fileAndStdoutWriter
+	logger.Out = src
 	logger.SetLevel(logrus.DebugLevel)
 	logWriter, err := rotatelogs.New(
 		fileName+".%Y%m%d.log",
@@ -100,9 +85,6 @@ func MyLogicLogger(config *config.WebConfig) (*logrus.Logger, error) {
 		rotatelogs.WithMaxAge(7*24*time.Hour),
 		rotatelogs.WithRotationTime(24*time.Hour),
 	)
-	if err != nil {
-		return nil, err
-	}
 	writeMap := lfshook.WriterMap{
 		logrus.InfoLevel:  logWriter,
 		logrus.FatalLevel: logWriter,

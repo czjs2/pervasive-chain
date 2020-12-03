@@ -38,6 +38,7 @@ func (manager *ClientManager) Start(c chan os.Signal) {
 		select {
 		case <-c:
 			manager.ClosetAllClient()
+			return
 		case conn := <-manager.Register:
 			manager.Clients[conn] = true
 			log.Logger.Infoln("ws client conn ...", conn.ID, conn.ClientIp, len(manager.Clients))
@@ -55,6 +56,8 @@ func (manager *ClientManager) Start(c chan os.Signal) {
 
 				}
 			}
+		default:
+
 		}
 	}
 }
@@ -90,6 +93,7 @@ func (c *Client) Ping() error {
 	}
 	return nil
 }
+
 
 // 发送失败直接断掉重连
 func (c *Client) Read() {

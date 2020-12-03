@@ -1,65 +1,63 @@
 package utils
 
 import (
+	"pervasive-chain/config"
 	"fmt"
-	"strconv"
 	"time"
 )
 
-// 时间格式化参数
-const SysTimefrom = "2006-01-02 15:04:05"
-
-func GetTime() time.Time {
-	return time.Now()
+// 一个月的天数
+func MonthDays(now time.Time) (int64, error) {
+	month := int(now.Month())
+	var sMonth string
+	if month < 10 {
+		sMonth = fmt.Sprintf("0%d", month)
+	} else {
+		sMonth = fmt.Sprintf("%d", month)
+	}
+	sTime, err := ParseLocalTime(fmt.Sprintf("%d-%s-01 00:00:00", now.Year(), sMonth))
+	if err != nil {
+		return 0, err
+	}
+	var eMonth string
+	var year = now.Year()
+	tMonth := month + 1
+	if tMonth > 12 {
+		eMonth = "01"
+		year = now.Year() + 1
+	} else if tMonth < 10 {
+		eMonth = fmt.Sprintf("0%d", tMonth)
+	} else {
+		eMonth = fmt.Sprintf("%d", tMonth)
+	}
+	eTime, err := ParseLocalTime(fmt.Sprintf("%d-%s-01 00:00:00", year, eMonth))
+	if err != nil {
+		return 0, err
+	}
+	return int64(eTime.Sub(sTime).Hours() / 24), nil
 }
 
-func GetNowTime() string {
+// 获取本自然周的第一天的日期
+func GetWeekFirstDayTime() time.Time {
+	var weeks = []string{"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"}
 	now := time.Now()
-	month := strconv.Itoa(int(now.Month()))
-	day := strconv.Itoa(now.Day())
-	if len(month) == 1 {
-		month = "0" + month
+	var firstTime = time.Now()
+	for i := 0; i < len(weeks); i++ {
+		if weeks[i] == now.Weekday().String() {
+			duration := time.Duration(-(i*24+now.Hour())*3600 - 60*now.Minute() - now.Second())
+			firstTime = time.Now().Add(duration * time.Second)
+		}
 	}
-	if len(day) == 1 {
-		day = "0" + day
-	}
-	hour := strconv.Itoa(now.Hour())
-	if len(hour) == 1 {
-		hour = "0" + hour
-	}
-	minute := strconv.Itoa(now.Minute())
-	if len(minute) == 1 {
-		minute = "0" + minute
-	}
-	second := strconv.Itoa(now.Second())
-	if len(second) == 1 {
-		second = "0" + second
-	}
-	return fmt.Sprintf("%d-%s-%s %s:%s:%s", now.Year(), month, day, hour, minute, second)
+	return firstTime
 }
 
-func GetCurZeroTime() (time.Time, error) {
-	today := GetCurrentDay()
-	return ParseLocalTime(today)
+func GetMongoTime() time.Time {
+	return time.Now().Add(8 * time.Hour)
 }
 
 func ParseLocalTime(t string) (time.Time, error) {
 	//中国时区
-	location, err := time.LoadLocation("Asia/Shanghai")
-	ntime, err := time.ParseInLocation(SysTimefrom, t, location)
+	location, err := time.LoadLocation(config.LocationTimeZone)
+	ntime, err := time.ParseInLocation(config.SysTimefrom, t, location)
 	return ntime, err
-}
-
-// 获取当天字符串
-func GetCurrentDay() string {
-	now := time.Now()
-	month := strconv.Itoa(int(now.Month()))
-	day := strconv.Itoa(now.Day())
-	if len(month) == 1 {
-		month = "0" + month
-	}
-	if len(day) == 1 {
-		day = "0" + day
-	}
-	return fmt.Sprintf("%d-%s-%s 00:00:00", now.Year(), month, day)
 }

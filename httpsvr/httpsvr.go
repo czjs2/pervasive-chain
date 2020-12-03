@@ -1,14 +1,14 @@
 package httpsvr
 
 import (
+	"pervasive-chain/log"
+	"pervasive-chain/model"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"os"
-	"pervasive-chain/config"
-	"pervasive-chain/log"
-	"pervasive-chain/utils"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 func cors() gin.HandlerFunc {
@@ -19,6 +19,7 @@ func cors() gin.HandlerFunc {
 		c.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
 		c.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
 		c.Header("Access-Control-Allow-Credentials", "true")
+
 		if method == "OPTIONS" {
 			c.AbortWithStatus(http.StatusNoContent)
 		}
@@ -27,46 +28,44 @@ func cors() gin.HandlerFunc {
 }
 
 //ListenAndServe 启动管理端webserver
-func ListenAndServe(cfg *config.WebConfig) error {
+func ListenAndServe(cfg *model.RuntimeConfig)  error{
 	gin.SetMode(gin.ReleaseMode)
 	httpRouter := gin.New()
+
 	httpRouter.Use(cors())
-	httpRouter.Use(log.MyGinLogger(cfg))
+	httpRouter.Use(log.MyGinLogger(cfg.LogPath))
 	httpRouter.Use(gin.Recovery())
-	UseApi(httpRouter)
-	exists, err := utils.FileExists(cfg.WebRoot)
-	if err != nil {
-		return err
-	}
-	if !exists {
-		err := os.MkdirAll(cfg.WebRoot, os.ModePerm)
+
+	UseApiV1(httpRouter)
+
+	// 静态资源目录
+	webRootDir := "./webroot"
+	if s, err := os.Stat(webRootDir); err != nil || !s.IsDir() {
 		if err != nil {
-			return err
+			log.Logger.Fatalln("静态资源目录没创建...", err.Error())
 		}
 	}
-	exists, err = utils.FileExists(cfg.HtmlTemplate)
-	if err != nil {
-		return err
-	}
-	if !exists {
-		err := os.MkdirAll(cfg.HtmlTemplate, os.ModePerm)
+
+	// 模板目录
+	templatePath := "./webroot/templates/"
+	if s, err := os.Stat(templatePath); err != nil || !s.IsDir() {
 		if err != nil {
-			return err
+			log.Logger.Fatalln("html 模板目录没有创建...", err.Error())
 		}
 	}
-	httpRouter.LoadHTMLGlob(fmt.Sprintf("%s/*", cfg.HtmlTemplate))
-	httpRouter.StaticFS("/static", http.Dir(cfg.WebRoot))
+	httpRouter.LoadHTMLGlob("./webroot/templates/*")
+	httpRouter.StaticFS("/static", http.Dir(webRootDir))
 	httpSever := &http.Server{
 		Addr:           cfg.HTTPListen,
 		Handler:        httpRouter,
-		ReadTimeout:    10 * time.Second,
-		WriteTimeout:   10 * time.Second,
+		ReadTimeout:    30 * time.Second,
+		WriteTimeout:   30 * time.Second,
 		MaxHeaderBytes: 1 << 20,
 	}
-	fmt.Printf("start %s ....\n", time.Now())
-	err = httpSever.ListenAndServe()
+	fmt.Println("web server start..." + time.Now().String())
+	err := httpSever.ListenAndServe()
 	if err != nil {
-		return err
+		fmt.Println(err.Error())
 	}
-	return nil
+	return err
 }

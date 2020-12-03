@@ -1,28 +1,28 @@
 package dao
 
-import (
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo/options"
-)
+type IBlockDao interface {
+	Insert() (interface{}, error)
+	Query() (interface{}, error)
+}
 
-type IDao interface {
-	Add(param bson.M) (interface{}, error)
+type ITransGroupDao interface {
+	Insert() (interface{}, error)
+	Query() (interface{}, error)
+}
 
-	Delete(param bson.M) (interface{}, error)
+type ITransDao interface {
+	Insert() (interface{}, error)
+	Query() (interface{}, error)
+}
 
-	Update(query, param bson.M) (interface{}, error)
+type INodeBandDao interface {
 
-	FindOne(query bson.M, obj interface{}) (interface{}, error)
+}
 
-	FindAndUpdate(query bson.M, param bson.M, update *options.FindOneAndUpdateOptions, obj interface{}) (interface{}, error)
+type ITotalBandDao interface {
 
-	UpdateWithOption(query, param bson.M, update *options.UpdateOptions) (interface{}, error)
+}
 
-	UpdateMany(query, params bson.M) (interface{}, error)
+type INodeDao interface {
 
-	// todo obj 为指针
-	List(query []bson.M) ([]interface{}, int, error)
-
-	// todo obj 为指针
-	Aggregate(query []bson.M, obj interface{}) (interface{}, error)
 }
