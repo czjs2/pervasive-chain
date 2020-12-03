@@ -24,7 +24,7 @@ func init() {
 		var mongodbUrl string = "mongodb://pynxtest:xjrw2020@118.24.168.230:27017,118.24.168.230:27018,118.24.168.230:27019/pynxtest"
 		DatabaseName = getDataBase(mongodbUrl)
 		ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-		client, err = mongo.Connect(ctx, options.Client().ApplyURI(mongodbUrl))
+		client, err = mongo.Connect(ctx, options.Client().ApplyURI(mongodbUrl).SetMaxPoolSize(20))
 		err = client.Ping(ctx, readpref.Primary())
 		if err != nil {
 			fmt.Println(err.Error())

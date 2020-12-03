@@ -12,6 +12,7 @@ func NewDisPatch() *Dispatch {
 	return &Dispatch{}
 }
 
+// todo
 func (d *Dispatch) Execute(cmd model.Cmd) ([]byte, error) {
 	switch cmd.Uri {
 	case BlockInfoCmd:
