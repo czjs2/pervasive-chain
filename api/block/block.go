@@ -1,6 +1,7 @@
 package block
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"pervasive-chain/dao"
 	"pervasive-chain/dao/daoimpl"
@@ -8,6 +9,7 @@ import (
 	"pervasive-chain/utils"
 	"pervasive-chain/ws"
 )
+
 // 上报区块信息
 func ReportBlockInfoHandler(c *gin.Context) {
 	var reportBlockFrom form.ReportBlockForm
@@ -27,13 +29,9 @@ func ReportBlockInfoHandler(c *gin.Context) {
 	ws.BroadcastBlock(nil)
 }
 
-
-
-func WsChainInfoHandler(c  *ws.WsContext){
-
+func WsChainInfoHandler(c *ws.WsContext) {
+	fmt.Println("websocket recv info  %V ")
 }
-
-
 
 type BlockService struct {
 	blockDao       dao.IBlockDao

@@ -8,6 +8,6 @@ import (
 // websocket 路由信息
 func RegisterWsRouter() ws.WsDispatch {
 	dispatch := ws.NewWsDispatch()
-	dispatch.Register("/", block.WsChainInfoHandler)
+	dispatch.Register("/chainInfo", block.WsChainInfoHandler)
 	return dispatch
 }
