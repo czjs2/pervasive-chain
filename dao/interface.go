@@ -1,5 +1,7 @@
 package dao
 
+import "pervasive-chain/model"
+
 type IBlockDao interface {
 	Insert() (interface{}, error)
 	Query() (interface{}, error)
@@ -23,6 +25,13 @@ type ITotalBandDao interface {
 
 }
 
-type INodeDao interface {
+type ILatestBlock interface {
+	LatestBlockList()([]*model.LatestBlock,error)
+}
 
+
+
+type INodeDao interface {
+	FindOne(nodeId string)(*model.Node,error)
+	UpdateLatestTime(nodeId,latestTime string)(interface{},error)
 }

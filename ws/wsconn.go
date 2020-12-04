@@ -1,10 +1,9 @@
-package websocket
+package ws
 
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"net/http"
-	"pervasive-chain/utils"
 )
 
 func WebSocketConnHandler(c *gin.Context) {
@@ -13,7 +12,7 @@ func WebSocketConnHandler(c *gin.Context) {
 		http.NotFound(c.Writer, c.Request)
 		return
 	}
-	client := &Client{ID: utils.GetUUID(), Socket: conn, Send: make(chan []byte), ClientIp: c.ClientIP(), Dispatch: NewDisPatch()}
+	client := NewClient(c.ClientIP(),conn)
 	Manager.Register <- client
 	go client.Read()
 	go client.Write()

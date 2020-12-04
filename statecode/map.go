@@ -1,5 +1,7 @@
 package statecode
 
+type ErrorInfo map[string]interface{}
+
 var errorMap = map[int]string{
 	Success:           "成功",
 	UnknownError:      "未知错误",
@@ -19,6 +21,14 @@ var errorMap = map[int]string{
 	HaveGoogleAuthErr:     "已经绑定google认证",
 	OldPasswordErr:        "旧密码错误",
 	IdCardNumHavExistErr:  "身份证号已经存在",
+}
+
+func StateInfo(code int) interface{} {
+	str, ok := errorMap[code]
+	if ok {
+		return ErrorInfo{"code": code, "message": str}
+	}
+	return ErrorInfo{"code":UnknownError,"message":errorMap[UnknownError]}
 }
 
 func CodeInfo(code int) string {

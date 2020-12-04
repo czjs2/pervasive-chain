@@ -2,24 +2,47 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
-	"pervasive-chain/form"
-	"pervasive-chain/service/impl"
-)
 
+	"pervasive-chain/dao"
+	"pervasive-chain/dao/daoimpl"
+	"pervasive-chain/form"
+	"pervasive-chain/utils"
+)
+// 上报区块信息
 func ReportBlockInfoHandler(c *gin.Context) {
 	var reportBlockFrom form.ReportBlockForm
 	err := c.BindJSON(&reportBlockFrom)
 	if err != nil {
-		FailResponse(c)
+		utils.FailResponse(c)
 		return
 	}
-	blockService := impl.NewBlockService()
+	blockService := NewBlockService()
 	_, code, err := blockService.UpdateBlock(reportBlockFrom)
 	if err != nil {
-		ResponseWithCode(c, code)
+		utils.ResponseWithCode(c, code)
 		return
 	}
-	SuccessResponse(c, nil)
+	utils.SuccessResponse(c, nil)
 }
 
 
+
+type BlockService struct {
+	blockDao       dao.IBlockDao
+	latestBlockDao dao.ILatestBlock
+}
+
+func (b *BlockService) UpdateBlock(blockFrom form.ReportBlockForm) (interface{}, int, error) {
+	panic(b)
+}
+
+func (b *BlockService) LatestBlockInfo() (interface{}, error) {
+	return b.latestBlockDao.LatestBlockList()
+}
+
+func NewBlockService() IBlockService {
+	return &BlockService{
+		blockDao:       daoimpl.NewBlockDao(),
+		latestBlockDao: daoimpl.NewLatestBlockDao(),
+	}
+}

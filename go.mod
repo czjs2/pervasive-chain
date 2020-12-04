@@ -15,5 +15,6 @@ require (
 	github.com/satori/go.uuid v1.2.0
 	github.com/sirupsen/logrus v1.4.2
 	github.com/tebeka/strftime v0.1.4 // indirect
+	github.com/tidwall/gjson v1.6.3
 	go.mongodb.org/mongo-driver v1.3.2
 )

@@ -5,10 +5,10 @@ import (
 	"os"
 	"os/signal"
 	"pervasive-chain/config"
-	"pervasive-chain/mongodb"
 	"pervasive-chain/httpsvr"
 	lg "pervasive-chain/log"
-	"pervasive-chain/websocket"
+	"pervasive-chain/mongodb"
+	"pervasive-chain/ws"
 	"syscall"
 	"time"
 )
@@ -46,7 +46,7 @@ func Run(path string) error {
 		}
 	}()
 	//todo
-	go websocket.Manager.Start(c)
+	go ws.Manager.Start(c)
 
 	err = httpsvr.ListenAndServe(prjConfig)
 

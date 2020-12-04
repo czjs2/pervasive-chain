@@ -43,6 +43,7 @@ func ListenAndServe(cfg *model.RuntimeConfig)  error{
 	if s, err := os.Stat(webRootDir); err != nil || !s.IsDir() {
 		if err != nil {
 			log.Logger.Fatalln("静态资源目录没创建...", err.Error())
+			return err
 		}
 	}
 
@@ -51,6 +52,7 @@ func ListenAndServe(cfg *model.RuntimeConfig)  error{
 	if s, err := os.Stat(templatePath); err != nil || !s.IsDir() {
 		if err != nil {
 			log.Logger.Fatalln("html 模板目录没有创建...", err.Error())
+			return err
 		}
 	}
 	httpRouter.LoadHTMLGlob("./webroot/templates/*")

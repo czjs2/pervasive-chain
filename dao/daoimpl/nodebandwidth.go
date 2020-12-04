@@ -9,5 +9,5 @@ type NodeBandDao struct {
 	dao mongodb.IDao
 }
 func NewNodeBandDao() dao.INodeBandDao{
-	return &NodeBandDao{dao: mongodb.NewDaoWithTable()}
+	return &NodeBandDao{dao: mongodb.NewDaoWithTable(mongodb.NodeBandTable)}
 }

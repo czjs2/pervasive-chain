@@ -1,7 +1,7 @@
 {
   "MongodbUrl": "mongodb://pynxtest:xjrw2020@118.24.168.230:27017,118.24.168.230:27018,118.24.168.230:27019/pynxtest",
   "Debug": true,
-  "HTTPListen": "0.0.0.0:9999",
+  "HTTPListen": "0.0.0.0:8888",
   "WebRoot": "./webroot",
   "HtmlTemplate": "./webroot/template",
   "DevMongodbUrl": "mongodb://pynxtest:xjrw2020@118.24.168.230:27017,118.24.168.230:27018,118.24.168.230:27019/pynxtest",
