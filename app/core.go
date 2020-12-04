@@ -45,7 +45,9 @@ func Run(path string) error {
 			}
 		}
 	}()
-	//todo
+
+	// todo
+	ws.Manager.RegisterRouter(httpsvr.RegisterWsRouter())
 	go ws.Manager.Start(c)
 
 	err = httpsvr.ListenAndServe(prjConfig)

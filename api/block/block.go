@@ -1,12 +1,12 @@
-package api
+package block
 
 import (
 	"github.com/gin-gonic/gin"
-
 	"pervasive-chain/dao"
 	"pervasive-chain/dao/daoimpl"
 	"pervasive-chain/form"
 	"pervasive-chain/utils"
+	"pervasive-chain/ws"
 )
 // 上报区块信息
 func ReportBlockInfoHandler(c *gin.Context) {
@@ -23,6 +23,14 @@ func ReportBlockInfoHandler(c *gin.Context) {
 		return
 	}
 	utils.SuccessResponse(c, nil)
+	// todo
+	ws.BroadcastBlock(nil)
+}
+
+
+
+func WsChainInfoHandler(c  *ws.WsContext){
+
 }
 
 

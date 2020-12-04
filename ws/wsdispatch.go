@@ -43,8 +43,8 @@ func (wsd *WsDispatch) Execute(path string, c *WsContext) error {
 
 
 
-func NewWsDispatch() *WsDispatch {
-	return &WsDispatch{router: WsRouter{}}
+func NewWsDispatch() WsDispatch {
+	return WsDispatch{router: WsRouter{}}
 }
 
 

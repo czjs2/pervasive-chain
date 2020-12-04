@@ -18,3 +18,5 @@ require (
 	github.com/tidwall/gjson v1.6.3
 	go.mongodb.org/mongo-driver v1.3.2
 )
+
+replace xjrwws.com/ws => ./extern/xjrwwebsocket/ws

@@ -12,7 +12,7 @@ func WebSocketConnHandler(c *gin.Context) {
 		http.NotFound(c.Writer, c.Request)
 		return
 	}
-	client := NewClient(c.ClientIP(),conn)
+	client := NewClient(c.ClientIP(), Manager.WsDispatch,conn)
 	Manager.Register <- client
 	go client.Read()
 	go client.Write()

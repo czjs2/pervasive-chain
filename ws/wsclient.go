@@ -5,7 +5,7 @@ import (
 	_ "encoding/json"
 	"fmt"
 	"github.com/gorilla/websocket"
-	cmd "pervasive-chain/model/cmd"
+	"pervasive-chain/model/cmd"
 	"pervasive-chain/statecode"
 	"pervasive-chain/utils"
 	"reflect"
@@ -18,7 +18,7 @@ type Client struct {
 	Socket   *websocket.Conn
 	Send     chan []byte
 	ClientIp string
-	Dispatch *WsDispatch
+	Dispatch WsDispatch
 	sync.Mutex
 }
 
@@ -53,15 +53,14 @@ func NewWsContext(uri, msgId, body string, c *Client) *WsContext {
 	return &WsContext{Uri: uri, MsgId: msgId, Body: body, Client: c}
 }
 
-func NewClient(clientIp string, conn *websocket.Conn) *Client {
+func NewClient(clientIp string, disPatch WsDispatch, conn *websocket.Conn) *Client {
 	client := &Client{
 		ID:       utils.GetUUID(),
 		Socket:   conn,
 		Send:     make(chan []byte, 1024),
 		ClientIp: clientIp,
-		Dispatch: NewWsDispatch(),
+		Dispatch: disPatch,
 	}
-	WebSocketRouterV1(client)
 	return client
 }
 

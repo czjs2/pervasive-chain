@@ -10,6 +10,7 @@ type ClientManager struct {
 	Broadcast  chan []byte
 	Register   chan *Client
 	Unregister chan *Client
+	WsDispatch WsDispatch
 }
 
 var Manager = &ClientManager{
@@ -17,6 +18,10 @@ var Manager = &ClientManager{
 	Register:   make(chan *Client, 100),
 	Unregister: make(chan *Client, 100),
 	Clients:    make(map[*Client]bool),
+}
+
+func (manager *ClientManager) RegisterRouter(ws WsDispatch) {
+	manager.WsDispatch = ws
 }
 
 //todo 安全配置相关
@@ -74,4 +79,3 @@ func (manager *ClientManager) HeartBeat() {
 		}
 	}
 }
-

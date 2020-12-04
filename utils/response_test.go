@@ -3,7 +3,7 @@ package utils
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"pervasive-chain/ws"
+	"pervasive-chain/extern/ws"
 	"testing"
 )
 
