@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-var addr = flag.String("addr", "192.168.0.164:8888", "http service address")
+var addr = flag.String("addr", "127.0.0.1:8888", "http service address")
 
 func main() {
 

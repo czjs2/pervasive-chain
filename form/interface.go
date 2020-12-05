@@ -1,5 +1,5 @@
 package form
 
-type IFormInterface interface {
+type IFormValidateInterface interface {
 	Valid() (bool, error)
 }

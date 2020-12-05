@@ -1,11 +1,11 @@
 package httpsvr
 
 import (
-	"pervasive-chain/log"
-	"pervasive-chain/model"
 	"fmt"
 	"net/http"
 	"os"
+	"pervasive-chain/log"
+	"pervasive-chain/model"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -28,15 +28,16 @@ func cors() gin.HandlerFunc {
 }
 
 //ListenAndServe 启动管理端webserver
-func ListenAndServe(cfg *model.RuntimeConfig)  error{
+func ListenAndServe(cfg *model.RuntimeConfig) error {
 	gin.SetMode(gin.ReleaseMode)
 	httpRouter := gin.New()
 
 	httpRouter.Use(cors())
 	httpRouter.Use(log.MyGinLogger(cfg.LogPath))
 	httpRouter.Use(gin.Recovery())
-
-	UseApiV1(httpRouter)
+	httpRouter.Use(ParamVerifyMiddleware())
+	RegisterHttpRouter(httpRouter)
+	RegisterValidateRouter()
 
 	// 静态资源目录
 	webRootDir := "./webroot"

@@ -1,14 +1,42 @@
 package httpsvr
 
 import (
+	"bytes"
 	"errors"
 	"github.com/gin-gonic/gin"
+	"io/ioutil"
 	"net/http"
 	"pervasive-chain/utils"
 )
 
 var DevIdError = errors.New("dev error")
 
+// 通用参数验证
+func ParamVerifyMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		path := c.Request.RequestURI
+		ok := validateManager.Exists(path)
+		if ok {
+			buf := new(bytes.Buffer)
+			_, err := buf.ReadFrom(c.Request.Body)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, nil)
+				c.Abort()
+				return
+			}
+			c.Request.Body = ioutil.NopCloser(bytes.NewBuffer([]byte(buf.String())))
+			err = validateManager.Execute(path, buf.String())
+			if err != nil {
+				c.JSON(http.StatusOK, gin.H{})
+				c.Abort()
+			}
+		}
+		c.Next()
+
+	}
+}
+
+// 通信验证
 func TokenVerifyMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token := c.Request.Header.Get("Authorization")

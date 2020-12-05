@@ -1,6 +1,7 @@
 package ws
 
 import (
+	"bytes"
 	"fmt"
 	"sync"
 )
@@ -12,6 +13,14 @@ type WsRouter map[string]func(c *WsContext)
 type WsDispatch struct {
 	router WsRouter
 	sync.Mutex
+}
+
+func (wsd *WsDispatch) RouterInfo() string {
+	var buff bytes.Buffer
+	for k, v := range wsd.router {
+		buff.WriteString(fmt.Sprintf("%v %v ", k, v))
+	}
+	return buff.String()
 }
 
 func (wsd *WsDispatch) Exists(path string) bool {
@@ -41,11 +50,6 @@ func (wsd *WsDispatch) Execute(path string, c *WsContext) error {
 	return nil
 }
 
-
-
 func NewWsDispatch() WsDispatch {
 	return WsDispatch{router: WsRouter{}}
 }
-
-
-
