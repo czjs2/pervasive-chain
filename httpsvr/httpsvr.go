@@ -37,7 +37,7 @@ func ListenAndServe(cfg *model.RuntimeConfig) error {
 	httpRouter.Use(gin.Recovery())
 	httpRouter.Use(ParamVerifyMiddleware())
 	RegisterHttpRouter(httpRouter)
-	RegisterValidateRouter()
+	RegisterHttpValidateRouter()
 
 	// 静态资源目录
 	webRootDir := "./webroot"

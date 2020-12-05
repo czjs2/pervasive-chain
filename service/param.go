@@ -1,4 +1,4 @@
-package model
+package service
 
 
 type Param map[string]interface{}

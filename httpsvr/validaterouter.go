@@ -3,11 +3,11 @@ package httpsvr
 import (
 	"bytes"
 	"fmt"
-	"pervasive-chain/form"
+	"pervasive-chain/service"
 	"sync"
 )
 
-type router map[string]func(req string) (form.IFormValidateInterface, error)
+type router map[string]func(req string) (service.IFormValidateInterface, error)
 
 var validateManager = NewValidateRouter()
 
@@ -31,7 +31,7 @@ func (wsd *ValidateRouter) Exists(path string) bool {
 	return ok
 }
 
-func (wsd *ValidateRouter) Register(path string, fn func(req string) (form.IFormValidateInterface, error)) {
+func (wsd *ValidateRouter) Register(path string, fn func(req string) (service.IFormValidateInterface, error)) {
 	path = fmt.Sprintf("/api/v1.0%v", path)
 	ok := wsd.Exists(path)
 	if ok {

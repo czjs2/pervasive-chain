@@ -1,4 +1,4 @@
-package form
+package block
 
 type ReportBlockForm struct {
 	Type     string      `form:"type" binding:"required" json:"type"`         //[b|r|s], 链类型
@@ -18,5 +18,4 @@ type ReportBlockForm struct {
 func (h *ReportBlockForm) Valid() (bool, error) {
 	panic(h)
 }
-
 

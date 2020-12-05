@@ -10,7 +10,7 @@ import (
 
 func RegisterWsRouter() ws.WsDispatch {
 	dispatch := ws.NewWsDispatch()
-	dispatch.Register(WsChainInfo, block.NewBlockHandler().WsChainInfoHandler)
+	dispatch.Register(WsChainInfo, block.NewBlockHandler().WsChainInfoHandler,nil)
 	//dispatch.Register("blockInfo", block.WsChainInfoHandler)
 	//dispatch.Register("ssInfo", block.WsChainInfoHandler)
 	//dispatch.Register("Block", block.WsChainInfoHandler)
@@ -18,7 +18,7 @@ func RegisterWsRouter() ws.WsDispatch {
 }
 
 
-func RegisterValidateRouter() {
+func RegisterHttpValidateRouter() {
 
 	validateManager.Register(HeartPath, node.HeartBeatValidate)
 

@@ -1,4 +1,4 @@
-package form
+package node
 
 type HeartBeatFrom struct {
 	Type   string `form:"type" binding:"required" json:"type"`     //[b|r|s], 链类型
@@ -12,3 +12,4 @@ func (h *HeartBeatFrom) Valid() (bool, error) {
 
 	return true,nil
 }
+
