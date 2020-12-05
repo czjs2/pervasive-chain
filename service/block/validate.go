@@ -1,14 +1,13 @@
 package block
 
 import (
-	"pervasive-chain/form"
 	"pervasive-chain/service"
 	"pervasive-chain/utils"
 	"pervasive-chain/ws"
 )
 
 func ReportBlockValidate(req string) (service.IFormValidateInterface, error) {
-	var blockFrom form.ReportBlockForm
+	var blockFrom ReportBlockForm
 	return &blockFrom, utils.Unmarshal(req, &blockFrom)
 }
 

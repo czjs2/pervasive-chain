@@ -5,7 +5,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"pervasive-chain/dao"
 	"pervasive-chain/dao/daoimpl"
-	"pervasive-chain/form"
 	"pervasive-chain/utils"
 )
 
@@ -15,7 +14,7 @@ type NodeHandler struct {
 
 func (n *NodeHandler) UpdateNodeInfo(c *gin.Context) {
 	fmt.Printf("heart beat ... %v  \n", c.Request.RequestURI)
-	var heartFrom form.HeartBeatFrom
+	var heartFrom HeartBeatFrom
 	utils.MustParams(c, &heartFrom)
 	_, err := n.nodeDao.UpdateLatestTime(heartFrom.Id, heartFrom.Time)
 	if err != nil {

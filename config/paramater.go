@@ -4,13 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"pervasive-chain/model"
 )
 
 type Param map[string]interface{}
 
-func ReadWebCfg(path string) (*model.RuntimeConfig, error) {
-	PrjConfig := &model.RuntimeConfig{}
+func ReadWebCfg(path string) (*RuntimeConfig, error) {
+	PrjConfig := &RuntimeConfig{}
 	d, err := ioutil.ReadFile(path)
 	if err != nil {
 		return nil, err
@@ -21,4 +20,14 @@ func ReadWebCfg(path string) (*model.RuntimeConfig, error) {
 		return PrjConfig, err
 	}
 	return PrjConfig, nil
+}
+
+
+
+type RuntimeConfig struct {
+	Debug         bool // 是否是debug
+	LogPath       string
+	HTTPListen    string
+	MongodbUrl    string
+	DevMongodbUrl string
 }

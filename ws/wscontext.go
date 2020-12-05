@@ -3,7 +3,6 @@ package ws
 import (
 	"encoding/json"
 	"fmt"
-	"pervasive-chain/model/cmd"
 	"reflect"
 )
 
@@ -26,7 +25,7 @@ func (c *WsContext) BindJSON(obj interface{}) error {
 }
 
 func (c *WsContext) Json(code int, obj interface{}) {
-	bytes, err := json.Marshal(cmd.NewResponseCmd(c.Uri, c.MsgId, obj))
+	bytes, err := json.Marshal(NewResponseCmd(c.Uri, c.MsgId, obj))
 	if err != nil {
 		fmt.Printf("json marshal error %v \n", err)
 		return
