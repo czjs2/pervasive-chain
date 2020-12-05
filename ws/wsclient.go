@@ -54,6 +54,7 @@ func (c *Client) Read() {
 		uri := utils.GetJsonValue(src, "uri")
 		body := utils.GetJsonValue(src, "body")
 		msgId := utils.GetJsonValue(src, "msgId")
+		// todo 参数效验 ？
 		err = c.Dispatch.Execute(uri, NewWsContext(uri, msgId, body, c))
 		if err != nil {
 			bytes, err := json.Marshal(cmd.NewErrorResponse(uri, msgId, err.Error(), statecode.Fail, nil))
