@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"pervasive-chain/config"
 	"pervasive-chain/log"
-	"pervasive-chain/model"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -28,7 +28,7 @@ func cors() gin.HandlerFunc {
 }
 
 //ListenAndServe 启动管理端webserver
-func ListenAndServe(cfg *model.RuntimeConfig) error {
+func ListenAndServe(cfg *config.RuntimeConfig) error {
 	gin.SetMode(gin.ReleaseMode)
 	httpRouter := gin.New()
 

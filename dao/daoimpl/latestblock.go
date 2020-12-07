@@ -5,7 +5,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"pervasive-chain/dao"
-	"pervasive-chain/model"
 	"pervasive-chain/mongodb"
 )
 
