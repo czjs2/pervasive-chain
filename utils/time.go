@@ -55,6 +55,9 @@ func GetMongoTime() time.Time {
 	return time.Now().Add(8 * time.Hour)
 }
 
+
+
+
 func ParseLocalTime(t string) (time.Time, error) {
 	//中国时区
 	location, err := time.LoadLocation(config.LocationTimeZone)

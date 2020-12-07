@@ -1,11 +1,13 @@
 package node
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
+	"pervasive-chain/config"
 	"pervasive-chain/dao"
 	"pervasive-chain/dao/daoimpl"
+	"pervasive-chain/statecode"
 	"pervasive-chain/utils"
+	"time"
 )
 
 type NodeHandler struct {
@@ -13,15 +15,34 @@ type NodeHandler struct {
 }
 
 func (n *NodeHandler) UpdateNodeInfo(c *gin.Context) {
-	fmt.Printf("heart beat ... %v  \n", c.Request.RequestURI)
 	var heartFrom HeartBeatFrom
 	utils.MustParams(c, &heartFrom)
-	_, err := n.nodeDao.UpdateLatestTime(heartFrom.Id, heartFrom.Time)
+	node, err := n.nodeDao.FindOne(heartFrom.NodeId)
 	if err != nil {
-		utils.FailResponse(c)
-		return
+		if err.Error() != statecode.NoResultErr {
+			utils.FailResponse(c)
+			return
+		}
+	}
+	if node == nil {
+		_, err := n.nodeDao.Insert(heartFrom.Type, heartFrom.ChainKey, heartFrom.NodeId, heartFrom.Time)
+		if err != nil {
+			utils.FailResponse(c)
+			return
+		}
+	} else {
+		_, err := n.nodeDao.UpdateLatestTime(heartFrom.NodeId, heartFrom.Time)
+		if err != nil {
+			utils.FailResponse(c)
+			return
+		}
+		if !node.CmdTime.IsZero() && time.Now().UTC().Sub(node.CmdTime) > config.GenCmdIntervalTime {
+			utils.SuccessResponse(c, node.Cmd)
+			return
+		}
 	}
 	utils.SuccessResponse(c, nil)
+
 }
 
 func NewNodeService() *NodeHandler {

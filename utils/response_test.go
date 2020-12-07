@@ -2,24 +2,26 @@ package utils
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"pervasive-chain/extern/ws"
+	"pervasive-chain/config"
 	"testing"
+	"time"
 )
 
-func TestResponse(t *testing.T) {
-	context := gin.Context{}
-//	wsContext := ws.WsContext{}
-	test(context)
+
+func Test01(t *testing.T){
+	now := time.Now()
+	fmt.Println(now)
+	fmt.Println(now.UTC())
+	//location, _ := time.LoadLocation("")
+	parse, e := time.Parse(config.SysTimefrom, "2020-12-07 07:05:47.8066936")
+	fmt.Println(parse,e)
+
 }
 
-func test(v interface{}) {
-	switch v {
-	case gin.Context{}:
-		fmt.Println("gin context")
-	case ws.WsContext{}:
-		fmt.Println("ws context")
-	default:
-		fmt.Println("default")
-	}
+
+
+func TestResponse(t *testing.T) {
+
+
 }
+

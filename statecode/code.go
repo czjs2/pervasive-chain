@@ -11,6 +11,8 @@ const (
 	ParamError                      // -997 参数不对
 )
 
+const NoResultErr = "mongo: no documents in result"
+
 const (
 	PhoneNumNoExistError  = iota + 10000 //10000   该手机号未注册！
 	LoginMuchError                       //10001   登录次数太多

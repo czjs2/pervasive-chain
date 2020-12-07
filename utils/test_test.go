@@ -2,7 +2,6 @@ package utils
 
 import (
 	"fmt"
-	"pervasive-chain/model"
 	"reflect"
 	"testing"
 )
@@ -16,8 +15,8 @@ func TestChain(t *testing.T) {
 }
 
 func TestReflet(t *testing.T) {
-	cmd := model.Block{}
-	DoFiledAndMethod(cmd)
+	//cmd := model.Block{}
+	//DoFiledAndMethod(cmd)
 
 }
 

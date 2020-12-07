@@ -6,8 +6,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"pervasive-chain/utils"
 	"reflect"
+	"time"
 )
 
 type Dao struct {
@@ -38,6 +38,7 @@ func (n *Dao) DeleteMany(ctx context.Context, param bson.M) (*mongo.DeleteResult
 func (n *Dao) InsertMany(ctx context.Context, params []interface{}) (interface{}, error) {
 	return n.Collection().InsertMany(ctx, params)
 }
+
 
 func (n *Dao) UpdateOriginalOne(ctx context.Context, query, param bson.M) (interface{}, error) {
 	return n.Collection().UpdateOne(ctx, query, param)
@@ -111,8 +112,9 @@ func (n *Dao) Collection() *mongo.Collection {
 }
 
 func (n *Dao) InsertOne(ctx context.Context, param bson.M) (interface{}, error) {
-	param["create_time"] = utils.GetMongoTime()
-	param["update_time"] = utils.GetMongoTime()
+	now := time.Now().UTC()
+	param["createTime"] = now
+	param["updateTime"] = now
 	return n.Collection().InsertOne(ctx, param)
 }
 
@@ -121,12 +123,12 @@ func (n *Dao) DeleteOne(ctx context.Context, param bson.M) (interface{}, error) 
 }
 
 func (n *Dao) UpdateOne(ctx context.Context, query bson.M, param bson.M) (interface{}, error) {
-	param["update_time"] = utils.GetMongoTime()
+	param["updateTime"] = time.Now()
 	return n.Collection().UpdateOne(ctx, query, bson.M{"$set": param})
 }
 
 func (n *Dao) UpdateWithOption(ctx context.Context, query bson.M, param bson.M, option *options.UpdateOptions) (interface{}, error) {
-	param["update_time"] = utils.GetMongoTime()
+	param["updateTime"] = time.Now()
 	return n.Collection().UpdateOne(ctx, query, bson.M{"$set": param}, option)
 }
 
