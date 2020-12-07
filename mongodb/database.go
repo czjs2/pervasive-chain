@@ -7,7 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
-	"pervasive-chain/model"
+	"pervasive-chain/config"
 	"strings"
 	"time"
 )
@@ -32,7 +32,7 @@ func init() {
 	}
 }
 
-func MongodbInit(config *model.RuntimeConfig) error {
+func MongodbInit(config *config.RuntimeConfig) error {
 	var mongodbUrl string
 	if config.Debug {
 		mongodbUrl = config.DevMongodbUrl

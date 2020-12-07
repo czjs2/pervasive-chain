@@ -1,6 +1,8 @@
 package dao
 
-import "pervasive-chain/model"
+import (
+	"pervasive-chain/model"
+)
 
 type IBlockDao interface {
 	Insert() (interface{}, error)
@@ -16,6 +18,7 @@ type ITransDao interface {
 	Insert() (interface{}, error)
 	Query() (interface{}, error)
 }
+
 
 type INodeBandDao interface {
 
