@@ -48,6 +48,7 @@ func (wsd *WsDispatch) Register(path string, fn func(c *WsContext), v func(c *Ws
 }
 
 func (wsd *WsDispatch) Execute(path string, c *WsContext) error {
+
 	ok := wsd.Exists(path)
 	if !ok {
 		return fmt.Errorf("websocket router path is not exitsts %v \n", path)
@@ -55,15 +56,15 @@ func (wsd *WsDispatch) Execute(path string, c *WsContext) error {
 	v, ok := wsd.validateRouter[path]
 	if ok {
 		fromValid, err := v(c)
-		if err!=nil{
+		if err != nil {
 			return err
 		}
 		valid, err := fromValid.Valid()
-		if err!=nil{
+		if err != nil {
 			return err
 		}
-		if !valid{
-			return fmt.Errorf("websocket params error %v \n",path)
+		if !valid {
+			return fmt.Errorf("websocket params error %v \n", path)
 		}
 
 	}

@@ -1,8 +1,8 @@
 package utils
 
 import (
-	"pervasive-chain/config"
 	"fmt"
+	"pervasive-chain/config"
 	"time"
 )
 
@@ -54,9 +54,10 @@ func GetWeekFirstDayTime() time.Time {
 func GetMongoTime() time.Time {
 	return time.Now().Add(8 * time.Hour)
 }
-
-
-
+//https://zhuanlan.zhihu.com/p/31829454
+func ParseRFCTime(t string) (time.Time, error) {
+	return time.Parse(time.RFC3339, t)
+}
 
 func ParseLocalTime(t string) (time.Time, error) {
 	//中国时区

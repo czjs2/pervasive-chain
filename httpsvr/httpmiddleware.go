@@ -3,9 +3,11 @@ package httpsvr
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"net/http"
+	"pervasive-chain/statecode"
 	"pervasive-chain/utils"
 )
 
@@ -24,10 +26,11 @@ func ParamVerifyMiddleware() gin.HandlerFunc {
 				c.Abort()
 				return
 			}
+			fmt.Println(buf.String())
 			c.Request.Body = ioutil.NopCloser(bytes.NewBuffer([]byte(buf.String())))
 			err = validateManager.Execute(path, buf.String())
 			if err != nil {
-				c.JSON(http.StatusOK, gin.H{})
+				c.JSON(http.StatusOK, gin.H{"code":statecode.Fail,"message":"参数错误"})
 				c.Abort()
 			}
 		}

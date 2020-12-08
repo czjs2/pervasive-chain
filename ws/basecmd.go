@@ -1,9 +1,14 @@
 package ws
 
+import (
+	"encoding/json"
+	"github.com/gin-gonic/gin"
+)
+
 type BaseCmd struct {
-	Uri   string `json:"uri"`
+	Uri   string      `json:"uri"`
 	Body  interface{} `json:"body"`
-	MsgId string `json:"msgId"`
+	MsgId string      `json:"msgId"`
 }
 
 type ErrorCmd struct {
@@ -13,19 +18,39 @@ type ErrorCmd struct {
 	Error Error  `json:"error"`
 }
 type Error struct {
-	Code    int `json:"code"`
-	Message string `json:"message"`
+	Code    int         `json:"code"`
+	Message interface{} `json:"message"`
 }
 
-func NewResponseCmd(uri, msgId string,body interface{}) BaseCmd {
+type Subscribe struct {
+	Event string      `json:"event"`
+	Body  interface{} `json:"body"`
+	MsgId string      `json:"msgId"`
+}
+
+func NewEmptyResponse(url, msgId string) []byte {
+	bytes, _ := json.Marshal(BaseCmd{Uri: url, MsgId: msgId, Body: gin.H{}})
+	return bytes
+}
+
+func NewSubscribeResp(data interface{}) *Subscribe {
+	return &Subscribe{
+		Event: Block,
+		Body:  data,
+	}
+}
+
+func NewResponseCmd(uri, msgId string, body interface{}) BaseCmd {
 	return BaseCmd{Uri: uri, Body: body, MsgId: msgId}
 }
 
-func NewErrorResponse(uri, body, msgId string, code int) ErrorCmd {
+func NewErrorResponse(uri, msgId string, message interface{}, code int) ErrorCmd {
 	return ErrorCmd{
 		Uri:   uri,
-		Body:  body,
 		MsgId: msgId,
-		Error: Error{Code: code},
+		Error: Error{
+			Code:    code,
+			Message: message,
+		},
 	}
 }

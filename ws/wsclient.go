@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/gorilla/websocket"
 	"pervasive-chain/statecode"
-	"pervasive-chain/utils"
 	"sync"
 	"time"
 )
@@ -17,13 +16,15 @@ type Client struct {
 	Send     chan []byte
 	ClientIp string
 	Dispatch WsDispatch
+	CanPush  bool
 	sync.Mutex
 }
 
 func NewClient(clientIp string, disPatch WsDispatch, conn *websocket.Conn) *Client {
 	client := &Client{
-		ID:       utils.GetUUID(),
+		ID:       GetUUID(),
 		Socket:   conn,
+		CanPush:  false,
 		Send:     make(chan []byte, 1024),
 		ClientIp: clientIp,
 		Dispatch: disPatch,
@@ -50,19 +51,31 @@ func (c *Client) Read() {
 		}
 		src := string(message)
 		fmt.Printf("websocket recv %v  %v  \n", src, time.Now())
-		uri := utils.GetJsonValue(src, "uri")
-		body := utils.GetJsonValue(src, "body")
-		msgId := utils.GetJsonValue(src, "msgId")
-		err = c.Dispatch.Execute(uri, NewWsContext(uri, msgId, body, c))
-		if err != nil {
-			bytes, err := json.Marshal(NewErrorResponse(uri, msgId, err.Error(), statecode.Fail))
-			if err != nil {
-				// todo
-				continue
-			}
+		uri := GetJsonValue(src, "uri")
+		body := GetJsonValue(src, "body")
+		msgId := GetJsonValue(src, "msgId")
+		if !c.CanPush && uri == EventUrl {
+			c.setCanPush(true)
+			bytes := NewEmptyResponse(uri, msgId)
 			c.Send <- bytes
+		} else {
+			err = c.Dispatch.Execute(uri, NewWsContext(uri, msgId, body, c))
+			if err != nil {
+				bytes, err := json.Marshal(NewErrorResponse(uri, msgId, err.Error(), statecode.Fail))
+				if err != nil {
+					// todo
+					continue
+				}
+				c.Send <- bytes
+			}
 		}
 	}
+}
+
+func (c *Client) setCanPush(can bool) {
+	c.Lock()
+	c.CanPush = can
+	defer c.Unlock()
 }
 
 func (c *Client) Write() {

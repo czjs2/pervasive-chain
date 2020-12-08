@@ -3,6 +3,7 @@ package ws
 import (
 	"encoding/json"
 	"fmt"
+	"pervasive-chain/statecode"
 	"reflect"
 )
 
@@ -24,14 +25,23 @@ func (c *WsContext) BindJSON(obj interface{}) error {
 	return err
 }
 
-func (c *WsContext) Json(code int, obj interface{}) {
-	bytes, err := json.Marshal(NewResponseCmd(c.Uri, c.MsgId, obj))
+func (c *WsContext) JSON(code int, obj interface{}) {
+	var result interface{}
+	if code==statecode.Success{
+		result = NewResponseCmd(c.Uri, c.MsgId, obj)
+
+	}else {
+		result =NewErrorResponse(c.Uri,c.MsgId,obj,code)
+	}
+	bytes, err := json.Marshal(result)
 	if err != nil {
 		fmt.Printf("json marshal error %v \n", err)
 		return
 	}
 	c.Client.Send <- bytes
 }
+
+
 
 func NewWsContext(uri, msgId, body string, c *Client) *WsContext {
 	return &WsContext{Uri: uri, MsgId: msgId, Body: body, Client: c}

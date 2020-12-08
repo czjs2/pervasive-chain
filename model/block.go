@@ -3,17 +3,17 @@ package model
 import "time"
 
 type LatestBlock struct {
+	Type     string    `json:"type" bson:"type"`
+	ChainKey string    `json:"chainKey" bson:"chain_key"`
+	Height   int    `json:"height" bson:"height"`
+	Time     time.Time `json:"time" bson:"time"`
+	Interval int       `json:"interval" bson:"interval"`
+	Trans    int       `json:"trans" bson:"trans"`
+	Tps      int       `json:"tps" bson:"tps"`
+	Size     int       `json:"size" bson:"size"`
 }
 
 type Node struct {
-	/*
-	       nodeId:String,//id为节点id
-	   	type:String, //类型[B|R|S]
-	   	chainKey:String,//链编号 中继为 FF  分片为 FFFF
-	   	lastTime:Date,//最近一次上报心跳时间
-	   	cmd:{key:String,params:Object},//命令 :{执行码，参数}
-	   	cmdTime:Date, //命令产生时间
-	*/
 	NodeId     string    `json:"nodeId"`
 	Type       string    `json:"type"`
 	ChainKey   string    `json:"chainKey"`

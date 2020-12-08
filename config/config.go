@@ -11,6 +11,8 @@ const LocationTimeZone = "Asia/Shanghai"
 //token加解密的key,谨慎修改
 const SecretKey = "[]{&ds13SDF*&8a4%fsF11@#aA"
 
+const ApiVersion = "/api/v1.0/"
+
 const (
 	// SIGUSR1 linux SIGUSR1
 	SIGUSR1 = syscall.Signal(0xa)

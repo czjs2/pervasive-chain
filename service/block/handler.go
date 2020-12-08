@@ -1,10 +1,10 @@
 package block
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"pervasive-chain/dao"
 	"pervasive-chain/dao/daoimpl"
+	"pervasive-chain/log"
 	"pervasive-chain/utils"
 	"pervasive-chain/ws"
 	"time"
@@ -16,8 +16,13 @@ type BlockHandler struct {
 }
 
 func (b *BlockHandler) WsChainInfoHandler(c *ws.WsContext) {
-	fmt.Printf("websocket chain info  %v \n", time.Now())
-
+	log.Info("websocket chain info ", time.Now())
+	latestBlockList, err := b.latestBlockDao.LatestBlockList()
+	if err != nil {
+		utils.WsFailResponse(c)
+		return
+	}
+	utils.WsSuccessResponse(c, latestBlockList)
 }
 
 func (b *BlockHandler) UpdateBlock(c *gin.Context) {
@@ -28,12 +33,23 @@ func (b *BlockHandler) UpdateBlock(c *gin.Context) {
 		utils.FailResponse(c)
 		return
 	}
+	latestParams, err := getLatestParams(blockFrom)
+	if err != nil {
+		utils.FailResponse(c)
+		return
+	}
 	transGroup, trans := getShardTransParam(blockFrom)
+	_, err = b.latestBlockDao.UpdateBlock(blockFrom.ChainKey, latestParams)
+	if err != nil {
+		utils.FailResponse(c)
+		return
+	}
 	_, err = b.blockDao.Insert(params, transGroup, trans)
 	if err != nil {
 		utils.FailResponse(c)
 		return
 	}
+	ws.BroadcastMessage(latestParams)
 	utils.SuccessResponse(c, nil)
 }
 

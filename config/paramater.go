@@ -7,6 +7,7 @@ import (
 )
 
 type Param map[string]interface{}
+var ProjectCfg *RuntimeConfig
 
 func ReadWebCfg(path string) (*RuntimeConfig, error) {
 	PrjConfig := &RuntimeConfig{}
@@ -19,6 +20,7 @@ func ReadWebCfg(path string) (*RuntimeConfig, error) {
 	if err != nil {
 		return PrjConfig, err
 	}
+	//PrjConfig = ProjectCfg
 	return PrjConfig, nil
 }
 

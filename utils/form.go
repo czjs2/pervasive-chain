@@ -5,17 +5,15 @@ import (
 	"pervasive-chain/config"
 )
 
-func MustParams(c *gin.Context,obj interface{}) {
+func MustParams(c *gin.Context, obj interface{}) {
 	err := c.BindJSON(obj)
-	if err!=nil{
+	if err != nil {
 		panic(err)
 	}
 }
 
-
-
 func IsValidChainKey(v string) bool {
-	return len(v) == 2 || len(v) == 4
+	return len(v) == 3 || len(v) == 5 || len(v) == 1
 
 }
 

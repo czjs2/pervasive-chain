@@ -1,6 +1,7 @@
 package ws
 
 import (
+	"encoding/json"
 	"os"
 	"pervasive-chain/log"
 )
@@ -11,6 +12,7 @@ type ClientManager struct {
 	Register   chan *Client
 	Unregister chan *Client
 	WsDispatch WsDispatch
+	cacheBlock []interface{}
 }
 
 var Manager = &ClientManager{
@@ -34,19 +36,17 @@ func (manager *ClientManager) Start(c chan os.Signal) {
 			return
 		case conn := <-manager.Register:
 			manager.Clients[conn] = true
-			log.Logger.Println("ws client conn ...", conn.ID, conn.ClientIp, len(manager.Clients))
+			log.Debug("ws client conn  ", conn.ID, conn.ClientIp, len(manager.Clients))
 		case conn := <-manager.Unregister:
 			if _, ok := manager.Clients[conn]; ok {
 				close(conn.Send)
 				delete(manager.Clients, conn)
 			}
-			log.Logger.Println("ws  client exit ....", conn.ID, conn.ClientIp, len(manager.Clients))
+			log.Debug("ws  client exit ....", conn.ID, conn.ClientIp, len(manager.Clients))
 		case message := <-manager.Broadcast:
 			for conn := range manager.Clients {
-				select {
-				case conn.Send <- message:
-				default:
-
+				if conn.CanPush {
+					conn.Send <- message
 				}
 			}
 		default:
@@ -55,14 +55,16 @@ func (manager *ClientManager) Start(c chan os.Signal) {
 	}
 }
 
-// 广播消息
-func BroadcastBlock(msg interface{}) {
-	//bytes, err := NewSubscribeResp("block", []interface{}{msg})
-	//if err != nil {
-	//	fmt.Println("NewSubscribeResp is error ", err.Error())
-	//	return
-	//}
-	//Manager.Broadcast <- bytes
+func BroadcastMessage(msg interface{}) {
+	// todo 缓存
+	subscribeResp := NewSubscribeResp([]interface{}{msg})
+	bytes, err := json.Marshal(subscribeResp)
+	log.Debug("send subscribe info:  ", string(bytes))
+	if err != nil {
+		log.Error("send subscribe info: ", err.Error())
+		return
+	}
+	Manager.Broadcast <- bytes
 }
 
 func (manager *ClientManager) ClosetAllClient() {

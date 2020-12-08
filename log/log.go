@@ -6,6 +6,7 @@ import (
 	"github.com/lestrrat-go/file-rotatelogs"
 	"github.com/rifflock/lfshook"
 	"github.com/sirupsen/logrus"
+	"io"
 	"os"
 	"path"
 	"time"
@@ -63,6 +64,21 @@ func MyGinLogger(logPath string) gin.HandlerFunc {
 	}
 }
 
+func Info(msg ...interface{}) {
+	Logger.Infoln(msg)
+}
+
+func Debug(msg ...interface{}) {
+	Logger.Debugln(msg)
+}
+
+func Warn(msg ...interface{}){
+	Logger.Warnln(msg)
+}
+func Error(msg ...interface{}){
+	Logger.Errorln(msg)
+}
+
 // Logger 逻辑日志
 var Logger *logrus.Logger
 
@@ -71,13 +87,17 @@ func MyLogicLogger(logPath string) (*logrus.Logger, error) {
 	logFilePath := logPath
 	logFileName := "logic.log"
 	fileName := path.Join(logFilePath, logFileName)
-	src, err := os.OpenFile(os.DevNull, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
+	fileSrc, err := os.OpenFile(os.DevNull, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
 	if err != nil {
 		return nil, err
 	}
+	writers := []io.Writer{
+		fileSrc,
+		os.Stdout,
+	}
 
 	logger := logrus.New()
-	logger.Out = src
+	logger.Out = io.MultiWriter(writers...)
 	logger.SetLevel(logrus.DebugLevel)
 	logWriter, err := rotatelogs.New(
 		fileName+".%Y%m%d.log",

@@ -30,12 +30,14 @@ type ITotalBandDao interface {
 }
 
 type ILatestBlock interface {
-	LatestBlockList()([]*model.LatestBlock,error)
+	LatestBlockList()(interface{},error)
+	UpdateBlock(chainId string,param bson.M)(interface{},error)
 }
 
 
 type INodeDao interface {
 	FindOne(nodeId string)(*model.Node,error)
+
 	Insert(chainType,chainKey,nodeId,latestTime string)(interface{},error)
 	UpdateLatestTime(nodeId,latestTime string)(interface{},error)
 }

@@ -22,6 +22,11 @@ func main() {
 	}
 	done := make(chan struct{})
 
+	err = c.WriteMessage(websocket.TextMessage, []byte(fmt.Sprintf(`{"uri":"event","body":{},"msgId":"msgId%d"}`, time.Now().Unix())))
+	if err!=nil{
+		log.Fatal(err)
+	}
+
 	defer c.Close()
 	go func() {
 		for {
@@ -50,12 +55,7 @@ func main() {
 				fmt.Println(err.Error())
 				return
 			}
-			blockInfoCmd := fmt.Sprintf(`{"uri":"blockInfo","body":{"type":"b","number":"0"},"msgId":"msgId%d"}`, time.Now().Unix())
-			err = c.WriteMessage(websocket.TextMessage, []byte(blockInfoCmd))
-			if err != nil {
-				fmt.Println(err.Error())
-				return
-			}
+
 			cmdInfo := fmt.Sprintf(`{"uri":"cmd","body":{"type":"b","cmd":{"key":"transfer","params":{"amount":100}}},"msgId":"msgId%d"}`, time.Now().Unix())
 			err := c.WriteMessage(websocket.TextMessage, []byte(cmdInfo))
 			if err != nil {

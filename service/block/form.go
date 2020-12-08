@@ -33,7 +33,7 @@ type LockHash struct {
 type DetailBlock struct {
 	UpStream   []RelayTransGroup `json:"upStream"`
 	DownStream []RelayTransGroup `json:"downStream"`
-	Ss         []TransGroup    `json:"ss"`
+	Ss         []TransGroup      `json:"ss"`
 }
 
 type RelayTransGroup struct {
@@ -46,9 +46,11 @@ type TransGroup struct {
 	ToShard   string `json:"toShard"`
 	FromRelay string `json:"fromRelay"`
 	ToRelay   string `json:"toRelay"`
+	Hash      string `json:"hash"`
 	Trans     []struct {
-		From string `json:"from"`
-		To   string `json:"to"`
+		From   string `json:"from"`
+		To     string `json:"to"`
+		Amount string `json:"amount"`
 	} `json:"trans"`
 }
 

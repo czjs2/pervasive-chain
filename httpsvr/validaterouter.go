@@ -3,6 +3,7 @@ package httpsvr
 import (
 	"bytes"
 	"fmt"
+	"pervasive-chain/config"
 	"pervasive-chain/service"
 	"sync"
 )
@@ -32,7 +33,7 @@ func (wsd *ValidateRouter) Exists(path string) bool {
 }
 
 func (wsd *ValidateRouter) Register(path string, fn func(req string) (service.IFormValidateInterface, error)) {
-	path = fmt.Sprintf("/api/v1.0%v", path)
+	path = fmt.Sprintf("%v%v", config.ApiVersion, path)
 	ok := wsd.Exists(path)
 	if ok {
 		panic(fmt.Sprintf("validate router info have exists %v \n", path))
@@ -53,10 +54,10 @@ func (wsd *ValidateRouter) Execute(path string, req string) error {
 		return err
 	}
 	ok, err = objForm.Valid()
-	if err!=nil{
+	if err != nil {
 		return err
 	}
-	if !ok{
+	if !ok {
 		return fmt.Errorf("param error \n")
 	}
 	return nil

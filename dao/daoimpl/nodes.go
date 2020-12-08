@@ -15,7 +15,7 @@ type NodeDao struct {
 }
 
 func (n *NodeDao) Insert(chainType, chainKey, nodeId, latestTime string) (interface{}, error) {
-	time, err := utils.ParseLocalTime(latestTime)
+	time, err := utils.ParseRFCTime(latestTime)
 	if err != nil {
 		return nil, err
 	}
@@ -35,7 +35,7 @@ func (n *NodeDao) FindOne(nodeId string) (*model.Node, error) {
 func (n *NodeDao) UpdateLatestTime(nodeId, latestTime string) (interface{}, error) {
 	update := options.Update()
 	update.SetUpsert(true)
-	time, err := utils.ParseLocalTime(latestTime)
+	time, err := utils.ParseRFCTime(latestTime)
 	if err!=nil{
 		return nil,err
 	}
