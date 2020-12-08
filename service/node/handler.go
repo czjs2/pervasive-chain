@@ -1,6 +1,5 @@
 package node
 
-import "C"
 import (
 	"github.com/gin-gonic/gin"
 	"pervasive-chain/config"
@@ -8,6 +7,7 @@ import (
 	"pervasive-chain/dao/daoimpl"
 	"pervasive-chain/statecode"
 	"pervasive-chain/utils"
+	"pervasive-chain/ws"
 	"time"
 )
 
@@ -16,6 +16,9 @@ type NodeHandler struct {
 }
 
 
+func (n *NodeHandler) GenCmd(c *ws.WsContext){
+
+}
 
 func (n *NodeHandler) UpdateNodeInfo(c *gin.Context) {
 	var heartFrom HeartBeatFrom
@@ -48,6 +51,6 @@ func (n *NodeHandler) UpdateNodeInfo(c *gin.Context) {
 
 }
 
-func NewNodeHandler() *NodeHandler {
+func NewNodeService() *NodeHandler {
 	return &NodeHandler{nodeDao: daoimpl.NewNodeDao()}
 }

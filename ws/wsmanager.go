@@ -36,13 +36,13 @@ func (manager *ClientManager) Start(c chan os.Signal) {
 			return
 		case conn := <-manager.Register:
 			manager.Clients[conn] = true
-			log.Debug("ws client conn  ", conn.ID, conn.ClientIp, len(manager.Clients))
+			log.Logger.Println("ws client conn ...", conn.ID, conn.ClientIp, len(manager.Clients))
 		case conn := <-manager.Unregister:
 			if _, ok := manager.Clients[conn]; ok {
 				close(conn.Send)
 				delete(manager.Clients, conn)
 			}
-			log.Debug("ws  client exit ....", conn.ID, conn.ClientIp, len(manager.Clients))
+			log.Logger.Println("ws  client exit ....", conn.ID, conn.ClientIp, len(manager.Clients))
 		case message := <-manager.Broadcast:
 			for conn := range manager.Clients {
 				if conn.CanPush {

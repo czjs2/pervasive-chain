@@ -10,9 +10,3 @@ func HeartBeatValidate(request string) (service.IFormValidateInterface, error) {
 	err := utils.Unmarshal(request, &obj)
 	return &obj, err
 }
-
-//func GenCmdValidate(request string) (service.IFormValidateInterface, error) {
-//	obj := GenCmdFrom{}
-//	err := utils.Unmarshal(request, &obj)
-//	return &obj, err
-//}

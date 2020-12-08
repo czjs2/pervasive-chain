@@ -11,24 +11,15 @@ func Test01(t *testing.T) {
 	param := Param{}
 	param["time"] = time.Now()
 	param["height"] = 11
-	for k,v :=range param{
-		typeOf := reflect.TypeOf(v)
-		fmt.Println(typeOf.Name(),k)
-	}
-}
-
-func send(param Param) {
 	m := reflect.ValueOf(param)
 	if m.Kind() == reflect.Map {
 		res := reflect.MakeMap(m.Type())
 		keys := m.MapKeys()
 		for _, k := range keys {
-			fmt.Println(k.Type())
-			of := reflect.TypeOf(k)
-			fmt.Println(of)
+			fmt.Println(k.Kind())
 			key := k.Convert(res.Type().Key()) //.Convert(m.Type().Key())
 			value := m.MapIndex(key)
-			fmt.Println(key, value)
+			fmt.Println(key,value)
 			res.SetMapIndex(key, value)
 		}
 	}

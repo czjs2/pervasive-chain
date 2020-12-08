@@ -8,18 +8,17 @@ import (
 	"pervasive-chain/ws"
 )
 
+
 func RegisterWsRouter() ws.WsDispatch {
 	dispatch := ws.NewWsDispatch()
-	dispatch.Register(WsChainInfo, block.NewBlockHandler().WsChainInfoHandler, nil)
-	//dispatch.Register(WsCmd, node.NewNodeHandler().UpdateGenerateCmd, nil)
-	//dispatch.Register(WsBlockInfo, nil, nil)
-	//dispatch.Register(WsSsInfo, nil, nil)
-	//dispatch.Register(WsTranInfo, nil, nil)
+	dispatch.Register(WsChainInfo, block.NewBlockHandler().WsChainInfoHandler,nil)
+	dispatch.Register(WsCmd, node.NewNodeService().GenCmd,nil)
 	//dispatch.Register("blockInfo", block.WsChainInfoHandler)
 	//dispatch.Register("ssInfo", block.WsChainInfoHandler)
 	//dispatch.Register("Block", block.WsChainInfoHandler)
 	return dispatch
 }
+
 
 func RegisterHttpValidateRouter() {
 
@@ -28,10 +27,12 @@ func RegisterHttpValidateRouter() {
 	validateManager.Register(Block, block.ReportBlockValidate)
 }
 
+
 func RegisterHttpRouter(router *gin.Engine) {
 	group := router.Group(config.ApiVersion)
 	group.GET(WsConn, ws.WebSocketConnHandler)
 	group.POST(Block, block.NewBlockHandler().UpdateBlock)
-	//group.POST(HeartPath, node.NewNodeHandler().UpdateNodeInfo)
+	group.POST(HeartPath, node.NewNodeService().UpdateNodeInfo)
 
 }
+

@@ -9,9 +9,6 @@ const (
 
 const (
 	WsChainInfo = "chainInfo"
-	WsCmd       = "cmd"
-	WsBlockInfo = "blockInfo"
-	WsSsInfo    = "ssInfo"
-	WsTranInfo  = "tranInfo"
+	WsCmd = "cmd"
 	WsEvent     = "event"
 )

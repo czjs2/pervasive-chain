@@ -69,6 +69,7 @@ func (c *Client) Read() {
 				c.Send <- bytes
 			}
 		}
+
 	}
 }
 

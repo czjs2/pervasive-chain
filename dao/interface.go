@@ -37,7 +37,6 @@ type ILatestBlock interface {
 
 type INodeDao interface {
 	FindOne(nodeId string)(*model.Node,error)
-
 	Insert(chainType,chainKey,nodeId,latestTime string)(interface{},error)
 	UpdateLatestTime(nodeId,latestTime string)(interface{},error)
 }

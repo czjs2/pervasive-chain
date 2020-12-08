@@ -21,13 +21,13 @@ func (l *LatestBlockDao) UpdateBlock(chainId string, param bson.M) (interface{},
 }
 
 func (l *LatestBlockDao) LatestBlockList() (interface{}, error) {
-	var res []*model.Param
+	var res []*model.LatestBlock
 	query := []bson.M{
 		bson.M{"$match": bson.M{}},
 	}
 	_, err := l.dao.AggregateList(context.TODO(), query, func(ctx context.Context, cursor *mongo.Cursor) error {
 		for cursor.Next(ctx) {
-			block := &model.Param{}
+			block := &model.LatestBlock{}
 			err := cursor.Decode(block)
 			if err != nil {
 				return err

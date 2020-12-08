@@ -12,22 +12,9 @@ type HeartBeatFrom struct {
 
 }
 
-//type GenCmdFrom struct {
-//	Type string `json:"type"`
-//	Cmd  struct {
-//		Key    string `json:"key"`
-//		Params struct {
-//			Amount int `json:"amount"`
-//		} `json:"params"`
-//	} `json:"cmd"`
-//}
-//
-//func (g *GenCmdFrom) Valid() (bool, error) {
-//	if g.Cmd.Params.Amount == 0 {
-//		return false, nil
-//	}
-//	return true, nil
-//}
+type GenCmdFrom struct {
+	
+}
 
 func (h *HeartBeatFrom) Valid() (bool, error) {
 	if !utils.IsValidChain(h.Type) {
