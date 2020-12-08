@@ -15,6 +15,13 @@ type BlockHandler struct {
 	latestBlockDao dao.ILatestBlock
 }
 
+func (b *BlockHandler) WsBlockInfo(c *ws.WsContext) {
+	var blockForm SingleBlockForm
+	_ = c.BindJSON(&blockForm)
+	// todo
+
+}
+
 func (b *BlockHandler) WsChainInfoHandler(c *ws.WsContext) {
 	log.Info("websocket chain info ", time.Now())
 	latestBlockList, err := b.latestBlockDao.LatestBlockList()
@@ -39,12 +46,7 @@ func (b *BlockHandler) UpdateBlock(c *gin.Context) {
 		return
 	}
 	transGroup, trans := getShardTransParam(blockFrom)
-	_, err = b.latestBlockDao.UpdateBlock(blockFrom.ChainKey, latestParams)
-	if err != nil {
-		utils.FailResponse(c)
-		return
-	}
-	_, err = b.blockDao.Insert(params, transGroup, trans)
+	_, err = b.blockDao.Insert(params,latestParams, transGroup, trans)
 	if err != nil {
 		utils.FailResponse(c)
 		return

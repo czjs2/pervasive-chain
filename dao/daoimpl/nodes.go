@@ -4,6 +4,7 @@ import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"pervasive-chain/config"
 	"pervasive-chain/dao"
 	"pervasive-chain/model"
 	"pervasive-chain/mongodb"
@@ -12,6 +13,15 @@ import (
 
 type NodeDao struct {
 	dao mongodb.IDao
+}
+
+func (n *NodeDao) FindLatestOne() (*model.Node, error) {
+	obj := &model.Node{}
+	query := []bson.M{
+		bson.M{"$match": bson.M{"type": config.SharedType}},
+		bson.M{"$limit": 1},
+	}
+	return obj, n.dao.AggregateOne(context.TODO(), query, obj)
 }
 
 func (n *NodeDao) Insert(chainType, chainKey, nodeId, latestTime string) (interface{}, error) {
@@ -36,8 +46,8 @@ func (n *NodeDao) UpdateLatestTime(nodeId, latestTime string) (interface{}, erro
 	update := options.Update()
 	update.SetUpsert(true)
 	time, err := utils.ParseRFCTime(latestTime)
-	if err!=nil{
-		return nil,err
+	if err != nil {
+		return nil, err
 	}
 	return n.dao.UpdateWithOption(context.TODO(), bson.M{"nodeId": nodeId}, bson.M{"lastTime": time}, update)
 }

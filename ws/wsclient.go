@@ -3,11 +3,10 @@ package ws
 import (
 	"encoding/json"
 	_ "encoding/json"
-	"fmt"
 	"github.com/gorilla/websocket"
+	"pervasive-chain/log"
 	"pervasive-chain/statecode"
 	"sync"
-	"time"
 )
 
 type Client struct {
@@ -50,13 +49,14 @@ func (c *Client) Read() {
 			return
 		}
 		src := string(message)
-		fmt.Printf("websocket recv %v  %v  \n", src, time.Now())
+		log.Debug("websocket recv ", string(message))
 		uri := GetJsonValue(src, "uri")
 		body := GetJsonValue(src, "body")
 		msgId := GetJsonValue(src, "msgId")
-		if !c.CanPush && uri == EventUrl {
+		event := GetJsonValue(src, "event")
+		if !c.CanPush && event == Block {
 			c.setCanPush(true)
-			bytes := NewEmptyResponse(uri, msgId)
+			bytes := NewEventResponse(event, msgId)
 			c.Send <- bytes
 		} else {
 			err = c.Dispatch.Execute(uri, NewWsContext(uri, msgId, body, c))
@@ -87,6 +87,7 @@ func (c *Client) Write() {
 	for {
 		select {
 		case message, ok := <-c.Send:
+			log.Debug("websocket send ", string(message))
 			if !ok {
 				_ = c.Socket.WriteMessage(websocket.CloseMessage, []byte{})
 				return

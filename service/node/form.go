@@ -13,7 +13,18 @@ type HeartBeatFrom struct {
 }
 
 type GenCmdFrom struct {
-	
+	Type string `json:"type"`
+	Cmd  struct {
+		Key    string `json:"key"`
+		Params struct {
+			Amount int `json:"amount"`
+		} `json:"params"`
+	} `json:"cmd"`
+}
+
+func (g *GenCmdFrom) Valid() (bool, error) {
+
+	return true, nil
 }
 
 func (h *HeartBeatFrom) Valid() (bool, error) {

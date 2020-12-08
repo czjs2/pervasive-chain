@@ -5,28 +5,26 @@ import (
 	"pervasive-chain/config"
 	"pervasive-chain/service/block"
 	"pervasive-chain/service/node"
+	"pervasive-chain/service/trans"
 	"pervasive-chain/ws"
 )
 
-
 func RegisterWsRouter() ws.WsDispatch {
 	dispatch := ws.NewWsDispatch()
-	dispatch.Register(WsChainInfo, block.NewBlockHandler().WsChainInfoHandler,nil)
-	dispatch.Register(WsCmd, node.NewNodeService().GenCmd,nil)
-	//dispatch.Register("blockInfo", block.WsChainInfoHandler)
-	//dispatch.Register("ssInfo", block.WsChainInfoHandler)
-	//dispatch.Register("Block", block.WsChainInfoHandler)
+	dispatch.Register(WsChainInfo, block.NewBlockHandler().WsChainInfoHandler, nil)
+	dispatch.Register(WsBlockInfo, block.NewBlockHandler().WsBlockInfo, block.SingBlockInfoValidate)
+	dispatch.Register(WsCmd, node.NewNodeService().GenCmd, node.GenCmdValidate)
+	dispatch.Register(WsSsInfo, trans.NewTransHandler().GransGroup, trans.TransGroupValidate)
+	dispatch.Register(WsTranInfo, trans.NewTransHandler().TransInfo, trans.TransValidate)
 	return dispatch
 }
 
-
 func RegisterHttpValidateRouter() {
 
-	validateManager.Register(HeartPath, node.HeartBeatValidate)
+	//validateManager.Register(HeartPath, node.HeartBeatValidate)
 
-	validateManager.Register(Block, block.ReportBlockValidate)
+	//validateManager.Register(Block, block.ReportBlockValidate)
 }
-
 
 func RegisterHttpRouter(router *gin.Engine) {
 	group := router.Group(config.ApiVersion)
@@ -35,4 +33,3 @@ func RegisterHttpRouter(router *gin.Engine) {
 	group.POST(HeartPath, node.NewNodeService().UpdateNodeInfo)
 
 }
-

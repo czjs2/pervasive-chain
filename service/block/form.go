@@ -5,6 +5,23 @@ import (
 	"pervasive-chain/utils"
 )
 
+type SingleBlockForm struct {
+	Type     string `json:"type"`
+	ChainKey string `json:"chainKey"`
+	Height   int    `json:"height"`
+	Hash     string `json:"hash"`
+}
+
+func (b *SingleBlockForm) Valid() (bool, error) {
+	if b.Hash != "" {
+		return true, nil
+	}
+	if b.Height == 0 || b.Type == "" || b.ChainKey == "" {
+		return false, nil
+	}
+	return true, nil
+}
+
 type ReportBlockForm struct {
 	Type     string `form:"type" binding:"required"`     //[b|r|s], 链类型
 	ChainKey string `form:"chainKey" binding:"required"` // 链编号
@@ -20,8 +37,8 @@ type ReportBlockForm struct {
 
 	LockHash []LockHash `form:"lockHash" binding:"required"`
 
-	UpHash   string      `form:"upHash" binding:"required"`
-	DownHash string      `form:"downHash" binding:"required"`
+	UpHash   string      `form:"upHash"`
+	DownHash string      `form:"downHash"`
 	Detail   DetailBlock `form:"detail" binding:"required"`
 }
 

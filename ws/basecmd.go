@@ -28,8 +28,14 @@ type Subscribe struct {
 	MsgId string      `json:"msgId"`
 }
 
-func NewEmptyResponse(url, msgId string) []byte {
-	bytes, _ := json.Marshal(BaseCmd{Uri: url, MsgId: msgId, Body: gin.H{}})
+type EventCmd struct {
+	Event string      `json:"event"`
+	Body  interface{} `json:"body"`
+	MsgId string      `json:"msgId"`
+}
+
+func NewEventResponse(url, msgId string) []byte {
+	bytes, _ := json.Marshal(EventCmd{Event: url, MsgId: msgId, Body: gin.H{}})
 	return bytes
 }
 

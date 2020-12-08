@@ -15,8 +15,23 @@ type NodeHandler struct {
 	nodeDao dao.INodeDao
 }
 
-
-func (n *NodeHandler) GenCmd(c *ws.WsContext){
+func (n *NodeHandler) GenCmd(c *ws.WsContext) {
+	var genCmdFrom GenCmdFrom
+	_ = c.BindJSON(&genCmdFrom)
+	node, err := n.nodeDao.FindLatestOne()
+	if err != nil {
+		utils.WsFailResponse(c)
+		return
+	}
+	if node.NodeId == "" {
+		utils.WsFailResponse(c)
+		return
+	}
+	if time.Now().Sub(node.CmdTime).Seconds() > config.GenCmdIntervalTime {
+		utils.WsFailResponse(c)
+		return
+	}
+	utils.WsSuccessResponse(c, nil)
 
 }
 
