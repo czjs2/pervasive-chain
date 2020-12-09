@@ -4,10 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"pervasive-chain/dao"
 	"pervasive-chain/dao/daoimpl"
-	"pervasive-chain/log"
 	"pervasive-chain/utils"
 	"pervasive-chain/ws"
-	"time"
 )
 
 type BlockHandler struct {
@@ -18,12 +16,16 @@ type BlockHandler struct {
 func (b *BlockHandler) WsBlockInfo(c *ws.WsContext) {
 	var blockForm SingleBlockForm
 	_ = c.BindJSON(&blockForm)
-	// todo
+	block, err := b.blockDao.Block(blockForm.Type, blockForm.ChainKey, blockForm.Hash, blockForm.Height)
+	if err != nil {
+		utils.WsFailResponse(c)
+		return
+	}
+	utils.WsSuccessResponse(c, block)
 
 }
 
 func (b *BlockHandler) WsChainInfoHandler(c *ws.WsContext) {
-	log.Info("websocket chain info ", time.Now())
 	latestBlockList, err := b.latestBlockDao.LatestBlockList()
 	if err != nil {
 		utils.WsFailResponse(c)
@@ -45,12 +47,19 @@ func (b *BlockHandler) UpdateBlock(c *gin.Context) {
 		utils.FailResponse(c)
 		return
 	}
-	transGroup, trans := getShardTransParam(blockFrom)
-	_, err = b.blockDao.Insert(params,latestParams, transGroup, trans)
+	//transGroup, trans := getTransGroupParam(blockFrom)
+	//_, err = b.blockDao.Insert(params, latestParams, transGroup, trans)
+	//if err != nil {
+	//	utils.FailResponse(c)
+	//	return
+	//}
+	transGroup, trans := getTransGroupParamV1(blockFrom)
+	_, err = b.blockDao.InsertV1(params, latestParams, transGroup, trans)
 	if err != nil {
 		utils.FailResponse(c)
 		return
 	}
+
 	ws.BroadcastMessage(latestParams)
 	utils.SuccessResponse(c, nil)
 }

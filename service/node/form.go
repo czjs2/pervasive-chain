@@ -1,6 +1,7 @@
 package node
 
 import (
+	"fmt"
 	"pervasive-chain/utils"
 )
 
@@ -23,25 +24,30 @@ type GenCmdFrom struct {
 }
 
 func (g *GenCmdFrom) Valid() (bool, error) {
-
+	if !utils.IsValidChain(g.Type) {
+		return false, fmt.Errorf("type is error %v \n", g.Type)
+	}
+	if g.Cmd.Key != "transfer" {
+		return false, fmt.Errorf("key value is not transfer %v \n", g.Cmd.Key)
+	}
+	if g.Cmd.Params.Amount == 0 {
+		return false, fmt.Errorf("amount is zero  \n")
+	}
 	return true, nil
 }
 
 func (h *HeartBeatFrom) Valid() (bool, error) {
 	if !utils.IsValidChain(h.Type) {
-		return false, nil
+		return false, fmt.Errorf("chain type is error %v \n", h.Type)
 	}
-	if !utils.IsValidChainKey(h.ChainKey) {
-		return false, nil
+	if !utils.IsValidChainKey(h.ChainKey, h.Type) {
+		return false, fmt.Errorf("chainKey is error %v \n", h.ChainKey)
 	}
-	if len(h.NodeId) == 0 {
-		return false, nil
+	if !utils.IsValidNodeId(h.NodeId) {
+		return false, fmt.Errorf("nodeId is error %v \n", h.NodeId)
 	}
-	if len(h.Type) == 0 {
-		return false, nil
-	}
-	if len(h.Time) == 0 {
-		return false, nil
+	if !utils.IsRFC339Time(h.Time) {
+		return false, fmt.Errorf("time is error %v \n", h.Time)
 	}
 	return true, nil
 }

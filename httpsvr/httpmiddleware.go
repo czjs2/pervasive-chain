@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"net/http"
+	"pervasive-chain/log"
 	"pervasive-chain/statecode"
 	"pervasive-chain/utils"
 )
@@ -26,11 +27,11 @@ func ParamVerifyMiddleware() gin.HandlerFunc {
 				c.Abort()
 				return
 			}
-			fmt.Println(buf.String())
+			log.Debug(c.Request.RequestURI,c.Request.Method,buf.String())
 			c.Request.Body = ioutil.NopCloser(bytes.NewBuffer([]byte(buf.String())))
 			err = validateManager.Execute(path, buf.String())
 			if err != nil {
-				c.JSON(http.StatusOK, gin.H{"code":statecode.Fail,"message":"参数错误"})
+				c.JSON(http.StatusOK, gin.H{"code":statecode.Fail,"message":fmt.Sprintf("参数错误: %v ",err.Error())})
 				c.Abort()
 			}
 		}

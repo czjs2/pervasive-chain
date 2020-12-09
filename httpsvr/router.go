@@ -21,9 +21,9 @@ func RegisterWsRouter() ws.WsDispatch {
 
 func RegisterHttpValidateRouter() {
 
-	//validateManager.Register(HeartPath, node.HeartBeatValidate)
+	validateManager.Register(HeartPath, node.HeartBeatValidate)
 
-	//validateManager.Register(Block, block.ReportBlockValidate)
+	validateManager.Register(Block, block.ReportBlockValidate)
 }
 
 func RegisterHttpRouter(router *gin.Engine) {

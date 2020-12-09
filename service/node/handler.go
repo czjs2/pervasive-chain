@@ -24,10 +24,24 @@ func (n *NodeHandler) GenCmd(c *ws.WsContext) {
 		return
 	}
 	if node.NodeId == "" {
+		utils.WsSuccessResponse(c, nil)
+		return
+	}
+	if !node.CmdTime.IsZero() && time.Now().Sub(node.CmdTime).Seconds() < config.GenCmdIntervalTime {
 		utils.WsFailResponse(c)
 		return
 	}
-	if time.Now().Sub(node.CmdTime).Seconds() > config.GenCmdIntervalTime {
+	totalShardNode, err := n.nodeDao.TotalShardNode()
+	if err != nil {
+		utils.WsFailResponse(c)
+		return
+	}
+	if totalShardNode == 0 {
+		utils.WsSuccessResponse(c, nil)
+		return
+	}
+	_, err = n.nodeDao.UpdateNodeCmd(genCmdFrom.Cmd.Params.Amount / totalShardNode)
+	if err != nil {
 		utils.WsFailResponse(c)
 		return
 	}

@@ -14,10 +14,10 @@ type TransDao struct {
 
 func (t *TransDao) Trans(hash string) (interface{}, error) {
 	param := model.Param{}
-	qeruy := []bson.M{
+	query := []bson.M{
 		bson.M{"$match": bson.M{"hash": hash}},
 	}
-	return param, t.dao.AggregateOne(context.TODO(), qeruy, &param)
+	return param, t.dao.AggregateOne(context.TODO(), query, &param)
 }
 
 func (t *TransDao) Query() (interface{}, error) {

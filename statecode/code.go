@@ -1,14 +1,14 @@
 package statecode
 
 const (
-	Success = iota + 1 // 1 成功
+	Success = iota + 200 // 1 成功
 )
 
 const (
-	UnknownError      = iota - 1000 //-1000 未知错误
-	Fail                            // -999 操作失败
-	TokenExpiredERROR               // -998 token失效
-	ParamError                      // -997 参数不对
+	UnknownError      = iota + 400 //  未知错误
+	Fail                           //  操作失败
+	TokenExpiredERROR              //  token失效
+	ParamError                     //  参数不对
 )
 
 const NoResultErr = "mongo: no documents in result"

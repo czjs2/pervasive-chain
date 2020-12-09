@@ -8,19 +8,20 @@ import (
 )
 
 func Test01(t *testing.T) {
-	param := Param{}
-	param["time"] = time.Now()
-	param["height"] = 11
-	m := reflect.ValueOf(param)
+	imap := Param{}
+	imap["shijian"] = time.Now()
+	imap["height"] = 11
+	var input interface{}
+	input = imap
+	m := reflect.ValueOf(input)
 	if m.Kind() == reflect.Map {
 		res := reflect.MakeMap(m.Type())
 		keys := m.MapKeys()
 		for _, k := range keys {
-			fmt.Println(k.Kind())
 			key := k.Convert(res.Type().Key()) //.Convert(m.Type().Key())
 			value := m.MapIndex(key)
-			fmt.Println(key,value)
 			res.SetMapIndex(key, value)
+			fmt.Println(key,value)
 		}
 	}
 }

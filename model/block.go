@@ -13,17 +13,3 @@ type LatestBlock struct {
 	Size     int       `json:"size" bson:"size"`
 }
 
-type Node struct {
-	NodeId     string    `json:"nodeId"`
-	Type       string    `json:"type"`
-	ChainKey   string    `json:"chainKey"`
-	LatestTime time.Time `json:"latestTime"`
-	Cmd        CmdInfo   `json:"cmd"`
-	CmdTime    time.Time `json:"cmdTime"`
-}
-type CmdInfo struct {
-	Key    string `json:"key"`
-	Params struct {
-		Value int `json:"value"`
-	} `json:"params"`
-}

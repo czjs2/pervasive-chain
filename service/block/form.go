@@ -1,6 +1,7 @@
 package block
 
 import (
+	"fmt"
 	"pervasive-chain/config"
 	"pervasive-chain/utils"
 )
@@ -29,7 +30,7 @@ type ReportBlockForm struct {
 	Height   int64  `form:"height" binding:"required"`   //当前区块高度
 	Father   string `form:"father" binding:"required"`   //父区块hash
 	Hash     string `form:"hash" binding:"required"`     //区块hash
-	Vrf      string `form:"vrf" binding:"omitempty"`     //VRF
+	Vrf      string `form:"vrf" binding:"required"`      //VRF
 	Time     string `form:"time" binding:"required"`     //当前产生时间
 	Interval int64  `form:"interval" binding:"required"` //出块间隔
 	Trans    int64  `form:"trans" binding:"required"`    //交易数量
@@ -43,6 +44,7 @@ type ReportBlockForm struct {
 }
 
 type LockHash struct {
+	Type     string `json:"type"`
 	ChainKey string `json:"chainKey"`
 	Height   int    `json:"height"`
 }
@@ -54,8 +56,9 @@ type DetailBlock struct {
 }
 
 type RelayTransGroup struct {
-	Key  string `json:"key"`
-	Hash string `json:"hash"`
+	FromKey string `json:"fromKey"`
+	ToKey   string `json:"toKey"`
+	Hash    string `form:"hash" binding:"required"`
 }
 
 type TransGroup struct {
@@ -63,49 +66,37 @@ type TransGroup struct {
 	ToShard   string `json:"toShard"`
 	FromRelay string `json:"fromRelay"`
 	ToRelay   string `json:"toRelay"`
-	Hash      string `json:"hash"`
+	Hash      string `form:"hash" binding:"required"`
 	Trans     []struct {
 		From   string `json:"from"`
 		To     string `json:"to"`
 		Amount string `json:"amount"`
+		Hash   string `form:"hash" binding:"required"`
 	} `json:"trans"`
 }
 
 func (h *ReportBlockForm) Valid() (bool, error) {
-	if !utils.IsValidChain(h.Type) {
-		return false, nil
+	if !utils.IsValidChain(h.Type) { // 效验 type类型 B R S
+		return false, fmt.Errorf("chain type is error %v \n", h.Type)
 	}
-	if !utils.IsValidChainKey(h.ChainKey) {
-		return false, nil
+	if !utils.IsValidChainKey(h.ChainKey, h.Type) { // chainKey
+		return false, fmt.Errorf("chainkey is error %v  %v \n", h.ChainKey, h.Type)
 	}
-	if len(h.NodeId) == 0 {
-		return false, nil
+	if !utils.IsValidNodeId(h.NodeId) {
+		return false, fmt.Errorf("nodeId is error %v \n", h.NodeId)
 	}
-	if h.Height < 0 {
-		return false, nil
+	if !utils.IsRFC339Time(h.Time) {
+		return false, fmt.Errorf("time is error %v \n", h.Time)
 	}
-	return h.checkParam(), nil
-}
+	if h.Type == config.SharedType && (h.UpHash == "" || len(h.Detail.UpStream) == 0 || len(h.Detail.Ss) == 0) {
+		return false, fmt.Errorf("shard type params error,upHash,upstream,ss can not empty")
+	}
+	if h.Type == config.RelayType && (h.UpHash == "" || h.DownHash == "" || len(h.Detail.UpStream) == 0 || len(h.Detail.DownStream) == 0) {
+		return false, fmt.Errorf("relay type params error ,upHash downHash upstream downstream, can not empty")
+	}
+	if h.Type == config.BeaconType && (h.DownHash == "" || len(h.Detail.DownStream) == 0) {
+		return false, fmt.Errorf("beacon type params downhasah,downstream,can not empty")
+	}
+	return true, nil
 
-func (h *ReportBlockForm) checkParam() bool {
-	switch h.Type {
-	case config.BeaconType:
-		if len(h.DownHash) == 0 {
-			return false
-		}
-	case config.RelayType:
-		if len(h.DownHash) == 0 {
-			return false
-		}
-		if len(h.UpHash) == 0 {
-			return false
-		}
-	case config.SharedType:
-		if len(h.UpHash) == 0 {
-			return false
-		}
-	default:
-		return true
-	}
-	return true
 }

@@ -6,13 +6,14 @@ import (
 )
 
 type IBlockDao interface {
-	Insert(blockParam,relayParam bson.M, transGroup, transParam []interface{}) (interface{}, error)
-	Block(chainType,chainKey,hash string,height string) (interface{}, error)
+	Insert(blockParam, relayParam bson.M, transGroup, transParam []interface{}) (interface{}, error)
+	InsertV1(blockParam, latestParam bson.M, transGroup, transParam interface{}) (interface{}, error)
+	Block(chainType, chainKey, hash string, height int) (interface{}, error)
 	Query() (interface{}, error)
 }
 
 type ITransGroupDao interface {
-	TransGroup(fromShard,toShard string,height int) (interface{}, error)
+	TransGroup(fromShard, toShard string, height int) (interface{}, error)
 }
 
 type ITransDao interface {
@@ -33,6 +34,8 @@ type ILatestBlock interface {
 
 type INodeDao interface {
 	FindOne(nodeId string) (*model.Node, error)
+	TotalShardNode() (int, error)
+	UpdateNodeCmd(amount int) (interface{}, error)
 	FindLatestOne() (*model.Node, error)
 	Insert(chainType, chainKey, nodeId, latestTime string) (interface{}, error)
 	UpdateLatestTime(nodeId, latestTime string) (interface{}, error)

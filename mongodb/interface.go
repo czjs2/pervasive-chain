@@ -12,7 +12,7 @@ type IDao interface {
 
 	InsertOne(ctx context.Context, param bson.M) (interface{}, error)
 
-	InsertMany(ctx context.Context, params []interface{}) (interface{}, error)
+	InsertMany(ctx context.Context, params []interface{},opts ...*options.InsertManyOptions) (*mongo.InsertManyResult, error)
 
 	DeleteOne(ctx context.Context, param bson.M) (interface{}, error)
 
@@ -46,4 +46,6 @@ type IDao interface {
 	AggregateOne(ctx context.Context, query []bson.M, obj interface{}) error
 	// 事务
 	UseSession(ctx context.Context, fn func(sessionContext context.Context) error) error
+
+	BulkWrite(ctx context.Context,models []mongo.WriteModel,opts ...*options.BulkWriteOptions) (*mongo.BulkWriteResult, error)
 }

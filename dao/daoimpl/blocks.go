@@ -3,6 +3,7 @@ package daoimpl
 import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"pervasive-chain/dao"
 	"pervasive-chain/model"
@@ -16,17 +17,50 @@ type BlockDao struct {
 	realBlock  mongodb.IDao
 }
 
-func (b *BlockDao) Block(chainType, chainKey, hash string, height string) (interface{}, error) {
-	param := &model.Param{}
-	err := b.dao.AggregateOne(context.TODO(), []bson.M{}, param)
-	if err != nil {
-		return nil, err
-	}
-	// todo 改表 多次查询？
+func (b *BlockDao) InsertV1(blockParam, latestParam bson.M, transGroup, transParam interface{}) (interface{}, error) {
+	update := options.Update()
+	update.SetUpsert(true)
+	err := b.dao.UseSession(context.TODO(), func(sessionContext context.Context) error {
+		query := bson.M{"hash": blockParam["hash"], "height": blockParam["height"], "chainKey": blockParam["chainKey"]}
+		_, err := b.dao.UpdateWithOption(sessionContext, query, bson.M(blockParam), update)
+		if err != nil {
+			return err
+		}
+		_, err = b.realBlock.UpdateWithOption(sessionContext, bson.M{"chainKey": latestParam["chainKey"]}, latestParam, update)
+		if err != nil {
+			return err
+		}
+		if transGroup != nil {
+			tTransGroup := transGroup.([]mongo.WriteModel)
+			_, err = b.transGroup.BulkWrite(sessionContext, tTransGroup)
+			if err != nil {
+				return err
+			}
+			// todo 效验
+		}
+		if transParam != nil {
+			tTransParam :=transParam.([]mongo.WriteModel)
+			_, err = b.trans.BulkWrite(sessionContext, tTransParam)
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	})
 	return nil, err
 }
 
-func (b *BlockDao) Insert(blockParam, latestParam bson.M, transGroup, trans []interface{}) (interface{}, error) {
+func (b *BlockDao) Block(chainType, chainKey, hash string, height int) (interface{}, error) {
+	param := model.Param{}
+	query := getQueryBlockParam(chainType, chainKey, hash, height)
+	err := b.dao.AggregateOne(context.TODO(), []bson.M{bson.M{"$match": query}}, &param)
+	if err != nil {
+		return nil, err
+	}
+	return param, err
+}
+
+func (b *BlockDao) Insert(blockParam, latestParam bson.M, transGroup, trans [] interface{}) (interface{}, error) {
 	update := options.Update()
 	update.SetUpsert(true)
 	err := b.dao.UseSession(context.TODO(), func(sessionContext context.Context) error {

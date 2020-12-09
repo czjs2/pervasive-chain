@@ -31,14 +31,17 @@ func (n *Dao) UnSetUpdateOne(ctx context.Context, query, param bson.M) (interfac
 	return res, nil
 }
 
+func (n *Dao) BulkWrite(ctx context.Context,models []mongo.WriteModel,opts ...*options.BulkWriteOptions) (*mongo.BulkWriteResult, error) {
+	return n.Collection().BulkWrite(ctx, models, opts...)
+}
+
 func (n *Dao) DeleteMany(ctx context.Context, param bson.M) (*mongo.DeleteResult, error) {
 	return n.Collection().DeleteMany(ctx, param)
 }
 
-func (n *Dao) InsertMany(ctx context.Context, params []interface{}) (interface{}, error) {
-	return n.Collection().InsertMany(ctx, params)
+func (n *Dao) InsertMany(ctx context.Context, params []interface{}, opts ...*options.InsertManyOptions) (*mongo.InsertManyResult, error) {
+	return n.Collection().InsertMany(ctx, params, opts...)
 }
-
 
 func (n *Dao) UpdateOriginalOne(ctx context.Context, query, param bson.M) (interface{}, error) {
 	return n.Collection().UpdateOne(ctx, query, param)
@@ -121,6 +124,7 @@ func (n *Dao) InsertOne(ctx context.Context, param bson.M) (interface{}, error) 
 func (n *Dao) DeleteOne(ctx context.Context, param bson.M) (interface{}, error) {
 	return n.Collection().DeleteOne(ctx, param)
 }
+
 
 func (n *Dao) UpdateOne(ctx context.Context, query bson.M, param bson.M) (interface{}, error) {
 	param["updateTime"] = time.Now()

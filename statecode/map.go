@@ -3,7 +3,7 @@ package statecode
 type ErrorInfo map[string]interface{}
 
 var errorMap = map[int]string{
-	Success:           "成功",
+	Success:           "OK",
 	UnknownError:      "未知错误",
 	Fail:              "失败",
 	TokenExpiredERROR: "token失效",
