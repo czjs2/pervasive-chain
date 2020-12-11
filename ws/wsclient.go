@@ -54,7 +54,7 @@ func (c *Client) Read() {
 		body := GetJsonValue(src, "body")
 		msgId := GetJsonValue(src, "msgId")
 		event := GetJsonValue(src, "event")
-		if !c.CanPush && event == Block {
+		if event == Block {
 			c.setCanPush(true)
 			bytes := NewEventResponse(event, msgId)
 			c.Send <- bytes

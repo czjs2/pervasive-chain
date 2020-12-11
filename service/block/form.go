@@ -9,7 +9,7 @@ import (
 type SingleBlockForm struct {
 	Type     string `json:"type"`
 	ChainKey string `json:"chainKey"`
-	Height   int    `json:"height"`
+	Height   uint64 `json:"height"`
 	Hash     string `json:"hash"`
 }
 
@@ -17,25 +17,25 @@ func (b *SingleBlockForm) Valid() (bool, error) {
 	if b.Hash != "" {
 		return true, nil
 	}
-	if b.Height == 0 || b.Type == "" || b.ChainKey == "" {
+	if b.Type == "" || b.ChainKey == "" {
 		return false, nil
 	}
 	return true, nil
 }
 
 type ReportBlockForm struct {
-	Type     string `form:"type" binding:"required"`     //[b|r|s], 链类型
-	ChainKey string `form:"chainKey" binding:"required"` // 链编号
-	NodeId   string `form:"nodeId" binding:"required"`   // 节点id
-	Height   int64  `form:"height" binding:"required"`   //当前区块高度
-	Father   string `form:"father" binding:"required"`   //父区块hash
-	Hash     string `form:"hash" binding:"required"`     //区块hash
-	Vrf      string `form:"vrf" binding:"required"`      //VRF
-	Time     string `form:"time" binding:"required"`     //当前产生时间
-	Interval int64  `form:"interval" binding:"required"` //出块间隔
-	Trans    int64  `form:"trans" binding:"required"`    //交易数量
-	Size     int64  `form:"size" binding:"required"`     //区块大小
-
+	Type     string     `form:"type" binding:"required"`     //[b|r|s], 链类型
+	ChainKey string     `form:"chainKey" binding:"required"` // 链编号
+	NodeId   string     `form:"nodeId" binding:"required"`   // 节点id
+	Height   uint64     `form:"height"`                      //当前区块高度
+	Father   string     `form:"father" binding:"required"`   //父区块hash
+	Hash     string     `form:"hash" binding:"required"`     //区块hash
+	Vrf      string     `form:"vrf" binding:"required"`      //VRF
+	Time     string     `form:"time" binding:"required"`     //当前产生时间
+	Interval uint64     `form:"interval" binding:"required"` //出块间隔
+	Trans    uint64     `form:"trans" binding:"required"`    //交易数量
+	Size     uint64     `form:"size" binding:"required"`     //区块大小
+	Gas      string     `form:"gas"`
 	LockHash []LockHash `form:"lockHash" binding:"required"`
 
 	UpHash   string      `form:"upHash"`
@@ -46,7 +46,7 @@ type ReportBlockForm struct {
 type LockHash struct {
 	Type     string `json:"type"`
 	ChainKey string `json:"chainKey"`
-	Height   int    `json:"height"`
+	Height   uint64 `json:"height"`
 }
 
 type DetailBlock struct {

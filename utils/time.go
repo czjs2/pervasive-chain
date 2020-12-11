@@ -3,8 +3,27 @@ package utils
 import (
 	"fmt"
 	"pervasive-chain/config"
+	"regexp"
 	"time"
 )
+
+
+
+var (
+	//2012-11-01T22:08:41+00:00
+	rfc339TimeRegex = regexp.MustCompile(`20[0-9]{2}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\+[0-9]{2}:[0-9]{2}]`)
+)
+
+func IsRFC339Time(t string) bool {
+	// todo 正则
+	_, err := time.Parse(time.RFC3339, t)
+	if err != nil {
+		return false
+	}
+	return true
+}
+
+
 
 // 一个月的天数
 func MonthDays(now time.Time) (int64, error) {
@@ -54,6 +73,7 @@ func GetWeekFirstDayTime() time.Time {
 func GetMongoTime() time.Time {
 	return time.Now().Add(8 * time.Hour)
 }
+
 //https://zhuanlan.zhihu.com/p/31829454
 func ParseRFCTime(t string) (time.Time, error) {
 	return time.Parse(time.RFC3339, t)

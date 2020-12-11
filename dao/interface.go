@@ -8,7 +8,7 @@ import (
 type IBlockDao interface {
 	Insert(blockParam, relayParam bson.M, transGroup, transParam []interface{}) (interface{}, error)
 	InsertV1(blockParam, latestParam bson.M, transGroup, transParam interface{}) (interface{}, error)
-	Block(chainType, chainKey, hash string, height int) (interface{}, error)
+	Block(chainType, chainKey, hash string, height uint64) (interface{}, error)
 	Query() (interface{}, error)
 }
 
@@ -18,7 +18,7 @@ type ITransGroupDao interface {
 
 type ITransDao interface {
 	Trans(hash string) (interface{}, error)
-	Query() (interface{}, error)
+	TransGroup(fromShard,toShard string,height uint64)(interface{},error)
 }
 
 type INodeBandDao interface {

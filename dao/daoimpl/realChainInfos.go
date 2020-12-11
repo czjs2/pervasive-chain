@@ -17,17 +17,18 @@ type LatestBlockDao struct {
 func (l *LatestBlockDao) UpdateBlock(chainId string, param bson.M) (interface{}, error) {
 	update := options.Update()
 	update.SetUpsert(true)
-	return l.dao.UpdateWithOption(context.TODO(),bson.M{"chainKey":chainId},param,update)
+	return l.dao.UpdateWithOption(context.TODO(), bson.M{"chainKey": chainId}, param, update)
 }
 
 func (l *LatestBlockDao) LatestBlockList() (interface{}, error) {
-	var res []*model.LatestBlock
+	var res []*model.Param
 	query := []bson.M{
 		bson.M{"$match": bson.M{}},
+		bson.M{"$project": bson.M{"_id": 0}},
 	}
 	_, err := l.dao.AggregateList(context.TODO(), query, func(ctx context.Context, cursor *mongo.Cursor) error {
 		for cursor.Next(ctx) {
-			block := &model.LatestBlock{}
+			block := &model.Param{}
 			err := cursor.Decode(block)
 			if err != nil {
 				return err

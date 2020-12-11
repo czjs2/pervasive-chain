@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"pervasive-chain/dao"
 	"pervasive-chain/dao/daoimpl"
+	"pervasive-chain/log"
 	"pervasive-chain/utils"
 	"pervasive-chain/ws"
 )
@@ -31,7 +32,7 @@ func (b *BlockHandler) WsChainInfoHandler(c *ws.WsContext) {
 		utils.WsFailResponse(c)
 		return
 	}
-	utils.WsSuccessResponse(c, latestBlockList)
+	utils.WsSuccessResponse(c, gin.H{"data": latestBlockList})
 }
 
 func (b *BlockHandler) UpdateBlock(c *gin.Context) {
@@ -39,11 +40,13 @@ func (b *BlockHandler) UpdateBlock(c *gin.Context) {
 	utils.MustParams(c, &blockFrom)
 	params, err := getBlockParams(blockFrom)
 	if err != nil {
+		log.Error(err.Error())
 		utils.FailResponse(c)
 		return
 	}
 	latestParams, err := getLatestParams(blockFrom)
 	if err != nil {
+		log.Error(err.Error())
 		utils.FailResponse(c)
 		return
 	}
@@ -56,11 +59,13 @@ func (b *BlockHandler) UpdateBlock(c *gin.Context) {
 	transGroup, trans := getTransGroupParamV1(blockFrom)
 	_, err = b.blockDao.InsertV1(params, latestParams, transGroup, trans)
 	if err != nil {
+		log.Error(err.Error())
 		utils.FailResponse(c)
 		return
 	}
+	relayBlockParam := getRealBlockParam(blockFrom)
 
-	ws.BroadcastMessage(latestParams)
+	ws.BroadcastMessage(relayBlockParam)
 	utils.SuccessResponse(c, nil)
 }
 

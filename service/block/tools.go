@@ -21,10 +21,6 @@ func getTransGroupParam(blockFrom ReportBlockForm) ([]interface{}, []interface{}
 	}
 }
 
-
-
-
-
 func getRelayParam(form ReportBlockForm) []interface{} {
 	var transGroup []interface{}
 	for i := 0; i < len(form.Detail.Ss); i++ {
@@ -73,6 +69,22 @@ func getShardParam(form ReportBlockForm) ([]interface{}, []interface{}) {
 	return transGroup, trans
 }
 
+func getRealBlockParam(blockFrom ReportBlockForm) bson.M {
+	param := bson.M{}
+	param["nodeId"] = blockFrom.NodeId
+	param["father"] = blockFrom.Father
+	param["hash"] = blockFrom.Hash
+	param["vrf"] = blockFrom.Vrf
+	param["time"] = blockFrom.Time
+	param["type"] = blockFrom.Type
+	param["chainKey"] = blockFrom.ChainKey
+	param["height"] = blockFrom.Height
+	param["interval"] = blockFrom.Interval
+	param["trans"] = blockFrom.Trans
+	param["size"] = blockFrom.Size
+	return param
+}
+
 func getLatestParams(blockFrom ReportBlockForm) (bson.M, error) {
 	param := bson.M{}
 	time, err := utils.ParseRFCTime(blockFrom.Time)
@@ -102,12 +114,13 @@ func getBlockParams(blockFrom ReportBlockForm) (bson.M, error) {
 	detail["downStream"] = blockFrom.Detail.DownStream
 	params["type"] = blockFrom.Type
 	params["chainKey"] = blockFrom.ChainKey
-	params["nodeId"] = blockFrom.NodeId
+	params["miner"] = blockFrom.NodeId
 	params["height"] = blockFrom.Height
 	params["father"] = blockFrom.Father
 	params["hash"] = blockFrom.Hash
 	params["vrf"] = blockFrom.Vrf
 	params["time"] = time
+	params["gas"] = blockFrom.Gas
 	params["interval"] = blockFrom.Interval
 	params["trans"] = blockFrom.Trans
 	params["size"] = blockFrom.Size
@@ -118,11 +131,7 @@ func getBlockParams(blockFrom ReportBlockForm) (bson.M, error) {
 	return params, nil
 }
 
-
-
-
-
-func getTransGroupParamV1(blockFrom ReportBlockForm)(interface{},interface{}){
+func getTransGroupParamV1(blockFrom ReportBlockForm) (interface{}, interface{}) {
 	switch blockFrom.Type {
 	case config.BeaconType:
 		return nil, nil
@@ -134,10 +143,6 @@ func getTransGroupParamV1(blockFrom ReportBlockForm)(interface{},interface{}){
 		return nil, nil
 	}
 }
-
-
-
-
 
 func getSharedParamV1(form ReportBlockForm) (interface{}, interface{}) {
 	var transGroup []mongo.WriteModel

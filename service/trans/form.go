@@ -1,13 +1,13 @@
 package trans
 
 type TransGroupFrom struct {
-	Height    int    `json:"height"`
+	Height    uint64 `json:"height"`
 	FromShard string `json:"fromShard"`
 	ToShard   string `json:"toShard"`
 }
 
 func (t *TransGroupFrom) Valid() (bool, error) {
-	if t.Height == 0 || t.FromShard == "" || t.ToShard == "" {
+	if t.FromShard == "" || t.ToShard == "" {
 		return false, nil
 	}
 	return true, nil

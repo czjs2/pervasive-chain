@@ -15,7 +15,7 @@ type TransHandler struct {
 func (t *TransHandler) GransGroup(c *ws.WsContext) {
 	var transGroupFrom TransGroupFrom
 	_ = c.BindJSON(&transGroupFrom)
-	transGroup, err := t.transGroupDao.TransGroup(transGroupFrom.FromShard, transGroupFrom.ToShard, transGroupFrom.Height)
+	transGroup, err := t.transDao.TransGroup(transGroupFrom.FromShard, transGroupFrom.ToShard, transGroupFrom.Height)
 	if err != nil {
 		utils.WsFailResponse(c)
 		return

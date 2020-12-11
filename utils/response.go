@@ -12,6 +12,9 @@ func FailResponse(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"code": statecode.Fail, "message": statecode.CodeInfo(statecode.Fail)})
 }
 
+func FailResponseWithMsg(c *gin.Context){
+	c.JSON(http.StatusOK, gin.H{"code": statecode.Fail, "message": statecode.CodeInfo(statecode.Fail)})
+}
 func SuccessResponse(c *gin.Context, data interface{}) {
 	if data == nil {
 		data = gin.H{}

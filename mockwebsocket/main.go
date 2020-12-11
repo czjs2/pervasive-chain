@@ -49,12 +49,12 @@ func main() {
 		case <-done:
 			return
 		case <-ticker.C:
-			chainInfoCmd := fmt.Sprintf(`{"uri":"chainInfo","body":{},"msgId":"msgId%d"}`, time.Now().Unix())
-			err = c.WriteMessage(websocket.TextMessage, []byte(chainInfoCmd))
-			if err != nil {
-				fmt.Println(err.Error())
-				return
-			}
+			//chainInfoCmd := fmt.Sprintf(`{"uri":"chainInfo","body":{},"msgId":"msgId%d"}`, time.Now().Unix())
+			//err = c.WriteMessage(websocket.TextMessage, []byte(chainInfoCmd))
+			//if err != nil {
+			//	fmt.Println(err.Error())
+			//	return
+			//}
 
 
 			time.Sleep(3*time.Second)
@@ -66,31 +66,31 @@ func main() {
 			}
 
 
-			time.Sleep(3*time.Second)
-			cmdInfo := fmt.Sprintf(`{"uri":"cmd","body":{"type":"S","cmd":{"key":"transfer","params":{"amount":100}}},"msgId":"msgId%d"}`, time.Now().Unix())
-			err = c.WriteMessage(websocket.TextMessage, []byte(cmdInfo))
-			if err != nil {
-				log.Println("write:", err)
-				return
-			}
-
-
-			time.Sleep(3*time.Second)
-			ssInfo := fmt.Sprintf(`{"uri":"ssInfo","body":{"height":1,"fromShard":"SFF01","toShard":"S0000"}},"msgId":"msgId%d"}`, time.Now().Unix())
-			err = c.WriteMessage(websocket.TextMessage, []byte(ssInfo))
-			if err != nil {
-				log.Println("write:", err)
-				return
-			}
-
-
-			time.Sleep(3*time.Second)
-			transInfo := fmt.Sprintf(`{"uri":"tranInfo","body":{"hash":"sdfsdf"}},"msgId":"msgId%d"}`, time.Now().Unix())
-			err = c.WriteMessage(websocket.TextMessage, []byte(transInfo))
-			if err != nil {
-				log.Println("write:", err)
-				return
-			}
+			//time.Sleep(3*time.Second)
+			//cmdInfo := fmt.Sprintf(`{"uri":"cmd","body":{"type":"S","cmd":{"key":"transfer","params":{"amount":100}}},"msgId":"msgId%d"}`, time.Now().Unix())
+			//err = c.WriteMessage(websocket.TextMessage, []byte(cmdInfo))
+			//if err != nil {
+			//	log.Println("write:", err)
+			//	return
+			//}
+			//
+			//
+			//time.Sleep(3*time.Second)
+			//ssInfo := fmt.Sprintf(`{"uri":"ssInfo","body":{"height":1,"fromShard":"SFF01","toShard":"S0000"}},"msgId":"msgId%d"}`, time.Now().Unix())
+			//err = c.WriteMessage(websocket.TextMessage, []byte(ssInfo))
+			//if err != nil {
+			//	log.Println("write:", err)
+			//	return
+			//}
+			//
+			//
+			//time.Sleep(3*time.Second)
+			//transInfo := fmt.Sprintf(`{"uri":"tranInfo","body":{"hash":"sdfsdf"}},"msgId":"msgId%d"}`, time.Now().Unix())
+			//err = c.WriteMessage(websocket.TextMessage, []byte(transInfo))
+			//if err != nil {
+			//	log.Println("write:", err)
+			//	return
+			//}
 
 		}
 	}

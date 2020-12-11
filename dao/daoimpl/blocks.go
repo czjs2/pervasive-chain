@@ -32,17 +32,21 @@ func (b *BlockDao) InsertV1(blockParam, latestParam bson.M, transGroup, transPar
 		}
 		if transGroup != nil {
 			tTransGroup := transGroup.([]mongo.WriteModel)
-			_, err = b.transGroup.BulkWrite(sessionContext, tTransGroup)
-			if err != nil {
-				return err
+			if len(tTransGroup) != 0 {
+				_, err = b.transGroup.BulkWrite(sessionContext, tTransGroup)
+				if err != nil {
+					return err
+				}
 			}
 			// todo 效验
 		}
 		if transParam != nil {
-			tTransParam :=transParam.([]mongo.WriteModel)
-			_, err = b.trans.BulkWrite(sessionContext, tTransParam)
-			if err != nil {
-				return err
+			tTransParam := transParam.([]mongo.WriteModel)
+			if len(tTransParam) != 0 {
+				_, err = b.trans.BulkWrite(sessionContext, tTransParam)
+				if err != nil {
+					return err
+				}
 			}
 		}
 		return nil
@@ -50,7 +54,7 @@ func (b *BlockDao) InsertV1(blockParam, latestParam bson.M, transGroup, transPar
 	return nil, err
 }
 
-func (b *BlockDao) Block(chainType, chainKey, hash string, height int) (interface{}, error) {
+func (b *BlockDao) Block(chainType, chainKey, hash string, height uint64) (interface{}, error) {
 	param := model.Param{}
 	query := getQueryBlockParam(chainType, chainKey, hash, height)
 	err := b.dao.AggregateOne(context.TODO(), []bson.M{bson.M{"$match": query}}, &param)

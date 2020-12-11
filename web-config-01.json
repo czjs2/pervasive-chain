@@ -1,0 +1,9 @@
+{
+  "MongodbUrl": "mongodb://pynxtest01:pynxtest01@139.186.84.15:27987,139.186.84.15:27988,139.186.84.15:27989/pynxtest01",
+  "Debug": true,
+  "HTTPListen": "0.0.0.0:7777",
+  "WebRoot": "./webroot",
+  "HtmlTemplate": "./webroot/template",
+  "DevMongodbUrl": "mongodb://pynxtest01:pynxtest01@139.186.84.15:27987,139.186.84.15:27988,139.186.84.15:27989/pynxtest01",
+  "LogPath": "./log"
+}

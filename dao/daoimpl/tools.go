@@ -6,13 +6,13 @@ import (
 	model2 "pervasive-chain/model"
 )
 
-func getQueryBlockParam(chainType, chainKey, hash string, height int) bson.M {
+func getQueryBlockParam(chainType, chainKey, hash string, height uint64) bson.M {
 	query := bson.M{}
 	if hash != "" {
 		query["hash"] = hash
 		return query
 	}
-	if chainType != "" || chainKey != "" || height != 0 {
+	if chainType != "" && chainKey != "" {
 		query["type"] = chainType
 		query["chainKey"] = chainKey
 		query["height"] = height
