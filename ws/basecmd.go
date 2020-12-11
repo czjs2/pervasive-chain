@@ -5,6 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type param map[string]interface{}
+
 type BaseCmd struct {
 	Uri   string      `json:"uri"`
 	Body  interface{} `json:"body"`
@@ -12,10 +14,10 @@ type BaseCmd struct {
 }
 
 type ErrorCmd struct {
-	Uri   string `json:"uri"`
-	Body  string `json:"body"`
-	MsgId string `json:"msgId"`
-	Error Error  `json:"error"`
+	Uri   string      `json:"uri"`
+	Body  interface{} `json:"body"`
+	MsgId string      `json:"msgId"`
+	Error Error       `json:"error"`
 }
 type Error struct {
 	Code    int         `json:"code"`
@@ -47,16 +49,20 @@ func NewSubscribeResp(data interface{}) *Subscribe {
 }
 
 func NewResponseCmd(uri, msgId string, body interface{}) BaseCmd {
+	if body == nil {
+		body = param{}
+	}
 	return BaseCmd{Uri: uri, Body: body, MsgId: msgId}
 }
 
-func NewErrorResponse(uri, msgId string, message interface{}, code int) ErrorCmd {
+func NewErrorResponse(uri, msgId string, obj interface{}, code int) ErrorCmd {
 	return ErrorCmd{
 		Uri:   uri,
 		MsgId: msgId,
+		Body:  param{},
 		Error: Error{
 			Code:    code,
-			Message: message,
+			Message: obj,
 		},
 	}
 }

@@ -16,6 +16,12 @@ type Value struct {
 	Value Decimal `json:"value" bson:"value"`
 }
 
+func Test001(t *testing.T) {
+
+}
+
+
+
 func TestCollection(t *testing.T) {
 	dao := NewDaoWithTable("test")
 	dd, err := primitive.ParseDecimal128("11111")

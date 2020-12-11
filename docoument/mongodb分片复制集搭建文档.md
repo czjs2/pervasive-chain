@@ -234,7 +234,7 @@
     sh.shardCollection("pynxtest.block", { height : 1} )
 
     // mongod url
-    mongodb://pynxtest:xjrw2020@118.24.168.230:27026/pynxtest?authSource=pynxtest
+    mongodb://pynxtest:xjrw2020@127.0.0.127026/pynxtest?authSource=pynxtest
 
 
 
