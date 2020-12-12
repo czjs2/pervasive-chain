@@ -1,0 +1,22 @@
+[
+  {
+    "TableName": "block",
+    "Indexes": [
+      {
+        "height": 1
+      }
+    ]
+  },
+  {
+    "TableName": "test",
+    "Indexes": [
+      {
+        "name": 1
+      },
+      {
+        "age": 1,
+        "height": 1
+      }
+    ]
+  }
+]

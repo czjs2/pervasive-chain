@@ -16,7 +16,7 @@ type Node struct {
 type CmdInfo struct {
 	Key    string `json:"key" bson:"key"`
 	Params struct {
-		Value int `json:"value" bson:"value"`
+		Amount int `json:"amount" bson:"amount"`
 	} `json:"params" bson:"params"`
 }
 

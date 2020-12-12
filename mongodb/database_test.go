@@ -17,7 +17,16 @@ type Value struct {
 }
 
 func Test001(t *testing.T) {
-
+	//opts := options.CreateIndexes().SetMaxTime(10 * time.Second)
+	//
+	//idxFiles := []mongo.IndexModel{
+	//	{
+	//		Keys: bsonx.Doc{{"name": "text"}},
+	//	},
+	//}
+	//
+	//MongodbConn().Collection("mycollection").Indexes().CreateMany(context.TODO(), idxFiles, opts)
+	//MongodbConn().Collection("mycollection").Indexes().List()
 }
 
 

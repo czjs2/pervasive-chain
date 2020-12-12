@@ -34,9 +34,9 @@ type ILatestBlock interface {
 
 type INodeDao interface {
 	FindOne(nodeId string) (*model.Node, error)
-	TotalShardNode() (int, error)
-	UpdateNodeCmd(amount int) (interface{}, error)
-	FindLatestOne() (*model.Node, error)
-	Insert(chainType, chainKey, nodeId, latestTime string) (interface{}, error)
-	UpdateLatestTime(nodeId, latestTime string) (interface{}, error)
+	TotalNode(chainType string) (int, error)
+	UpdateNodeCmd(chainType string,amount int) (interface{}, error)
+	FindLatestOne(chainType string) (*model.Node, error)
+	Insert(chainType, chainKey, nodeId string) (interface{}, error)
+	UpdateLatestTime(nodeId string) (interface{}, error)
 }

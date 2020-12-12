@@ -18,7 +18,7 @@ type NodeHandler struct {
 func (n *NodeHandler) GenCmd(c *ws.WsContext) {
 	var genCmdFrom GenCmdFrom
 	_ = c.BindJSON(&genCmdFrom)
-	node, err := n.nodeDao.FindLatestOne()
+	node, err := n.nodeDao.FindLatestOne(genCmdFrom.Type)
 	if err != nil {
 		utils.WsFailResponse(c)
 		return
@@ -31,16 +31,16 @@ func (n *NodeHandler) GenCmd(c *ws.WsContext) {
 		utils.WsFailResponse(c)
 		return
 	}
-	totalShardNode, err := n.nodeDao.TotalShardNode()
+	totalNode, err := n.nodeDao.TotalNode(genCmdFrom.Type)
 	if err != nil {
 		utils.WsFailResponse(c)
 		return
 	}
-	if totalShardNode == 0 {
+	if totalNode == 0 {
 		utils.WsSuccessResponse(c, nil)
 		return
 	}
-	_, err = n.nodeDao.UpdateNodeCmd(genCmdFrom.Cmd.Params.Amount / totalShardNode)
+	_, err = n.nodeDao.UpdateNodeCmd(genCmdFrom.Type,genCmdFrom.Cmd.Params.Amount / totalNode)
 	if err != nil {
 		utils.WsFailResponse(c)
 		return
@@ -60,17 +60,18 @@ func (n *NodeHandler) UpdateNodeInfo(c *gin.Context) {
 		}
 	}
 	if node == nil {
-		_, err := n.nodeDao.Insert(heartFrom.Type, heartFrom.ChainKey, heartFrom.NodeId, heartFrom.Time)
+		_, err := n.nodeDao.Insert(heartFrom.Type, heartFrom.ChainKey, heartFrom.NodeId)
 		if err != nil {
 			utils.FailResponse(c)
 			return
 		}
 	} else {
-		_, err := n.nodeDao.UpdateLatestTime(heartFrom.NodeId, heartFrom.Time)
+		_, err := n.nodeDao.UpdateLatestTime(heartFrom.NodeId)
 		if err != nil {
 			utils.FailResponse(c)
 			return
 		}
+		// 两次下发命令的时间有间隔限制
 		if !node.CmdTime.IsZero() && time.Now().UTC().Sub(node.CmdTime) > config.GenCmdIntervalTime {
 			utils.SuccessResponse(c, node.Cmd)
 			return

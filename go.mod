@@ -17,6 +17,7 @@ require (
 	github.com/tebeka/strftime v0.1.4 // indirect
 	github.com/tidwall/gjson v1.6.3
 	go.mongodb.org/mongo-driver v1.4.4
+	golang.org/x/sys v0.0.0-20200116001909-b77594299b42
 )
 
 replace xjrwws.com/ws => ./extern/xjrwwebsocket/ws

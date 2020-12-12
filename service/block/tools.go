@@ -152,7 +152,7 @@ func getSharedParamV1(form ReportBlockForm) (interface{}, interface{}) {
 		UpdateManyModel := mongo.NewUpdateOneModel()
 		UpdateManyModel.SetUpsert(true)
 		UpdateManyModel.SetFilter(bson.M{"hash": ss.Hash})
-		UpdateManyModel.SetUpdate(bson.M{
+		UpdateManyModel.SetUpdate(bson.M{"$set":bson.M{
 			"trans":     len(ss.Trans),
 			"height":    form.Height,
 			"fromShard": ss.FromShard,
@@ -160,14 +160,14 @@ func getSharedParamV1(form ReportBlockForm) (interface{}, interface{}) {
 			"fromRelay": ss.FromRelay,
 			"toRelay":   ss.ToRelay,
 			"hash":      ss.Hash,
-		})
+		}})
 		transGroup = append(transGroup, UpdateManyModel)
 		for j := 0; j < len(ss.Trans); j++ {
 			tran := ss.Trans[j]
 			transUpdateManyModel := mongo.NewUpdateOneModel()
 			transUpdateManyModel.SetUpsert(true)
 			transUpdateManyModel.SetFilter(bson.M{"hash": tran.Hash})
-			transUpdateManyModel.SetUpdate(bson.M{
+			transUpdateManyModel.SetUpdate(bson.M{"$set":bson.M{
 				"hash":      tran.Hash,
 				"height":    form.Height,
 				"from":      tran.From,
@@ -175,7 +175,7 @@ func getSharedParamV1(form ReportBlockForm) (interface{}, interface{}) {
 				"to":        tran.To,
 				"toShard":   ss.ToShard,
 				"amount":    tran.Amount,
-			})
+			}})
 			trans = append(trans, transUpdateManyModel)
 		}
 	}

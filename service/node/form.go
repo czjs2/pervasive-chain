@@ -9,7 +9,7 @@ type HeartBeatFrom struct {
 	Type     string `form:"type" binding:"required"`     //[b|r|s], 链类型
 	ChainKey string `form:"chainKey" binding:"required"` // 链编号
 	NodeId   string `form:"nodeId" binding:"required"`   // 节点id
-	Time     string `form:"time" binding:"required"`     // 时间
+	Time     string `form:"time"`     // 时间
 
 }
 
@@ -46,8 +46,8 @@ func (h *HeartBeatFrom) Valid() (bool, error) {
 	if !utils.IsValidNodeId(h.NodeId) {
 		return false, fmt.Errorf("nodeId is error %v \n", h.NodeId)
 	}
-	if !utils.IsRFC339Time(h.Time) {
-		return false, fmt.Errorf("time is error %v \n", h.Time)
-	}
+	//if !utils.IsRFC339Time(h.Time) {
+	//	return false, fmt.Errorf("time is error %v \n", h.Time)
+	//}
 	return true, nil
 }

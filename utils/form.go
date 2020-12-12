@@ -3,7 +3,6 @@ package utils
 import (
 	"github.com/gin-gonic/gin"
 	"pervasive-chain/config"
-	"strings"
 )
 
 func MustParams(c *gin.Context, obj interface{}) {
@@ -17,17 +16,14 @@ func IsValidNodeId(nodeId string) bool {
 	return len(nodeId) == 52
 }
 
-func IsValidChainKey(chainKey, chainType string) bool {
-	if !strings.HasPrefix(chainKey, chainType) {
-		return false
-	}
+func  IsValidChainKey(chainKey, chainType string) bool {
 	if chainType == config.BeaconType && len(chainKey) == 1 {
 		return true
 	}
-	if chainType == config.RelayType && len(chainKey) == 3 {
+	if chainType == config.RelayType && len(chainKey) == 2 {
 		return true
 	}
-	if chainType == config.SharedType && len(chainKey) == 5 {
+	if chainType == config.SharedType && len(chainKey) == 4 {
 		return true
 	}
 	return false
