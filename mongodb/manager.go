@@ -137,6 +137,17 @@ func (tm *TableManger) TableIsExists(name string, collections []string) bool {
 	return false
 }
 
+
+func (tm *TableManger)Run() error{
+	err := tm.CreateTable()
+	if err!=nil{
+		return err
+	}
+	return tm.CreateIndex()
+}
+
+
+
 func (tm *TableManger) ReadCfg(path string) error {
 	var res []*TableInfo
 	bytes, err := ioutil.ReadFile(path)
