@@ -4,7 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"pervasive-chain/dao"
 	"pervasive-chain/dao/daoimpl"
-	"pervasive-chain/log"
 	"pervasive-chain/utils"
 	"pervasive-chain/ws"
 )
@@ -35,19 +34,47 @@ func (b *BlockHandler) WsChainInfoHandler(c *ws.WsContext) {
 	utils.WsSuccessResponse(c, gin.H{"data": latestBlockList})
 }
 
+
+
+
+func (b *BlockHandler) TestUpdateBlock(c *gin.Context){
+	var blockFrom ReportBlockForm
+	utils.MustParams(c, &blockFrom)
+	params, err := getBlockParams(blockFrom)
+	if err != nil {
+		utils.FailResponse(c,err.Error())
+		return
+	}
+	latestParams, err := getLatestParams(blockFrom)
+	if err != nil {
+		utils.FailResponse(c,err.Error())
+		return
+	}
+	transGroup, trans := getTransGroupParam(blockFrom)
+	_, err = b.blockDao.InsertV2(params, latestParams, transGroup, trans)
+	if err != nil {
+		utils.FailResponse(c,err.Error())
+		return
+	}
+	relayBlockParam := getRealBlockParam(blockFrom)
+
+	ws.BroadcastMessage(relayBlockParam)
+	utils.SuccessResponse(c, nil)
+}
+
+
+
 func (b *BlockHandler) UpdateBlock(c *gin.Context) {
 	var blockFrom ReportBlockForm
 	utils.MustParams(c, &blockFrom)
 	params, err := getBlockParams(blockFrom)
 	if err != nil {
-		log.Error(err.Error())
-		utils.FailResponse(c)
+		utils.FailResponse(c,err.Error())
 		return
 	}
 	latestParams, err := getLatestParams(blockFrom)
 	if err != nil {
-		log.Error(err.Error())
-		utils.FailResponse(c)
+		utils.FailResponse(c,err.Error())
 		return
 	}
 	//transGroup, trans := getTransGroupParam(blockFrom)
@@ -59,8 +86,7 @@ func (b *BlockHandler) UpdateBlock(c *gin.Context) {
 	transGroup, trans := getTransGroupParamV1(blockFrom)
 	_, err = b.blockDao.InsertV1(params, latestParams, transGroup, trans)
 	if err != nil {
-		log.Error(err.Error())
-		utils.FailResponse(c)
+		utils.FailResponse(c,err.Error())
 		return
 	}
 	relayBlockParam := getRealBlockParam(blockFrom)

@@ -55,20 +55,20 @@ func (n *NodeHandler) UpdateNodeInfo(c *gin.Context) {
 	node, err := n.nodeDao.FindOne(heartFrom.NodeId)
 	if err != nil {
 		if err.Error() != statecode.NoResultErr {
-			utils.FailResponse(c)
+			utils.FailResponse(c,err.Error())
 			return
 		}
 	}
 	if node == nil {
 		_, err := n.nodeDao.Insert(heartFrom.Type, heartFrom.ChainKey, heartFrom.NodeId)
 		if err != nil {
-			utils.FailResponse(c)
+			utils.FailResponse(c,err.Error())
 			return
 		}
 	} else {
 		_, err := n.nodeDao.UpdateLatestTime(heartFrom.NodeId)
 		if err != nil {
-			utils.FailResponse(c)
+			utils.FailResponse(c,err.Error())
 			return
 		}
 		// 两次下发命令的时间有间隔限制

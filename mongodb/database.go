@@ -21,8 +21,9 @@ var Debug = true
 
 func init() {
 	if Debug {
-		var mongodbUrl string = "mongodb://pynxtest:xjrw2020@118.24.168.230:27026/pynxtest"
+		//var mongodbUrl string = "mongodb://pynxtest:xjrw2020@118.24.168.230:27026/pynxtest"
 		//var mongodbUrl string = "mongodb://pynxtest:xjrw2020@118.24.168.230:27026/pynxtest?authSource=pynxtest"
+		 var mongodbUrl string = "mongodb://pynxtest:xjrw2020@118.24.168.230:27026/pynxtest"
 		DatabaseName = getDataBase(mongodbUrl)
 		ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 		client, err = mongo.Connect(ctx, options.Client().ApplyURI(mongodbUrl).SetMaxPoolSize(20))

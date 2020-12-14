@@ -8,6 +8,9 @@ import (
 type IBlockDao interface {
 	Insert(blockParam, relayParam bson.M, transGroup, transParam []interface{}) (interface{}, error)
 	InsertV1(blockParam, latestParam bson.M, transGroup, transParam interface{}) (interface{}, error)
+	// just test
+	InsertV2(blockParam, relayParam bson.M, transGroup, transParam []interface{}) (interface{}, error)
+
 	Block(chainType, chainKey, hash string, height uint64) (interface{}, error)
 	Query() (interface{}, error)
 }
@@ -18,7 +21,7 @@ type ITransGroupDao interface {
 
 type ITransDao interface {
 	Trans(hash string) (interface{}, error)
-	TransGroup(fromShard,toShard string,height uint64)(interface{},error)
+	TransGroup(fromShard, toShard string, height uint64) (interface{}, error)
 }
 
 type INodeBandDao interface {
@@ -35,7 +38,7 @@ type ILatestBlock interface {
 type INodeDao interface {
 	FindOne(nodeId string) (*model.Node, error)
 	TotalNode(chainType string) (int, error)
-	UpdateNodeCmd(chainType string,amount int) (interface{}, error)
+	UpdateNodeCmd(chainType string, amount int) (interface{}, error)
 	FindLatestOne(chainType string) (*model.Node, error)
 	Insert(chainType, chainKey, nodeId string) (interface{}, error)
 	UpdateLatestTime(nodeId string) (interface{}, error)

@@ -1,0 +1,28 @@
+[
+  {
+    "TableName": "blocks",
+    "Indexes": [
+      {
+        "height": 1
+      }
+    ]
+  },
+  {
+    "TableName": "nodes",
+    "Indexes": [
+      {
+        "age": 1,
+        "height": 1
+      }
+    ]
+  },
+  {
+    "TableName": "realChainInfos"
+  },
+  {
+    "TableName": "transGroups"
+  },
+  {
+    "TableName": "transactions"
+  }
+]

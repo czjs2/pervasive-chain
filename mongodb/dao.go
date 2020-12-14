@@ -15,6 +15,7 @@ type Dao struct {
 	collection *mongo.Collection
 }
 
+
 func (n *Dao) FindAndUpdateNoSet(ctx context.Context, query bson.M, param bson.M, update *options.FindOneAndUpdateOptions, obj interface{}) (interface{}, error) {
 	err := n.Collection().FindOneAndUpdate(ctx, query, param, update).Decode(obj)
 	if err != nil {
@@ -72,6 +73,25 @@ func (n *Dao) UseSession(ctx context.Context, fn func(ctx context.Context) error
 		return sessionContext.CommitTransaction(sessionContext)
 	})
 }
+func (n *Dao) UseSessionWithOptions(ctx context.Context, opts *options.SessionOptions, fn func(SessionContext context.Context) error) error {
+	return MongodbClient().UseSessionWithOptions(ctx,opts, func(sessionContext mongo.SessionContext) error {
+		err := sessionContext.StartTransaction()
+		if err != nil {
+			return err
+		}
+		err = fn(sessionContext)
+		if err != nil {
+			errs := sessionContext.AbortTransaction(sessionContext)
+			if errs != nil {
+				return errs
+			}
+			return err
+		}
+		return sessionContext.CommitTransaction(sessionContext)
+	})
+}
+
+
 
 func (n *Dao) UpdateMany(ctx context.Context, query, params bson.M) (*mongo.UpdateResult, error) {
 	return n.Collection().UpdateMany(ctx, query, bson.M{"$set": params})

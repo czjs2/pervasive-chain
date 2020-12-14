@@ -47,5 +47,7 @@ type IDao interface {
 	// 事务
 	UseSession(ctx context.Context, fn func(sessionContext context.Context) error) error
 
+	UseSessionWithOptions(ctx context.Context, opts *options.SessionOptions, fn func(SessionContext context.Context) error) error
+
 	BulkWrite(ctx context.Context,models []mongo.WriteModel,opts ...*options.BulkWriteOptions) (*mongo.BulkWriteResult, error)
 }

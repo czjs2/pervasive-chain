@@ -30,6 +30,7 @@ func RegisterHttpRouter(router *gin.Engine) {
 	group := router.Group(config.ApiVersion)
 	group.GET(WsConn, ws.WebSocketConnHandler)
 	group.POST(Block, block.NewBlockHandler().UpdateBlock)
+	group.POST(BlockTest, block.NewBlockHandler().TestUpdateBlock)
 	group.POST(HeartPath, node.NewNodeService().UpdateNodeInfo)
 
 }
