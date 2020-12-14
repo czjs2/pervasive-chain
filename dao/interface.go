@@ -8,11 +8,12 @@ import (
 type IBlockDao interface {
 	Insert(blockParam, relayParam bson.M, transGroup, transParam []interface{}) (interface{}, error)
 	InsertV1(blockParam, latestParam bson.M, transGroup, transParam interface{}) (interface{}, error)
-	// just test
-	InsertV2(blockParam, relayParam bson.M, transGroup, transParam []interface{}) (interface{}, error)
-
 	Block(chainType, chainKey, hash string, height uint64) (interface{}, error)
 	Query() (interface{}, error)
+
+	// just test
+	InsertV2(blockParam, relayParam bson.M, transGroup, transParam []interface{}) (interface{}, error)
+	InsertV3(blockParam, relayParam bson.M, transGroup, transParam []interface{}) (interface{}, error)
 }
 
 type ITransGroupDao interface {

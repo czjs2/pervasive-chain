@@ -37,7 +37,36 @@ func (b *BlockHandler) WsChainInfoHandler(c *ws.WsContext) {
 
 
 
-func (b *BlockHandler) TestUpdateBlock(c *gin.Context){
+
+
+
+func (b *BlockHandler) TestUpdateBlockV3(c *gin.Context){
+	var blockFrom ReportBlockForm
+	utils.MustParams(c, &blockFrom)
+	params, err := getBlockParams(blockFrom)
+	if err != nil {
+		utils.FailResponse(c,err.Error())
+		return
+	}
+	latestParams, err := getLatestParams(blockFrom)
+	if err != nil {
+		utils.FailResponse(c,err.Error())
+		return
+	}
+	transGroup, trans := getTransGroupParam(blockFrom)
+	_, err = b.blockDao.InsertV3(params, latestParams, transGroup, trans)
+	if err != nil {
+		utils.FailResponse(c,err.Error())
+		return
+	}
+	relayBlockParam := getRealBlockParam(blockFrom)
+
+	ws.BroadcastMessage(relayBlockParam)
+	utils.SuccessResponse(c, nil)
+}
+
+
+func (b *BlockHandler) TestUpdateBlockV2(c *gin.Context){
 	var blockFrom ReportBlockForm
 	utils.MustParams(c, &blockFrom)
 	params, err := getBlockParams(blockFrom)
