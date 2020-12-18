@@ -13,7 +13,7 @@ type TransDao struct {
 	dao mongodb.IDao
 }
 
-func (t *TransDao) TransGroup(fromShard, toShard string, height uint64) (interface{}, error) {
+func (t *TransDao) TransactionsGroup(fromShard, toShard string, height uint64) (interface{}, error) {
 	var res []model.Param
 	query := []bson.M{
 		bson.M{"$match": bson.M{"fromShard": fromShard, "toShard": toShard, "height": height}},

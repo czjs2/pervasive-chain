@@ -15,12 +15,22 @@ type TransHandler struct {
 func (t *TransHandler) GransGroup(c *ws.WsContext) {
 	var transGroupFrom TransGroupFrom
 	_ = c.BindJSON(&transGroupFrom)
-	transGroup, err := t.transDao.TransGroup(transGroupFrom.FromShard, transGroupFrom.ToShard, transGroupFrom.Height)
-	if err != nil {
-		utils.WsFailResponse(c)
-		return
+	if len(transGroupFrom.FromShard) == 3 || len(transGroupFrom.ToShard) == 3 {
+		transGroup, err := t.transGroupDao.TransGroup(transGroupFrom.FromShard, transGroupFrom.ToShard, transGroupFrom.Height)
+		if err != nil {
+			utils.WsFailResponse(c)
+			return
+		}
+		utils.WsSuccessResponse(c, transGroup)
+	} else {
+		transGroup, err := t.transDao.TransactionsGroup(transGroupFrom.FromShard, transGroupFrom.ToShard, transGroupFrom.Height)
+		if err != nil {
+			utils.WsFailResponse(c)
+			return
+		}
+		utils.WsSuccessResponse(c, transGroup)
 	}
-	utils.WsSuccessResponse(c, transGroup)
+
 }
 
 func (t *TransHandler) TransInfo(c *ws.WsContext) {

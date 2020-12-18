@@ -1,12 +1,14 @@
 package httpsvr
 
 const (
-	HeartPath = "headbeat"
-	Block     = "block"
-	BlockTest     = "blockTest"
-	BlockTestV3     = "blockTestV3"
-	WsConn    = "wsConn"
-	Ping      = "ping"
+	HeartPath   = "headbeat"
+	Block       = "block"
+	BlockTest   = "blockTest"
+	BlockTestV3 = "blockTestV3"
+
+	WsConn = "wsConn"
+	Ping   = "ping"
+	Test   = "test"
 )
 
 const (

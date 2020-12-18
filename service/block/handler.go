@@ -4,8 +4,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"pervasive-chain/dao"
 	"pervasive-chain/dao/daoimpl"
+	"pervasive-chain/log"
 	"pervasive-chain/utils"
 	"pervasive-chain/ws"
+	"time"
 )
 
 type BlockHandler struct {
@@ -36,11 +38,8 @@ func (b *BlockHandler) WsChainInfoHandler(c *ws.WsContext) {
 
 
 
-
-
-
-
 func (b *BlockHandler) TestUpdateBlockV3(c *gin.Context){
+	start := time.Now()
 	var blockFrom ReportBlockForm
 	utils.MustParams(c, &blockFrom)
 	params, err := getBlockParams(blockFrom)
@@ -63,10 +62,13 @@ func (b *BlockHandler) TestUpdateBlockV3(c *gin.Context){
 
 	ws.BroadcastMessage(relayBlockParam)
 	utils.SuccessResponse(c, nil)
+	end := time.Now()
+	log.Debug("spend time block:  ",end.Sub(start).Seconds(),)
 }
 
 
 func (b *BlockHandler) TestUpdateBlockV2(c *gin.Context){
+	start := time.Now()
 	var blockFrom ReportBlockForm
 	utils.MustParams(c, &blockFrom)
 	params, err := getBlockParams(blockFrom)
@@ -89,6 +91,8 @@ func (b *BlockHandler) TestUpdateBlockV2(c *gin.Context){
 
 	ws.BroadcastMessage(relayBlockParam)
 	utils.SuccessResponse(c, nil)
+	end := time.Now()
+	log.Debug("spend time block:  ",end.Sub(start).Seconds(),)
 }
 
 
@@ -96,6 +100,7 @@ func (b *BlockHandler) TestUpdateBlockV2(c *gin.Context){
 func (b *BlockHandler) UpdateBlock(c *gin.Context) {
 	var blockFrom ReportBlockForm
 	utils.MustParams(c, &blockFrom)
+	start:=time.Now()
 	params, err := getBlockParams(blockFrom)
 	if err != nil {
 		utils.FailResponse(c,err.Error())
@@ -106,22 +111,24 @@ func (b *BlockHandler) UpdateBlock(c *gin.Context) {
 		utils.FailResponse(c,err.Error())
 		return
 	}
-	//transGroup, trans := getTransGroupParam(blockFrom)
-	//_, err = b.blockDao.Insert(params, latestParams, transGroup, trans)
-	//if err != nil {
-	//	utils.FailResponse(c)
-	//	return
-	//}
-	transGroup, trans := getTransGroupParamV1(blockFrom)
-	_, err = b.blockDao.InsertV1(params, latestParams, transGroup, trans)
+	transGroup, trans := getTransGroupParam(blockFrom)
+	_, err = b.blockDao.Insert(params, latestParams, transGroup, trans)
 	if err != nil {
 		utils.FailResponse(c,err.Error())
 		return
 	}
+	//transGroup, trans := getTransGroupParamV1(blockFrom)
+	//_, err = b.blockDao.InsertV1(params, latestParams, transGroup, trans)
+	//if err != nil {
+	//	utils.FailResponse(c,err.Error())
+	//	return
+	//}
 	relayBlockParam := getRealBlockParam(blockFrom)
 
 	ws.BroadcastMessage(relayBlockParam)
 	utils.SuccessResponse(c, nil)
+	end := time.Now()
+	log.Debug("spend time block:  ",end.Sub(start).Seconds(),)
 }
 
 func (b *BlockHandler) LatestBlockInfo() {

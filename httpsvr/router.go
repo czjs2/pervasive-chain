@@ -5,6 +5,7 @@ import (
 	"pervasive-chain/config"
 	"pervasive-chain/service/block"
 	"pervasive-chain/service/node"
+	"pervasive-chain/service/presure"
 	"pervasive-chain/service/trans"
 	"pervasive-chain/ws"
 )
@@ -31,9 +32,13 @@ func RegisterHttpRouter(router *gin.Engine) {
 	group.GET(WsConn, ws.WebSocketConnHandler)
 	group.POST(Block, block.NewBlockHandler().UpdateBlock)
 
-	group.POST(BlockTest, block.NewBlockHandler().TestUpdateBlockV2)
-	group.POST(BlockTestV3, block.NewBlockHandler().TestUpdateBlockV3)
-
 	group.POST(HeartPath, node.NewNodeService().UpdateNodeInfo)
+
+	// just test
+	group.POST(Test, presure.TestSingleHandler)
+
+	group.POST(BlockTest, block.NewBlockHandler().TestUpdateBlockV2)
+
+	group.POST(BlockTestV3, block.NewBlockHandler().TestUpdateBlockV3)
 
 }

@@ -24,6 +24,7 @@ func MyGinLogger(logPath string) gin.HandlerFunc {
 	logger := logrus.New()
 	logger.Out = src
 	logger.SetLevel(logrus.DebugLevel)
+	logger.SetReportCaller(true)
 	// 设置 rotatelogs
 	logWriter, err := rotatelogs.New(
 		fileName+".%Y%m%d.log",
@@ -43,6 +44,9 @@ func MyGinLogger(logPath string) gin.HandlerFunc {
 	lfHook := lfshook.NewHook(writeMap, &logrus.JSONFormatter{
 		TimestampFormat: "2006-01-02 15:04:05",
 	})
+	logger.Formatter = &logrus.TextFormatter{
+		ForceColors: true,
+	}
 	logger.AddHook(lfHook)
 
 	return func(c *gin.Context) {
@@ -105,6 +109,9 @@ func MyLogicLogger(logPath string) (*logrus.Logger, error) {
 		rotatelogs.WithMaxAge(7*24*time.Hour),
 		rotatelogs.WithRotationTime(24*time.Hour),
 	)
+	logger.Formatter = &logrus.TextFormatter{
+		ForceColors: true,
+	}
 	writeMap := lfshook.WriterMap{
 		logrus.InfoLevel:  logWriter,
 		logrus.FatalLevel: logWriter,

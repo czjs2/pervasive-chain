@@ -65,10 +65,6 @@ func (b *BlockDao) Block(chainType, chainKey, hash string, height uint64) (inter
 	return param, err
 }
 
-
-
-
-
 func (b *BlockDao) Insert(blockParam, latestParam bson.M, transGroup, trans [] interface{}) (interface{}, error) {
 	update := options.Update()
 	update.SetUpsert(true)
@@ -83,14 +79,16 @@ func (b *BlockDao) Insert(blockParam, latestParam bson.M, transGroup, trans [] i
 			return err
 		}
 		// todo 更优的方式
-		if len(transGroup) > 0 {
-			_, err = b.transGroup.InsertMany(sessionContext, transGroup)
+		for i := 0; i < len(transGroup); i++ {
+			param := transGroup[i].(bson.M)
+			_, err = b.transGroup.UpdateWithOption(sessionContext, bson.M{"hash": param["hash"]}, param, update)
 			if err != nil {
 				return err
 			}
 		}
-		if len(trans) > 0 {
-			_, err = b.trans.InsertMany(sessionContext, trans)
+		for i := 0; i < len(trans); i++ {
+			param := trans[i].(bson.M)
+			_, err = b.trans.UpdateWithOption(sessionContext, bson.M{"hash": param["hash"]}, param, update)
 			if err != nil {
 				return err
 			}

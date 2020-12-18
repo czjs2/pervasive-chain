@@ -1,16 +1,28 @@
 package main
 
-import "pervasive-chain/mongodb"
+import (
+	"log"
+	"pervasive-chain/config"
+	"pervasive-chain/mongodb"
+)
 
 func main() {
 	manager := mongodb.NewTableManager()
-	err := manager.ReadCfg("./tablecfg.json")
+	prjConfig, err := config.ReadWebCfg("./web-config.json")
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
+	}
+	err = mongodb.MongodbInit(prjConfig)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = manager.ReadCfg("./tablecfg.json")
+	if err != nil {
+		log.Fatal(err)
 	}
 	err = manager.Run()
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 }

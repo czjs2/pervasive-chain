@@ -2,7 +2,6 @@ package daoimpl
 
 import (
 	"context"
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"pervasive-chain/dao"
 	"pervasive-chain/model"
@@ -13,11 +12,9 @@ type TransGroup struct {
 	dao mongodb.IDao
 }
 
-func (t *TransGroup) TransGroup(fromShard, toShard string, height int) (interface{}, error) {
+func (t *TransGroup) TransGroup(fromShard, toShard string, height uint64) (interface{}, error) {
 	var res []model.Param
-	query := []bson.M{
-		bson.M{"$match": bson.M{"height": height, "fromShard": fromShard, "toShard": toShard}},
-	}
+	query := getQueryTransGroup(fromShard, toShard, height)
 	_, err := t.dao.AggregateList(context.TODO(), query, func(ctx context.Context, cursor *mongo.Cursor) error {
 		for cursor.Next(ctx) {
 			param := model.Param{}

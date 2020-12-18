@@ -32,7 +32,7 @@ type ReportBlockForm struct {
 	Hash     string     `form:"hash" binding:"required"`     //区块hash
 	Vrf      string     `form:"vrf" binding:"required"`      //VRF
 	Time     string     `form:"time" binding:"required"`     //当前产生时间
-	Interval uint64     `form:"interval" binding:"required"` //出块间隔
+	Interval uint64     `form:"interval"` //出块间隔
 	Trans    uint64     `form:"trans" binding:"required"`    //交易数量
 	Size     uint64     `form:"size" binding:"required"`     //区块大小
 	Gas      string     `form:"gas"`
@@ -70,7 +70,7 @@ type TransGroup struct {
 	Trans     []struct {
 		From   string `json:"from"`
 		To     string `json:"to"`
-		Amount string `json:"amount"`
+		Amount int `json:"amount"`
 		Hash   string `form:"hash" binding:"required"`
 	} `json:"trans"`
 }

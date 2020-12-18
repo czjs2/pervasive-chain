@@ -6,6 +6,26 @@ import (
 	model2 "pervasive-chain/model"
 )
 
+func getQueryTransGroup(fromShard, toShard string, height uint64) [] bson.M {
+	match := bson.M{}
+	if len(fromShard) == 3 {
+		match["fromRelay"] = fromShard
+	} else {
+		match["fromShard"] = fromShard
+	}
+	if len(toShard) == 3 {
+		match["toRelay"] = toShard
+	} else {
+		match["toShard"] = toShard
+	}
+	match["height"] = height
+	query := []bson.M{
+		bson.M{"$match": match},
+		//bson.M{"$project": bson.M{"_id": 0, "hash": 1, "from": 1, "to": 1, "amount": 1}},
+	}
+	return query
+}
+
 func getQueryBlockParam(chainType, chainKey, hash string, height uint64) bson.M {
 	query := bson.M{}
 	if hash != "" {

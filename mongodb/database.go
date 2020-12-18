@@ -6,7 +6,9 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readconcern"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
+	"go.mongodb.org/mongo-driver/mongo/writeconcern"
 	"pervasive-chain/config"
 	"strings"
 	"time"
@@ -23,16 +25,22 @@ func init() {
 	if Debug {
 		//var mongodbUrl string = "mongodb://pynxtest:xjrw2020@118.24.168.230:27026/pynxtest"
 		//var mongodbUrl string = "mongodb://pynxtest:xjrw2020@118.24.168.230:27026/pynxtest?authSource=pynxtest"
-		 var mongodbUrl string = "mongodb://pynxtest:xjrw2020@118.24.168.230:27026/pynxtest"
+		 var mongodbUrl string = "mongodb://pynxtest:pynxtest@139.186.84.15:27987,139.186.84.15:27988,139.186.84.15:27989/pynxtest"
 		DatabaseName = getDataBase(mongodbUrl)
 		ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-		client, err = mongo.Connect(ctx, options.Client().ApplyURI(mongodbUrl).SetMaxPoolSize(20))
+		client, err = mongo.Connect(ctx, options.Client().
+			ApplyURI(mongodbUrl).
+			SetReadConcern(readconcern.Majority()).
+			SetWriteConcern(writeconcern.New(writeconcern.WMajority())))
 		err = client.Ping(ctx, readpref.Primary())
 		if err != nil {
 			panic(err)
 		}
 	}
 }
+
+
+
 
 func MongodbInit(config *config.RuntimeConfig) error {
 	var mongodbUrl string
@@ -44,7 +52,10 @@ func MongodbInit(config *config.RuntimeConfig) error {
 	Debug = config.Debug
 	DatabaseName = getDataBase(mongodbUrl)
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	client, err = mongo.Connect(ctx, options.Client().ApplyURI(mongodbUrl))
+	client, err = mongo.Connect(ctx, options.Client().
+		ApplyURI(mongodbUrl).
+		SetReadConcern(readconcern.Majority()).
+		SetWriteConcern(writeconcern.New(writeconcern.WMajority())))
 	if err!=nil{
 		return err
 	}

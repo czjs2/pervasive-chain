@@ -17,12 +17,12 @@ type IBlockDao interface {
 }
 
 type ITransGroupDao interface {
-	TransGroup(fromShard, toShard string, height int) (interface{}, error)
+	TransGroup(fromShard, toShard string, height uint64) (interface{}, error)
 }
 
 type ITransDao interface {
 	Trans(hash string) (interface{}, error)
-	TransGroup(fromShard, toShard string, height uint64) (interface{}, error)
+	TransactionsGroup(fromShard, toShard string, height uint64) (interface{}, error)
 }
 
 type INodeBandDao interface {

@@ -19,3 +19,7 @@
 *.log
 
 pervasive-chain
+
+cmd/simpleweb/
+
+cmd/simplegin/

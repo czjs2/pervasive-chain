@@ -34,7 +34,7 @@ type IDao interface {
 
 	UpdateWithOption(ctx context.Context, query, param bson.M, update *options.UpdateOptions) (interface{}, error)
 
-	UpdateMany(ctx context.Context, query, params bson.M) (*mongo.UpdateResult, error)
+	UpdateMany(ctx context.Context, query, params bson.M,opts ...*options.UpdateOptions) (*mongo.UpdateResult, error)
 
 	CountDocuments(ctx context.Context, query bson.M) (int64, error)
 
@@ -46,6 +46,8 @@ type IDao interface {
 	AggregateOne(ctx context.Context, query []bson.M, obj interface{}) error
 	// 事务
 	UseSession(ctx context.Context, fn func(sessionContext context.Context) error) error
+
+	UseSessionWithRetry(ctx context.Context, fn func(sessionContext context.Context) error) error
 
 	UseSessionWithOptions(ctx context.Context, opts *options.SessionOptions, fn func(SessionContext context.Context) error) error
 

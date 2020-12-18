@@ -4,7 +4,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"pervasive-chain/config"
-	"pervasive-chain/model"
 	"pervasive-chain/utils"
 )
 
@@ -25,7 +24,7 @@ func getRelayParam(form ReportBlockForm) []interface{} {
 	var transGroup []interface{}
 	for i := 0; i < len(form.Detail.Ss); i++ {
 		ss := form.Detail.Ss[i]
-		transGroup = append(transGroup, model.Param{
+		transGroup = append(transGroup, bson.M{
 			"hash":      ss.Hash,
 			"height":    form.Height,
 			"trans":     len(ss.Trans),
@@ -44,7 +43,7 @@ func getShardParam(form ReportBlockForm) ([]interface{}, []interface{}) {
 	var trans []interface{}
 	for i := 0; i < len(form.Detail.Ss); i++ {
 		ss := form.Detail.Ss[i]
-		transGroup = append(transGroup, model.Param{
+		transGroup = append(transGroup, bson.M{
 			"hash":      ss.Hash,
 			"height":    form.Height,
 			"trans":     len(ss.Trans),
@@ -55,7 +54,7 @@ func getShardParam(form ReportBlockForm) ([]interface{}, []interface{}) {
 		})
 		for j := 0; j < len(ss.Trans); j++ {
 			tran := ss.Trans[j]
-			trans = append(trans, model.Param{
+			trans = append(trans, bson.M{
 				"hash":      tran.Hash,
 				"height":    form.Height,
 				"from":      tran.From,
@@ -97,7 +96,12 @@ func getLatestParams(blockFrom ReportBlockForm) (bson.M, error) {
 	param["height"] = blockFrom.Height
 	param["interval"] = blockFrom.Interval
 	param["trans"] = blockFrom.Trans
-	param["tps"] = blockFrom.Trans / blockFrom.Interval
+	if blockFrom.Interval == 0 {
+		param["tps"] = blockFrom.Trans
+	}else {
+		param["tps"] = blockFrom.Trans / blockFrom.Interval
+	}
+
 	param["size"] = blockFrom.Size
 	return param, nil
 
@@ -152,7 +156,7 @@ func getSharedParamV1(form ReportBlockForm) (interface{}, interface{}) {
 		UpdateManyModel := mongo.NewUpdateOneModel()
 		UpdateManyModel.SetUpsert(true)
 		UpdateManyModel.SetFilter(bson.M{"hash": ss.Hash})
-		UpdateManyModel.SetUpdate(bson.M{"$set":bson.M{
+		UpdateManyModel.SetUpdate(bson.M{"$set": bson.M{
 			"trans":     len(ss.Trans),
 			"height":    form.Height,
 			"fromShard": ss.FromShard,
@@ -167,7 +171,7 @@ func getSharedParamV1(form ReportBlockForm) (interface{}, interface{}) {
 			transUpdateManyModel := mongo.NewUpdateOneModel()
 			transUpdateManyModel.SetUpsert(true)
 			transUpdateManyModel.SetFilter(bson.M{"hash": tran.Hash})
-			transUpdateManyModel.SetUpdate(bson.M{"$set":bson.M{
+			transUpdateManyModel.SetUpdate(bson.M{"$set": bson.M{
 				"hash":      tran.Hash,
 				"height":    form.Height,
 				"from":      tran.From,
