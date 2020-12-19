@@ -24,7 +24,6 @@ func (n *NodeDao) UpdateNodeCmd(chainType string, amount int) (interface{}, erro
 		if err != nil {
 			return nil
 		}
-		// todo 效验
 		return nil
 	})
 }

@@ -37,6 +37,10 @@ func WsSuccessResponse(c *ws.WsContext, data interface{}) {
 	c.JSON(statecode.Success, data)
 }
 
+func WsFailResponseWithMsg(c *ws.WsContext,data interface{}){
+	c.JSON(statecode.Fail,data)
+}
+
 func WsResponseWithCode(c *ws.WsContext, code int) {
 	c.JSON(code, nil)
 }

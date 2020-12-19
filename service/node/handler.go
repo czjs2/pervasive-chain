@@ -24,11 +24,11 @@ func (n *NodeHandler) GenCmd(c *ws.WsContext) {
 		return
 	}
 	if node.NodeId == "" {
-		utils.WsSuccessResponse(c, nil)
+		utils.WsFailResponseWithMsg(c,"node num is zero,wait node report")
 		return
 	}
 	if !node.CmdTime.IsZero() && time.Now().Sub(node.CmdTime).Seconds() < config.GenCmdIntervalTime {
-		utils.WsFailResponse(c)
+		utils.WsFailResponseWithMsg(c,"previous gen is running,please send later")
 		return
 	}
 	totalNode, err := n.nodeDao.TotalNode(genCmdFrom.Type)
