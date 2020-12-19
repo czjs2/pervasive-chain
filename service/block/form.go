@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"pervasive-chain/config"
 	"pervasive-chain/utils"
+	"strings"
 )
 
 type SingleBlockForm struct {
@@ -17,15 +18,19 @@ func (b *SingleBlockForm) Valid() (bool, error) {
 	if b.Hash != "" {
 		return true, nil
 	}
+	if strings.HasPrefix(b.Type,config.BeaconType){
+		return true,nil
+	}
 	if b.Type == "" || b.ChainKey == "" {
 		return false, nil
 	}
 	return true, nil
 }
 
+
 type ReportBlockForm struct {
 	Type     string     `form:"type" binding:"required"`     //[b|r|s], 链类型
-	ChainKey string     `form:"chainKey" binding:"required"` // 链编号
+	ChainKey string     `form:"chainKey"` // 链编号
 	NodeId   string     `form:"nodeId" binding:"required"`   // 节点id
 	Height   uint64     `form:"height"`                      //当前区块高度
 	Father   string     `form:"father" binding:"required"`   //父区块hash

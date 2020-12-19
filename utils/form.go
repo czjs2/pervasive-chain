@@ -17,7 +17,7 @@ func IsValidNodeId(nodeId string) bool {
 }
 
 func  IsValidChainKey(chainKey, chainType string) bool {
-	if chainType == config.BeaconType && len(chainKey) == 1 {
+	if chainType == config.BeaconType  {
 		return true
 	}
 	if chainType == config.RelayType && len(chainKey) == 2 {

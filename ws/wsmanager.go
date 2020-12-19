@@ -4,15 +4,16 @@ import (
 	"encoding/json"
 	"os"
 	"pervasive-chain/log"
+	"time"
 )
 
 type ClientManager struct {
-	Clients    map[*Client]bool
-	Broadcast  chan []byte
-	Register   chan *Client
-	Unregister chan *Client
-	WsDispatch WsDispatch
-	cacheBlock []interface{}
+	Clients      map[*Client]bool
+	Broadcast    chan []byte
+	Register     chan *Client
+	Unregister   chan *Client
+	WsDispatch   WsDispatch
+	CacheMessage [][]byte // 缓存消息
 }
 
 var Manager = &ClientManager{
@@ -29,20 +30,24 @@ func (manager *ClientManager) RegisterRouter(ws WsDispatch) {
 //todo 安全配置相关
 
 func (manager *ClientManager) Start(c chan os.Signal) {
+	ticker := time.NewTicker(1 * time.Second)
+	defer ticker.Stop()
 	for {
 		select {
+		case <-ticker.C:
+				
 		case <-c:
 			manager.ClosetAllClient()
 			return
 		case conn := <-manager.Register:
 			manager.Clients[conn] = true
-			log.Info("ws client conn ... ", conn.ID, conn.ClientIp, len(manager.Clients))
+			log.Info("ws client conn ... ", conn.ID, conn.ClientIp, " total conn: ", len(manager.Clients))
 		case conn := <-manager.Unregister:
 			if _, ok := manager.Clients[conn]; ok {
 				close(conn.Send)
 				delete(manager.Clients, conn)
 			}
-			log.Info("ws  client exit .... ", conn.ID, conn.ClientIp, len(manager.Clients))
+			log.Info("ws  client exit .... ", conn.ID, conn.ClientIp, "total conn: ", len(manager.Clients))
 		case message := <-manager.Broadcast:
 			for conn := range manager.Clients {
 				if conn.CanPush {
