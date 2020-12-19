@@ -4,38 +4,39 @@ import (
 	"encoding/json"
 	"os"
 	"pervasive-chain/log"
+	"sync"
 	"time"
 )
 
 type ClientManager struct {
 	Clients      map[*Client]bool
-	Broadcast    chan []byte
+	Broadcast    chan interface{}
+	BroadcastAll chan []byte
 	Register     chan *Client
 	Unregister   chan *Client
 	WsDispatch   WsDispatch
-	CacheMessage [][]byte // 缓存消息
+	CacheMessage []interface{}
+	sync.Mutex
 }
 
 var Manager = &ClientManager{
-	Broadcast:  make(chan []byte, 100), // todo 足够大？
-	Register:   make(chan *Client, 100),
-	Unregister: make(chan *Client, 100),
-	Clients:    make(map[*Client]bool),
+	Broadcast:    make(chan interface{}, 1040), // todo 足够大？
+	BroadcastAll: make(chan []byte, 100),       // todo 足够大？
+	Register:     make(chan *Client, 100),
+	Unregister:   make(chan *Client, 100),
+	Clients:      make(map[*Client]bool),
 }
 
 func (manager *ClientManager) RegisterRouter(ws WsDispatch) {
 	manager.WsDispatch = ws
 }
 
-//todo 安全配置相关
-
 func (manager *ClientManager) Start(c chan os.Signal) {
-	ticker := time.NewTicker(1 * time.Second)
-	defer ticker.Stop()
+
+	go manager.collectCacheMsg()
+
 	for {
 		select {
-		case <-ticker.C:
-				
 		case <-c:
 			manager.ClosetAllClient()
 			return
@@ -48,7 +49,7 @@ func (manager *ClientManager) Start(c chan os.Signal) {
 				delete(manager.Clients, conn)
 			}
 			log.Info("ws  client exit .... ", conn.ID, conn.ClientIp, "total conn: ", len(manager.Clients))
-		case message := <-manager.Broadcast:
+		case message := <-manager.BroadcastAll:
 			for conn := range manager.Clients {
 				if conn.CanPush {
 					conn.Send <- message
@@ -61,15 +62,47 @@ func (manager *ClientManager) Start(c chan os.Signal) {
 }
 
 func BroadcastMessage(msg interface{}) {
-	// todo 缓存
-	subscribeResp := NewSubscribeResp([]interface{}{msg})
-	bytes, err := json.Marshal(subscribeResp)
-	log.Debug("send subscribe info:  ", string(bytes))
-	if err != nil {
-		log.Error("send subscribe info: ", err.Error())
-		return
+	Manager.Broadcast <- msg
+}
+
+
+
+func (manager *ClientManager) collectCacheMsg() {
+	canSend := true
+	timer := time.NewTicker(5 * time.Second)
+	defer timer.Stop()
+	for {
+		select {
+		case <-timer.C:
+			canSend = false
+			subscribeResp := NewSubscribeResp(manager.CacheMessage)
+			if len(manager.CacheMessage) == 0 {
+				log.Debug("send cache message is empty,continue ")
+				continue
+			}
+			bytes, err := json.Marshal(subscribeResp)
+			log.Debug("send subscribe info:  ", string(bytes))
+			if err != nil {
+				log.Error("send subscribe info: ", err.Error())
+				return
+			}
+			manager.BroadcastAll <- bytes
+			manager.CacheMessage = manager.CacheMessage[:0]
+			canSend = true
+		default:
+
+		}
+		if canSend {
+			select {
+			case msg := <-manager.Broadcast:
+				manager.Lock()
+				manager.CacheMessage = append(manager.CacheMessage, msg)
+				manager.Unlock()
+			default:
+
+			}
+		}
 	}
-	Manager.Broadcast <- bytes
 }
 
 func (manager *ClientManager) ClosetAllClient() {

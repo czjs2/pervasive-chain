@@ -96,10 +96,10 @@ func getLatestParams(blockFrom ReportBlockForm) (bson.M, error) {
 	param["height"] = blockFrom.Height
 	param["interval"] = blockFrom.Interval
 	param["trans"] = blockFrom.Trans
-	if blockFrom.Interval == 0 {
+	if blockFrom.Interval == 0.0 {
 		param["tps"] = blockFrom.Trans
 	}else {
-		param["tps"] = blockFrom.Trans / blockFrom.Interval
+		param["tps"] = float64(blockFrom.Trans) / blockFrom.Interval
 	}
 
 	param["size"] = blockFrom.Size

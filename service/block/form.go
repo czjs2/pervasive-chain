@@ -37,9 +37,9 @@ type ReportBlockForm struct {
 	Hash     string     `form:"hash" binding:"required"`     //区块hash
 	Vrf      string     `form:"vrf" binding:"required"`      //VRF
 	Time     string     `form:"time" binding:"required"`     //当前产生时间
-	Interval uint64     `form:"interval"` //出块间隔
-	Trans    uint64     `form:"trans" binding:"required"`    //交易数量
-	Size     uint64     `form:"size" binding:"required"`     //区块大小
+	Interval float64     `form:"interval"` //出块间隔
+	Trans    uint64     `form:"trans"`    //交易数量
+	Size     uint64     `form:"size"`     //区块大小
 	Gas      string     `form:"gas"`
 	LockHash []LockHash `form:"lockHash" binding:"required"`
 
