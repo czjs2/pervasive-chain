@@ -3,7 +3,9 @@ package daoimpl
 import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"pervasive-chain/config"
 	model2 "pervasive-chain/model"
+	"strings"
 )
 
 func getQueryTransGroup(fromShard, toShard string, height uint64) [] bson.M {
@@ -32,7 +34,11 @@ func getQueryBlockParam(chainType, chainKey, hash string, height uint64) bson.M 
 		query["hash"] = hash
 		return query
 	}
-	if chainType != "" && chainKey != "" {
+	if strings.HasPrefix(chainType,config.BeaconType) {
+		query["height"] = height
+		query["type"] = chainType
+
+	}else  {
 		query["type"] = chainType
 		query["chainKey"] = chainKey
 		query["height"] = height

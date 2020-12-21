@@ -65,11 +65,9 @@ func BroadcastMessage(msg interface{}) {
 	Manager.Broadcast <- msg
 }
 
-
-
 func (manager *ClientManager) collectCacheMsg() {
 	canSend := true
-	timer := time.NewTicker(5 * time.Second)
+	timer := time.NewTicker(1 * time.Second)
 	defer timer.Stop()
 	for {
 		select {
@@ -78,6 +76,7 @@ func (manager *ClientManager) collectCacheMsg() {
 			subscribeResp := NewSubscribeResp(manager.CacheMessage)
 			if len(manager.CacheMessage) == 0 {
 				log.Debug("send cache message is empty,continue ")
+				canSend = true
 				continue
 			}
 			bytes, err := json.Marshal(subscribeResp)

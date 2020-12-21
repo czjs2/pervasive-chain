@@ -18,8 +18,8 @@ func (b *SingleBlockForm) Valid() (bool, error) {
 	if b.Hash != "" {
 		return true, nil
 	}
-	if strings.HasPrefix(b.Type,config.BeaconType){
-		return true,nil
+	if strings.HasPrefix(b.Type, config.BeaconType) {
+		return true, nil
 	}
 	if b.Type == "" || b.ChainKey == "" {
 		return false, nil
@@ -27,19 +27,18 @@ func (b *SingleBlockForm) Valid() (bool, error) {
 	return true, nil
 }
 
-
 type ReportBlockForm struct {
-	Type     string     `form:"type" binding:"required"`     //[b|r|s], 链类型
-	ChainKey string     `form:"chainKey"` // 链编号
-	NodeId   string     `form:"nodeId" binding:"required"`   // 节点id
-	Height   uint64     `form:"height"`                      //当前区块高度
-	Father   string     `form:"father" binding:"required"`   //父区块hash
-	Hash     string     `form:"hash" binding:"required"`     //区块hash
-	Vrf      string     `form:"vrf" binding:"required"`      //VRF
-	Time     string     `form:"time" binding:"required"`     //当前产生时间
-	Interval float64     `form:"interval"` //出块间隔
-	Trans    uint64     `form:"trans"`    //交易数量
-	Size     uint64     `form:"size"`     //区块大小
+	Type     string     `form:"type" binding:"required"`   //[b|r|s], 链类型
+	ChainKey string     `form:"chainKey"`                  // 链编号
+	NodeId   string     `form:"nodeId" binding:"required"` // 节点id
+	Height   uint64     `form:"height"`                    //当前区块高度
+	Father   string     `form:"father"`                    //父区块hash
+	Hash     string     `form:"hash" binding:"required"`   //区块hash
+	Vrf      string     `form:"vrf" binding:"required"`    //VRF
+	Time     string     `form:"time" binding:"required"`   //当前产生时间
+	Interval float64    `form:"interval"`                  //出块间隔
+	Trans    uint64     `form:"trans"`                     //交易数量
+	Size     uint64     `form:"size"`                      //区块大小
 	Gas      string     `form:"gas"`
 	LockHash []LockHash `form:"lockHash" binding:"required"`
 
@@ -75,12 +74,15 @@ type TransGroup struct {
 	Trans     []struct {
 		From   string `json:"from"`
 		To     string `json:"to"`
-		Amount int `json:"amount"`
+		Amount int    `json:"amount"`
 		Hash   string `form:"hash" binding:"required"`
 	} `json:"trans"`
 }
 
 func (h *ReportBlockForm) Valid() (bool, error) {
+	if h.Height != 0 && h.Father==""{
+		return false,fmt.Errorf("block height is 0,and father is empty \n")
+	}
 	if !utils.IsValidChain(h.Type) { // 效验 type类型 B R S
 		return false, fmt.Errorf("chain type is error %v \n", h.Type)
 	}
