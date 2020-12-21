@@ -21,3 +21,5 @@
 pervasive-chain
 
 cmd/simplegin/
+
+cmd/simpleweb/simpleweb
