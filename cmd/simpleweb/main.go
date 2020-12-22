@@ -15,10 +15,10 @@ func main() {
 
 	http.HandleFunc("/api/v1.0/block", func(writer http.ResponseWriter, request *http.Request) {
 		writer.WriteHeader(200)
-		_, err := writer.Write([]byte(`{"code": 200,"message": "OK","data": {}}`))
-		if err != nil {
-			fmt.Printf("write block %v \n", err)
-		}
+		//_, err := writer.Write([]byte(`{"code": 200,"message": "OK","data": {}}`))
+		//if err != nil {
+		//	fmt.Printf("write block %v \n", err)
+		//}
 		fmt.Printf("update block incomming  %v \n", time.Now())
 	})
 	fmt.Printf("web start %v \n", time.Now())
