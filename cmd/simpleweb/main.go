@@ -19,7 +19,7 @@ func main() {
 		//if err != nil {
 		//	fmt.Printf("write block %v \n", err)
 		//}
-		fmt.Printf("update block incomming  %v \n", time.Now())
+		//fmt.Printf("update block incomming  %v \n", time.Now())
 	})
 	fmt.Printf("web start %v \n", time.Now())
 	err := http.ListenAndServe(host, nil)
