@@ -61,30 +61,35 @@ func (n *Dao) CountDocuments(ctx context.Context, query bson.M) (int64, error) {
 func getDefaultTransactionOptions() *options.TransactionOptions {
 	return &options.TransactionOptions{
 		ReadConcern:  readconcern.Snapshot(),
-		WriteConcern: writeconcern.New(writeconcern.WMajority(),writeconcern.J(true)),
+		WriteConcern: writeconcern.New(writeconcern.WMajority(), writeconcern.J(true)),
 	}
 }
 
 func (n *Dao) UseSession(ctx context.Context, fn func(ctx context.Context) error) error {
-	return MongodbClient().UseSession(ctx, func(sessionContext mongo.SessionContext) error {
-		err := sessionContext.StartTransaction(getDefaultTransactionOptions())
-		if err != nil {
-			return fmt.Errorf("start transaction %v \n", err)
-		}
-		err = fn(sessionContext)
-		if err != nil {
-			errs := sessionContext.AbortTransaction(sessionContext)
-			if errs != nil {
-				return fmt.Errorf("abort transaction %v \n", errs)
+	if Transactions {
+		return MongodbClient().UseSession(ctx, func(sessionContext mongo.SessionContext) error {
+			err := sessionContext.StartTransaction(getDefaultTransactionOptions())
+			if err != nil {
+				return fmt.Errorf("start transaction %v \n", err)
 			}
-			return fmt.Errorf("execute transaction %v \n", err)
-		}
-		err = sessionContext.CommitTransaction(sessionContext)
-		if err != nil {
-			return fmt.Errorf("commit transactions %v \n", err)
-		}
-		return nil
-	})
+			err = fn(sessionContext)
+			if err != nil {
+				errs := sessionContext.AbortTransaction(sessionContext)
+				if errs != nil {
+					return fmt.Errorf("abort transaction %v \n", errs)
+				}
+				return fmt.Errorf("execute transaction %v \n", err)
+			}
+			err = sessionContext.CommitTransaction(sessionContext)
+			if err != nil {
+				return fmt.Errorf("commit transactions %v \n", err)
+			}
+			return nil
+		})
+	} else {
+		return fn(ctx)
+	}
+
 }
 
 // todo 待验证
@@ -145,8 +150,8 @@ func (n *Dao) UseSessionWithOptions(ctx context.Context, opts *options.SessionOp
 	})
 }
 
-func (n *Dao) UpdateMany(ctx context.Context, query, params bson.M,opts ...*options.UpdateOptions) (*mongo.UpdateResult, error) {
-	return n.Collection().UpdateMany(ctx, query, bson.M{"$set": params},opts...)
+func (n *Dao) UpdateMany(ctx context.Context, query, params bson.M, opts ...*options.UpdateOptions) (*mongo.UpdateResult, error) {
+	return n.Collection().UpdateMany(ctx, query, bson.M{"$set": params}, opts...)
 }
 
 func (n *Dao) FindAndUpdate(ctx context.Context, query, param bson.M, update *options.FindOneAndUpdateOptions, obj interface{}) (interface{}, error) {

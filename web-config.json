@@ -1,9 +1,10 @@
 {
-  "MongodbUrl": "mongodb://pynxtest01:xjrw2020@172.16.8.105:27026/pynxtest01",
+  "MongodbUrl": "mongodb://pynxtest:xjrw2020@172.16.8.105:27017/pynxtest",
+  "Transactions": true,
   "Debug": true,
   "HTTPListen": "0.0.0.0:8888",
   "WebRoot": "./webroot",
   "HtmlTemplate": "./webroot/template",
-  "DevMongodbUrl": "mongodb://pynxtest01:xjrw2020@172.16.8.105:27026/pynxtest01",
+  "DevMongodbUrl": "mongodb://pynxtest:xjrw2020@172.16.8.105:27017/pynxtest",
   "LogPath": "./log"
 }

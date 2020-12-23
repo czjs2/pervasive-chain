@@ -17,6 +17,7 @@ import (
 var client *mongo.Client
 var err error
 var DatabaseName string
+var Transactions = false
 
 // todo
 var Debug = true
@@ -25,22 +26,19 @@ func init() {
 	if Debug {
 		//var mongodbUrl string = "mongodb://pynxtest:xjrw2020@118.24.168.230:27026/pynxtest"
 		//var mongodbUrl string = "mongodb://pynxtest:xjrw2020@118.24.168.230:27026/pynxtest?authSource=pynxtest"
-		 var mongodbUrl string = "mongodb://pynxtest:pynxtest@139.186.84.15:27987,139.186.84.15:27988,139.186.84.15:27989/pynxtest"
+		var mongodbUrl string = "mongodb://pynxtest:pynxtest@139.186.84.15:27987,139.186.84.15:27988,139.186.84.15:27989/pynxtest"
 		DatabaseName = getDataBase(mongodbUrl)
 		ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 		client, err = mongo.Connect(ctx, options.Client().
 			ApplyURI(mongodbUrl).
 			SetReadConcern(readconcern.Snapshot()).
-			SetWriteConcern(writeconcern.New(writeconcern.WMajority(),writeconcern.J(true))))
+			SetWriteConcern(writeconcern.New(writeconcern.WMajority(), writeconcern.J(true))))
 		err = client.Ping(ctx, readpref.Primary())
 		if err != nil {
 			panic(err)
 		}
 	}
 }
-
-
-
 
 func MongodbInit(config *config.RuntimeConfig) error {
 	var mongodbUrl string
@@ -49,6 +47,7 @@ func MongodbInit(config *config.RuntimeConfig) error {
 	} else {
 		mongodbUrl = config.MongodbUrl
 	}
+	Transactions = config.Transactions
 	Debug = config.Debug
 	DatabaseName = getDataBase(mongodbUrl)
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
@@ -56,13 +55,14 @@ func MongodbInit(config *config.RuntimeConfig) error {
 		ApplyURI(mongodbUrl).
 		SetReadConcern(readconcern.Majority()).
 		SetWriteConcern(writeconcern.New(writeconcern.WMajority())))
-	if err!=nil{
+	if err != nil {
 		return err
 	}
 	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 

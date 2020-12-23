@@ -7,6 +7,7 @@ import (
 )
 
 type Param map[string]interface{}
+
 var ProjectCfg *RuntimeConfig
 
 func ReadWebCfg(path string) (*RuntimeConfig, error) {
@@ -24,12 +25,11 @@ func ReadWebCfg(path string) (*RuntimeConfig, error) {
 	return PrjConfig, nil
 }
 
-
-
 type RuntimeConfig struct {
 	Debug         bool // 是否是debug
 	LogPath       string
 	HTTPListen    string
 	MongodbUrl    string
 	DevMongodbUrl string
+	Transactions  bool // 是否支持事务
 }
