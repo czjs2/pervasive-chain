@@ -30,8 +30,8 @@ func init() {
 		ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 		client, err = mongo.Connect(ctx, options.Client().
 			ApplyURI(mongodbUrl).
-			SetReadConcern(readconcern.Majority()).
-			SetWriteConcern(writeconcern.New(writeconcern.WMajority())))
+			SetReadConcern(readconcern.Snapshot()).
+			SetWriteConcern(writeconcern.New(writeconcern.WMajority(),writeconcern.J(true))))
 		err = client.Ping(ctx, readpref.Primary())
 		if err != nil {
 			panic(err)

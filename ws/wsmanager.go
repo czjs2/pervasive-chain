@@ -20,7 +20,7 @@ type ClientManager struct {
 }
 
 var Manager = &ClientManager{
-	Broadcast:    make(chan interface{}, 1040), // todo 足够大？
+	Broadcast:    make(chan interface{}, 10000), // todo 足够大？
 	BroadcastAll: make(chan []byte, 100),       // todo 足够大？
 	Register:     make(chan *Client, 100),
 	Unregister:   make(chan *Client, 100),

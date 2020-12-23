@@ -36,26 +36,24 @@ func (b *BlockHandler) WsChainInfoHandler(c *ws.WsContext) {
 	utils.WsSuccessResponse(c, gin.H{"data": latestBlockList})
 }
 
-
-
-func (b *BlockHandler) TestUpdateBlockV3(c *gin.Context){
+func (b *BlockHandler) TestUpdateBlockV3(c *gin.Context) {
 	start := time.Now()
 	var blockFrom ReportBlockForm
 	utils.MustParams(c, &blockFrom)
 	params, err := getBlockParams(blockFrom)
 	if err != nil {
-		utils.FailResponse(c,err.Error())
+		utils.FailResponse(c, err.Error())
 		return
 	}
 	latestParams, err := getLatestParams(blockFrom)
 	if err != nil {
-		utils.FailResponse(c,err.Error())
+		utils.FailResponse(c, err.Error())
 		return
 	}
 	transGroup, trans := getTransGroupParam(blockFrom)
 	_, err = b.blockDao.InsertV3(params, latestParams, transGroup, trans)
 	if err != nil {
-		utils.FailResponse(c,err.Error())
+		utils.FailResponse(c, err.Error())
 		return
 	}
 	relayBlockParam := getRealBlockParam(blockFrom)
@@ -63,28 +61,27 @@ func (b *BlockHandler) TestUpdateBlockV3(c *gin.Context){
 	ws.BroadcastMessage(relayBlockParam)
 	utils.SuccessResponse(c, nil)
 	end := time.Now()
-	log.Debug("spend time block:  ",end.Sub(start).Seconds(),)
+	log.Debug("spend time block:  ", end.Sub(start).Seconds(), )
 }
 
-
-func (b *BlockHandler) TestUpdateBlockV2(c *gin.Context){
+func (b *BlockHandler) TestUpdateBlockV2(c *gin.Context) {
 	start := time.Now()
 	var blockFrom ReportBlockForm
 	utils.MustParams(c, &blockFrom)
 	params, err := getBlockParams(blockFrom)
 	if err != nil {
-		utils.FailResponse(c,err.Error())
+		utils.FailResponse(c, err.Error())
 		return
 	}
 	latestParams, err := getLatestParams(blockFrom)
 	if err != nil {
-		utils.FailResponse(c,err.Error())
+		utils.FailResponse(c, err.Error())
 		return
 	}
 	transGroup, trans := getTransGroupParam(blockFrom)
 	_, err = b.blockDao.InsertV2(params, latestParams, transGroup, trans)
 	if err != nil {
-		utils.FailResponse(c,err.Error())
+		utils.FailResponse(c, err.Error())
 		return
 	}
 	relayBlockParam := getRealBlockParam(blockFrom)
@@ -92,43 +89,50 @@ func (b *BlockHandler) TestUpdateBlockV2(c *gin.Context){
 	ws.BroadcastMessage(relayBlockParam)
 	utils.SuccessResponse(c, nil)
 	end := time.Now()
-	log.Debug("spend time block:  ",end.Sub(start).Seconds(),)
+	log.Debug("spend time block:  ", end.Sub(start).Seconds(), )
 }
-
-
 
 func (b *BlockHandler) UpdateBlock(c *gin.Context) {
 	var blockFrom ReportBlockForm
-	utils.MustParams(c, &blockFrom)
-	start:=time.Now()
+	err := c.BindJSON(&blockFrom)
+	if err != nil {
+		utils.FailResponse(c, err.Error())
+		return
+	}
+	if ok, err := blockFrom.Valid(); err != nil || !ok {
+		utils.FailResponse(c, err)
+		return
+	}
 	params, err := getBlockParams(blockFrom)
 	if err != nil {
-		utils.FailResponse(c,err.Error())
+		utils.FailResponse(c, err.Error())
 		return
 	}
 	latestParams, err := getLatestParams(blockFrom)
 	if err != nil {
-		utils.FailResponse(c,err.Error())
+		utils.FailResponse(c, err.Error())
 		return
 	}
+	relayBlockParam := getRealBlockParam(blockFrom)
+
+
 	transGroup, trans := getTransGroupParam(blockFrom)
 	_, err = b.blockDao.Insert(params, latestParams, transGroup, trans)
 	if err != nil {
-		utils.FailResponse(c,err.Error())
+		utils.FailResponse(c, err.Error())
 		return
 	}
+
 	//transGroup, trans := getTransGroupParamV1(blockFrom)
 	//_, err = b.blockDao.InsertV1(params, latestParams, transGroup, trans)
 	//if err != nil {
 	//	utils.FailResponse(c,err.Error())
 	//	return
 	//}
-	relayBlockParam := getRealBlockParam(blockFrom)
-
-	ws.BroadcastMessage(relayBlockParam)
 	utils.SuccessResponse(c, nil)
-	end := time.Now()
-	log.Debug("spend time block:  ",end.Sub(start).Seconds(),)
+	go ws.BroadcastMessage(relayBlockParam)
+
+
 }
 
 func (b *BlockHandler) LatestBlockInfo() {

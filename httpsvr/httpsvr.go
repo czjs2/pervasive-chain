@@ -29,14 +29,13 @@ func cors() gin.HandlerFunc {
 //ListenAndServe 启动管理端webserver
 func ListenAndServe(cfg *config.RuntimeConfig) error {
 	gin.SetMode(gin.ReleaseMode)
-	httpRouter := gin.New()
-
-	httpRouter.Use(cors())
-	httpRouter.Use(log.MyGinLogger(cfg.LogPath))
+	httpRouter := gin.Default()
+	//httpRouter.Use(cors())
+	//httpRouter.Use(log.MyGinLogger(cfg.LogPath))
 	httpRouter.Use(gin.Recovery())
-	httpRouter.Use(ParamVerifyMiddleware())
+	//httpRouter.Use(ParamVerifyMiddleware())
 	RegisterHttpRouter(httpRouter)
-	RegisterHttpValidateRouter()
+	//RegisterHttpValidateRouter()
 
 	// 静态资源目录
 	webRootDir := "./webroot"

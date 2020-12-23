@@ -8,7 +8,9 @@ import (
 	"sync"
 )
 
+
 type router map[string]func(req string) (service.IFormValidateInterface, error)
+
 
 var validateManager = NewValidateRouter()
 

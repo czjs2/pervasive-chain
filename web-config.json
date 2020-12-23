@@ -1,9 +1,9 @@
 {
-  "MongodbUrl": "mongodb://pynxtest:pynxtest@139.186.84.15:27987,139.186.84.15:27988,139.186.84.15:27989/pynxtest",
+  "MongodbUrl": "mongodb://pynxtest01:xjrw2020@172.16.8.105:27026/pynxtest01",
   "Debug": true,
   "HTTPListen": "0.0.0.0:8888",
   "WebRoot": "./webroot",
   "HtmlTemplate": "./webroot/template",
-  "DevMongodbUrl": "mongodb://pynxtest:pynxtest@139.186.84.15:27987,139.186.84.15:27988,139.186.84.15:27989/pynxtest",
+  "DevMongodbUrl": "mongodb://pynxtest01:xjrw2020@172.16.8.105:27026/pynxtest01",
   "LogPath": "./log"
 }
