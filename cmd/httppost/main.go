@@ -10,10 +10,12 @@ func main() {
 
 	for i := 0; i < 10000; i++ {
 		go func() {
-			client := httpsvr.NewHttpClient()
-			_, err := client.Post("http://172.16.7.182:8899/api/v1.0/block", "application/json", nil)
-			if err != nil {
-				fmt.Println(err.Error())
+			for j:=0;j<5;j++{
+				client := httpsvr.NewHttpClient()
+				_, err := client.Post("http://172.16.7.182:8899/api/v1.0/block", "application/json", nil)
+				if err != nil {
+					fmt.Println(err.Error())
+				}
 			}
 		}()
 	}
