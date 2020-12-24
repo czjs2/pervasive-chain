@@ -2,33 +2,23 @@ package main
 
 import (
 	"flag"
-	"net"
+	"fmt"
 	"net/http"
 	"time"
 )
 
 var host string
 
-type Handler struct {
-}
-
-func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-}
-
 func main() {
 	flag.StringVar(&host, "host", ":8899", "web host addr")
 	flag.Parse()
 
-	server := &http.Server{
-		Handler:      &Handler{},
-		ReadTimeout:  20 * time.Second,
-		WriteTimeout: 20 * time.Second,
-	}
-	listen, err := net.Listen("tcp4", host)
+	http.HandleFunc("/api/v1.0/block", func(writer http.ResponseWriter, request *http.Request) {
+		writer.WriteHeader(http.StatusOK)
+	})
+	fmt.Printf("web start %v \n", time.Now())
+	err := http.ListenAndServe(host, nil)
 	if err != nil {
 		panic(err)
 	}
-	server.SetKeepAlivesEnabled(false)
-	err = server.Serve(listen)
 }
