@@ -24,6 +24,7 @@ func NewRequest(host, data, token string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	request.Close = true
 	request.Header.Add("Content-Type", "application/json")
 	request.Header.Add("Authorization", "Bearer "+token)
 	res, err := NewHttpClient().Do(request)
