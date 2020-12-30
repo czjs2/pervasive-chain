@@ -60,8 +60,8 @@ func (n *Dao) CountDocuments(ctx context.Context, query bson.M) (int64, error) {
 
 func getDefaultTransactionOptions() *options.TransactionOptions {
 	return &options.TransactionOptions{
-		ReadConcern:  readconcern.Snapshot(),
-		WriteConcern: writeconcern.New(writeconcern.WMajority(), writeconcern.J(true)),
+		ReadConcern:  readconcern.Majority(),
+		WriteConcern: writeconcern.New(writeconcern.WMajority()),
 	}
 }
 

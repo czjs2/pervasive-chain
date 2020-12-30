@@ -37,7 +37,7 @@ func (b *BlockDao) InsertV2(blockParam, latestParam bson.M, transGroup, trans []
 
 }
 
-func (b *BlockDao) InsertV3(blockParam, latestParam bson.M, transGroup, trans [] interface{}) (interface{}, error) {
+func (b *BlockDao)  InsertV3(blockParam, latestParam bson.M, transGroup, trans [] interface{}) (interface{}, error) {
 	update := options.Update()
 	update.SetUpsert(true)
 

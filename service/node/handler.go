@@ -24,11 +24,11 @@ func (n *NodeHandler) GenCmd(c *ws.WsContext) {
 		return
 	}
 	if node.NodeId == "" {
-		utils.WsFailResponseWithMsg(c,"node num is zero,wait node report")
+		utils.WsFailResponseWithMsg(c, "node num is zero,wait node report")
 		return
 	}
 	if !node.CmdTime.IsZero() && time.Now().Sub(node.CmdTime).Seconds() < config.GenCmdIntervalTime {
-		utils.WsFailResponseWithMsg(c,"previous gen is running,please send later")
+		utils.WsFailResponseWithMsg(c, "previous gen is running,please send later")
 		return
 	}
 	totalNode, err := n.nodeDao.TotalNode(genCmdFrom.Type)
@@ -40,7 +40,7 @@ func (n *NodeHandler) GenCmd(c *ws.WsContext) {
 		utils.WsSuccessResponse(c, nil)
 		return
 	}
-	_, err = n.nodeDao.UpdateNodeCmd(genCmdFrom.Type,genCmdFrom.Cmd.Params.Amount / totalNode)
+	_, err = n.nodeDao.UpdateNodeCmd(genCmdFrom.Type, genCmdFrom.Cmd.Params.Amount/totalNode)
 	if err != nil {
 		utils.WsFailResponse(c)
 		return
@@ -51,24 +51,32 @@ func (n *NodeHandler) GenCmd(c *ws.WsContext) {
 
 func (n *NodeHandler) UpdateNodeInfo(c *gin.Context) {
 	var heartFrom HeartBeatFrom
-	utils.MustParams(c, &heartFrom)
+	err := c.BindJSON(&heartFrom)
+	if err != nil {
+		utils.FailResponse(c, err.Error())
+		return
+	}
+	if ok, err := heartFrom.Valid(); err != nil || !ok {
+		utils.FailResponse(c, err)
+		return
+	}
 	node, err := n.nodeDao.FindOne(heartFrom.NodeId)
 	if err != nil {
 		if err.Error() != statecode.NoResultErr {
-			utils.FailResponse(c,err.Error())
+			utils.FailResponse(c, err.Error())
 			return
 		}
 	}
 	if node == nil {
 		_, err := n.nodeDao.Insert(heartFrom.Type, heartFrom.ChainKey, heartFrom.NodeId)
 		if err != nil {
-			utils.FailResponse(c,err.Error())
+			utils.FailResponse(c, err.Error())
 			return
 		}
 	} else {
 		_, err := n.nodeDao.UpdateLatestTime(heartFrom.NodeId)
 		if err != nil {
-			utils.FailResponse(c,err.Error())
+			utils.FailResponse(c, err.Error())
 			return
 		}
 		// 两次下发命令的时间有间隔限制

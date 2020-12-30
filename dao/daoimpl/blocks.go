@@ -65,7 +65,7 @@ func (b *BlockDao) Block(chainType, chainKey, hash string, height uint64) (inter
 	return param, err
 }
 
-func (b *BlockDao) Insert(blockParam, latestParam bson.M, transGroup, trans [] interface{}) (interface{}, error) {
+func (b *BlockDao) InsertV7(blockParam, latestParam bson.M, transGroup, trans [] interface{}) (interface{}, error) {
 	update := options.Update()
 	update.SetUpsert(true)
 	err := b.dao.UseSession(context.TODO(), func(sessionContext context.Context) error {
@@ -95,8 +95,36 @@ func (b *BlockDao) Insert(blockParam, latestParam bson.M, transGroup, trans [] i
 		}
 		return nil
 	})
+
 	return nil, err
 
+}
+
+func (b *BlockDao) Insert(blockParam, latestParam bson.M, transGroup, trans [] interface{}) (interface{}, error) {
+	_, err := b.dao.InsertOne(context.TODO(), bson.M(blockParam))
+	if err != nil {
+		return nil, err
+	}
+	_, err = b.realBlock.InsertOne(context.TODO(), latestParam, )
+	if err != nil {
+		return nil, err
+	}
+	// todo 更优的方式
+	for i := 0; i < len(transGroup); i++ {
+		param := transGroup[i].(bson.M)
+		_, err = b.transGroup.InsertOne(context.TODO(), param)
+		if err != nil {
+			return nil, err
+		}
+	}
+	for i := 0; i < len(trans); i++ {
+		param := trans[i].(bson.M)
+		_, err = b.trans.InsertOne(context.TODO(), param)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return nil, err
 }
 
 func (b *BlockDao) Query() (interface{}, error) {

@@ -115,13 +115,13 @@ func (b *BlockHandler) UpdateBlock(c *gin.Context) {
 	}
 	relayBlockParam := getRealBlockParam(blockFrom)
 
-
 	transGroup, trans := getTransGroupParam(blockFrom)
 	_, err = b.blockDao.Insert(params, latestParams, transGroup, trans)
 	if err != nil {
 		utils.FailResponse(c, err.Error())
 		return
 	}
+
 
 	//transGroup, trans := getTransGroupParamV1(blockFrom)
 	//_, err = b.blockDao.InsertV1(params, latestParams, transGroup, trans)
