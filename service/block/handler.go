@@ -122,7 +122,6 @@ func (b *BlockHandler) UpdateBlock(c *gin.Context) {
 		return
 	}
 
-
 	//transGroup, trans := getTransGroupParamV1(blockFrom)
 	//_, err = b.blockDao.InsertV1(params, latestParams, transGroup, trans)
 	//if err != nil {
