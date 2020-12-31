@@ -65,7 +65,7 @@ func (b *BlockDao) Block(chainType, chainKey, hash string, height uint64) (inter
 	return param, err
 }
 
-func (b *BlockDao) InsertV7(blockParam, latestParam bson.M, transGroup, trans [] interface{}) (interface{}, error) {
+func (b *BlockDao) Insert(blockParam, latestParam bson.M, transGroup, trans [] interface{}) (interface{}, error) {
 	update := options.Update()
 	update.SetUpsert(true)
 	err := b.dao.UseSession(context.TODO(), func(sessionContext context.Context) error {
@@ -100,7 +100,7 @@ func (b *BlockDao) InsertV7(blockParam, latestParam bson.M, transGroup, trans []
 
 }
 
-func (b *BlockDao) Insert(blockParam, latestParam bson.M, transGroup, trans [] interface{}) (interface{}, error) {
+func (b *BlockDao) InsertV7(blockParam, latestParam bson.M, transGroup, trans [] interface{}) (interface{}, error) {
 	_, err := b.dao.InsertOne(context.TODO(), bson.M(blockParam))
 	if err != nil {
 		return nil, err
