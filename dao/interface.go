@@ -37,10 +37,10 @@ type ILatestBlock interface {
 }
 
 type INodeDao interface {
-	FindOne(nodeId string) (*model.Node, error)
+	FindOne(nodeId ,nodeType string) (*model.Node, error)
 	TotalNode(chainType string) (int, error)
 	UpdateNodeCmd(chainType string, amount int) (interface{}, error)
 	FindLatestOne(chainType string) (*model.Node, error)
 	Insert(chainType, chainKey, nodeId string) (interface{}, error)
-	UpdateLatestTime(nodeId string) (interface{}, error)
+	UpdateLatestTime(nodeId,nodeType string) (interface{}, error)
 }

@@ -7,7 +7,7 @@ import (
 
 type HeartBeatFrom struct {
 	Type     string `form:"type" binding:"required"`     //[b|r|s], 链类型
-	ChainKey string `form:"chainKey" binding:"required"` // 链编号
+	ChainKey string `form:"chainKey"` // 链编号
 	NodeId   string `form:"nodeId" binding:"required"`   // 节点id
 	Time     string `form:"time"`     // 时间
 

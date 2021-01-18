@@ -1,12 +1,14 @@
 package log
 
 import (
-	"fmt"
+	"bytes"
 	"github.com/gin-gonic/gin"
 	"github.com/lestrrat-go/file-rotatelogs"
 	"github.com/rifflock/lfshook"
 	"github.com/sirupsen/logrus"
 	"io"
+	"io/ioutil"
+	"net/http"
 	"os"
 	"path"
 	"time"
@@ -17,13 +19,17 @@ func MyGinLogger(logPath string) gin.HandlerFunc {
 	logFilePath := logPath
 	logFileName := "web.log"
 	fileName := path.Join(logFilePath, logFileName)
-	src, err := os.OpenFile(os.DevNull, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
+	fileSrc, err := os.OpenFile(os.DevNull, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
 	if err != nil {
-		fmt.Println("err", err)
+
 	}
+	writers := []io.Writer{
+		fileSrc,
+		os.Stdout,
+	}
+
 	logger := logrus.New()
-	logger.Out = src
-	logger.SetLevel(logrus.DebugLevel)
+	logger.Out = io.MultiWriter(writers...)
 	logger.SetReportCaller(true)
 	// 设置 rotatelogs
 	logWriter, err := rotatelogs.New(
@@ -50,6 +56,15 @@ func MyGinLogger(logPath string) gin.HandlerFunc {
 	logger.AddHook(lfHook)
 
 	return func(c *gin.Context) {
+		buf := new(bytes.Buffer)
+		_, err := buf.ReadFrom(c.Request.Body)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, nil)
+			c.Abort()
+			return
+		}
+		Debug(c.Request.RequestURI,c.Request.Method,buf.String())
+		c.Request.Body = ioutil.NopCloser(bytes.NewBuffer([]byte(buf.String())))
 		startTime := time.Now()
 		c.Next()
 		endTime := time.Now()

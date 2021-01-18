@@ -1,7 +1,7 @@
 package httpsvr
 
 const (
-	HeartPath   = "headbeat"
+	HeartPath   = "heartbeat"
 	Block       = "block"
 	BlockTest   = "blockTest"
 	BlockTestV3 = "blockTestV3"

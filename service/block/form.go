@@ -40,7 +40,7 @@ type ReportBlockForm struct {
 	Trans    uint64     `form:"trans"`                     //交易数量
 	Size     uint64     `form:"size"`                      //区块大小
 	Gas      string     `form:"gas"`
-	LockHash []LockHash `form:"lockHash" binding:"required"`
+	LockHash []LockHash `form:"lockHash"`
 
 	UpHash   string      `form:"upHash"`
 	DownHash string      `form:"downHash"`
@@ -80,8 +80,8 @@ type TransGroup struct {
 }
 
 func (h *ReportBlockForm) Valid() (bool, error) {
-	if h.Height != 0 && h.Father==""{
-		return false,fmt.Errorf("block height is 0,and father is empty \n")
+	if h.Height != 0 && h.Father == "" {
+		return false, fmt.Errorf("block height is 0,and father is empty \n")
 	}
 	if !utils.IsValidChain(h.Type) { // 效验 type类型 B R S
 		return false, fmt.Errorf("chain type is error %v \n", h.Type)
@@ -95,15 +95,15 @@ func (h *ReportBlockForm) Valid() (bool, error) {
 	if !utils.IsRFC339Time(h.Time) {
 		return false, fmt.Errorf("time is error %v \n", h.Time)
 	}
-	if h.Type == config.SharedType && (h.UpHash == "" || len(h.Detail.UpStream) == 0 || len(h.Detail.Ss) == 0) {
-		return false, fmt.Errorf("shard type params error,upHash,upstream,ss can not empty")
-	}
-	if h.Type == config.RelayType && (h.UpHash == "" || h.DownHash == "" || len(h.Detail.UpStream) == 0 || len(h.Detail.DownStream) == 0) {
-		return false, fmt.Errorf("relay type params error ,upHash downHash upstream downstream, can not empty")
-	}
-	if h.Type == config.BeaconType && (h.DownHash == "" || len(h.Detail.DownStream) == 0) {
-		return false, fmt.Errorf("beacon type params downhasah,downstream,can not empty")
-	}
+	//if h.Type == config.SharedType && (h.UpHash == "" || len(h.Detail.UpStream) == 0 || len(h.Detail.Ss) == 0) {
+	//	return false, fmt.Errorf("shard type params error,upHash,upstream,ss can not empty")
+	//}
+	//if h.Type == config.RelayType && (h.UpHash == "" || h.DownHash == "" || len(h.Detail.UpStream) == 0 || len(h.Detail.DownStream) == 0) {
+	//	return false, fmt.Errorf("relay type params error ,upHash downHash upstream downstream, can not empty")
+	//}
+	//if h.Type == config.BeaconType && (h.DownHash == "" || len(h.Detail.DownStream) == 0) {
+	//	return false, fmt.Errorf("beacon type params downhasah,downstream,can not empty")
+	//}
 	return true, nil
 
 }

@@ -5,6 +5,7 @@ import (
 	"pervasive-chain/config"
 	"pervasive-chain/dao"
 	"pervasive-chain/dao/daoimpl"
+	"pervasive-chain/model"
 	"pervasive-chain/statecode"
 	"pervasive-chain/utils"
 	"pervasive-chain/ws"
@@ -60,7 +61,7 @@ func (n *NodeHandler) UpdateNodeInfo(c *gin.Context) {
 		utils.FailResponse(c, err)
 		return
 	}
-	node, err := n.nodeDao.FindOne(heartFrom.NodeId)
+	node, err := n.nodeDao.FindOne(heartFrom.NodeId, heartFrom.Type)
 	if err != nil {
 		if err.Error() != statecode.NoResultErr {
 			utils.FailResponse(c, err.Error())
@@ -74,18 +75,20 @@ func (n *NodeHandler) UpdateNodeInfo(c *gin.Context) {
 			return
 		}
 	} else {
-		_, err := n.nodeDao.UpdateLatestTime(heartFrom.NodeId)
+		_, err := n.nodeDao.UpdateLatestTime(heartFrom.NodeId, heartFrom.Type)
 		if err != nil {
 			utils.FailResponse(c, err.Error())
 			return
 		}
-		// 两次下发命令的时间有间隔限制
+		// todo
 		if !node.CmdTime.IsZero() && time.Now().UTC().Sub(node.CmdTime) > config.GenCmdIntervalTime {
-			utils.SuccessResponse(c, node.Cmd)
-			return
+			if node.Type == config.SharedType {
+				utils.SuccessResponse(c, node.Cmd)
+				return
+			}
 		}
 	}
-	utils.SuccessResponse(c, nil)
+	utils.SuccessResponse(c, model.NewEmptyCmdInfo())
 
 }
 

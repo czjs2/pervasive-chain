@@ -2,9 +2,6 @@ package model
 
 import "time"
 
-
-
-
 type Node struct {
 	NodeId     string    `json:"nodeId" bson:"nodeId"`
 	Type       string    `json:"type" bson:"type"`
@@ -13,10 +10,16 @@ type Node struct {
 	Cmd        CmdInfo   `json:"cmd" bson:"cmd"`
 	CmdTime    time.Time `json:"cmdTime" bson:"cmdTime"`
 }
-type CmdInfo struct {
-	Key    string `json:"key" bson:"key"`
-	Params struct {
-		Amount int `json:"amount" bson:"amount"`
-	} `json:"params" bson:"params"`
+
+func NewEmptyCmdInfo() CmdInfo {
+	return CmdInfo{Key: "other", Params: Params{Amount: 0}}
 }
 
+type CmdInfo struct {
+	Key    string `json:"key" bson:"key"`
+	Params Params `json:"params" bson:"params"`
+}
+
+type Params struct {
+	Amount int `json:"amount" bson:"amount"`
+}

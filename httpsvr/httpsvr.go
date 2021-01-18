@@ -31,7 +31,7 @@ func ListenAndServe(cfg *config.RuntimeConfig) error {
 	gin.SetMode(gin.ReleaseMode)
 	httpRouter := gin.Default()
 	//httpRouter.Use(cors())
-	//httpRouter.Use(log.MyGinLogger(cfg.LogPath))
+	httpRouter.Use(log.MyGinLogger(cfg.LogPath))
 	httpRouter.Use(gin.Recovery())
 	//httpRouter.Use(ParamVerifyMiddleware())
 	RegisterHttpRouter(httpRouter)

@@ -53,19 +53,19 @@ func (n *NodeDao) Insert(chainType, chainKey, nodeId string) (interface{}, error
 
 }
 
-func (n *NodeDao) FindOne(nodeId string) (*model.Node, error) {
+func (n *NodeDao) FindOne(nodeId, nodeType string) (*model.Node, error) {
 	obj := &model.Node{}
-	_, err := n.dao.FindOne(context.TODO(), bson.M{"nodeId": nodeId}, obj)
+	_, err := n.dao.FindOne(context.TODO(), bson.M{"nodeId": nodeId, "type": nodeType}, obj)
 	if err != nil {
 		return nil, err
 	}
 	return obj, nil
 }
 
-func (n *NodeDao) UpdateLatestTime(nodeId string) (interface{}, error) {
+func (n *NodeDao) UpdateLatestTime(nodeId, nodeType string) (interface{}, error) {
 	update := options.Update()
 	update.SetUpsert(true)
-	return n.dao.UpdateWithOption(context.TODO(), bson.M{"nodeId": nodeId}, bson.M{"lastTime": time.Now()}, update)
+	return n.dao.UpdateWithOption(context.TODO(), bson.M{"nodeId": nodeId, "type": nodeType}, bson.M{"lastTime": time.Now(), "cmd": nil}, update)
 }
 
 func NewNodeDao() dao.INodeDao {

@@ -13,7 +13,7 @@ func MustParams(c *gin.Context, obj interface{}) {
 }
 
 func IsValidNodeId(nodeId string) bool {
-	return len(nodeId) == 52
+	return len(nodeId) == 48
 }
 
 func  IsValidChainKey(chainKey, chainType string) bool {
