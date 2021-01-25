@@ -72,10 +72,10 @@ type TransGroup struct {
 	ToRelay   string `json:"toRelay"`
 	Hash      string `form:"hash" binding:"required"`
 	Trans     []struct {
-		From   string `json:"from"`
-		To     string `json:"to"`
-		Amount int    `json:"amount"`
-		Hash   string `form:"hash" binding:"required"`
+		From   string  `json:"from"`
+		To     string  `json:"to"`
+		Amount float64 `json:"amount"`
+		Hash   string  `form:"hash" binding:"required"`
 	} `json:"trans"`
 }
 
