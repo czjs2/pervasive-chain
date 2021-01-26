@@ -103,6 +103,25 @@ func (b *BlockHandler) UpdateBlock(c *gin.Context) {
 		utils.FailResponse(c, err)
 		return
 	}
+
+	// 计算 block interval
+	if blockFrom.Height != 0 {
+		blockTime, err := b.blockDao.BlockTime(blockFrom.Type, blockFrom.ChainKey, blockFrom.Height-1)
+		if err != nil {
+			utils.FailResponse(c, err)
+			return
+		}
+		latestBlockTime, err := utils.ParseRFCTime(blockFrom.Time)
+		if err != nil {
+			utils.FailResponse(c, err)
+			return
+		}
+		if latestBlockTime.After(blockTime) {
+			blockFrom.Interval = latestBlockTime.Sub(blockTime).Seconds()
+		}
+	}
+
+
 	params, err := getBlockParams(blockFrom)
 	if err != nil {
 		utils.FailResponse(c, err.Error())
@@ -130,11 +149,6 @@ func (b *BlockHandler) UpdateBlock(c *gin.Context) {
 	//}
 	utils.SuccessResponse(c, nil)
 	go ws.BroadcastMessage(relayBlockParam)
-
-
-}
-
-func (b *BlockHandler) LatestBlockInfo() {
 
 }
 

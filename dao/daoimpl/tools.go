@@ -40,8 +40,8 @@ func getQueryBlockParam(chainType, chainKey, hash string, height uint64) bson.M 
 
 	}else  {
 		query["type"] = chainType
-		query["chainKey"] = chainKey
 		query["height"] = height
+		query["chainKey"] = chainKey
 	}
 	return query
 }

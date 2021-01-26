@@ -3,14 +3,15 @@ package dao
 import (
 	"go.mongodb.org/mongo-driver/bson"
 	"pervasive-chain/model"
+	"time"
 )
 
 type IBlockDao interface {
 	Insert(blockParam, relayParam bson.M, transGroup, transParam []interface{}) (interface{}, error)
 	InsertV1(blockParam, latestParam bson.M, transGroup, transParam interface{}) (interface{}, error)
 	Block(chainType, chainKey, hash string, height uint64) (interface{}, error)
+	BlockTime(chainType, chainKey string, height uint64) (time.Time, error)
 	Query() (interface{}, error)
-
 	// just test
 	InsertV2(blockParam, relayParam bson.M, transGroup, transParam []interface{}) (interface{}, error)
 	InsertV3(blockParam, relayParam bson.M, transGroup, transParam []interface{}) (interface{}, error)
@@ -37,10 +38,10 @@ type ILatestBlock interface {
 }
 
 type INodeDao interface {
-	FindOne(nodeId ,nodeType string) (*model.Node, error)
+	FindOne(nodeId, nodeType string) (*model.Node, error)
 	TotalNode(chainType string) (int, error)
 	UpdateNodeCmd(chainType string, amount int) (interface{}, error)
 	FindLatestOne(chainType string) (*model.Node, error)
 	Insert(chainType, chainKey, nodeId string) (interface{}, error)
-	UpdateLatestTime(nodeId,nodeType string) (interface{}, error)
+	UpdateLatestTime(nodeId, nodeType string) (interface{}, error)
 }

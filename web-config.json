@@ -1,6 +1,7 @@
 {
   "MongodbUrl": "mongodb://pynxtest:xjrw2020@172.16.8.110:27017/pynxtest",
   "Transactions": false,
+  "LogLevel": "info",
   "Debug": false,
   "HTTPListen": "0.0.0.0:8888",
   "WebRoot": "./webroot",

@@ -13,3 +13,6 @@ type LatestBlock struct {
 	Size     int       `json:"size" bson:"size"`
 }
 
+type BlockTime struct {
+	Time time.Time `json:"time" bson:"time"`
+}

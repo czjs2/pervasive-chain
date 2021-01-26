@@ -9,6 +9,7 @@ import (
 	"pervasive-chain/dao"
 	"pervasive-chain/model"
 	"pervasive-chain/mongodb"
+	"time"
 )
 
 type BlockDao struct {
@@ -16,6 +17,20 @@ type BlockDao struct {
 	trans      mongodb.IDao
 	transGroup mongodb.IDao
 	realBlock  mongodb.IDao
+}
+
+func (b *BlockDao) BlockTime(chainType, chainKey string, height uint64) (time.Time, error) {
+	blockTime := model.BlockTime{}
+	query := getQueryBlockParam(chainType, chainKey, "", height)
+	err := b.dao.AggregateOne(context.TODO(), []bson.M{
+		bson.M{"$match": query},
+		bson.M{"$project": bson.M{"time": 1, "_id": 0}},
+	}, &blockTime)
+	if err != nil  {
+		return time.Time{}, fmt.Errorf("get blockTime error: %v  %v  %v", chainType, chainKey, height)
+	}
+
+	return blockTime.Time, err
 }
 
 func (b *BlockDao) InsertV1(blockParam, latestParam bson.M, transGroup, transParam interface{}) (interface{}, error) {

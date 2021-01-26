@@ -63,7 +63,7 @@ func MyGinLogger(logPath string) gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		Debug(c.Request.RequestURI,c.Request.Method,buf.String())
+		Debug(c.Request.RequestURI, c.Request.Method, buf.String())
 		c.Request.Body = ioutil.NopCloser(bytes.NewBuffer([]byte(buf.String())))
 		startTime := time.Now()
 		c.Next()
@@ -91,10 +91,10 @@ func Debug(msg ...interface{}) {
 	Logger.Debugln(msg)
 }
 
-func Warn(msg ...interface{}){
+func Warn(msg ...interface{}) {
 	Logger.Warnln(msg)
 }
-func Error(msg ...interface{}){
+func Error(msg ...interface{}) {
 	Logger.Errorln(msg)
 }
 
@@ -117,7 +117,7 @@ func MyLogicLogger(logPath string) (*logrus.Logger, error) {
 
 	logger := logrus.New()
 	logger.Out = io.MultiWriter(writers...)
-	logger.SetLevel(logrus.DebugLevel)
+	logger.SetLevel(logrus.InfoLevel)
 	logWriter, err := rotatelogs.New(
 		fileName+".%Y%m%d.log",
 		//rotatelogs.WithLinkName(fileName),
@@ -130,8 +130,8 @@ func MyLogicLogger(logPath string) (*logrus.Logger, error) {
 	writeMap := lfshook.WriterMap{
 		logrus.InfoLevel:  logWriter,
 		logrus.FatalLevel: logWriter,
-		logrus.DebugLevel: logWriter,
-		logrus.WarnLevel:  logWriter,
+		//	logrus.DebugLevel: logWriter,
+		//logrus.WarnLevel:  logWriter,
 		logrus.ErrorLevel: logWriter,
 		logrus.PanicLevel: logWriter,
 	}

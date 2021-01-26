@@ -1,7 +1,9 @@
 package app
 
 import (
+	"context"
 	"fmt"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"os"
 	"os/signal"
 	"pervasive-chain/config"
@@ -43,6 +45,25 @@ func Run(path string) error {
 				exitOs()
 			default:
 				fmt.Printf("app exit %v  %v \n", s, time.Now())
+			}
+		}
+	}()
+
+	// 检测 mongodb服务
+	// todo
+	ticker := time.NewTicker(15 * time.Second)
+	go func() {
+		for {
+			select {
+			case <-ticker.C:
+				err := mongodb.MongodbClient().Ping(context.TODO(), readpref.Primary())
+				if err != nil {
+					// 重连一次
+					err := mongodb.MongodbInit(prjConfig)
+					if err != nil {
+						ticker.Stop()
+					}
+				}
 			}
 		}
 	}()
